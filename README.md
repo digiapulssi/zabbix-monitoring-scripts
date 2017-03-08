@@ -13,3 +13,5 @@ Scripts may require additional setup or modification which is documented in
 each script's own documentation.
 
 ## Provided Scripts
+
+- [DB2 database snapshot statistics](documentation/db2stat.md)
