@@ -31,13 +31,21 @@ To enable snapshots:
 To test taking the snapshot with zabbix user in Linux as root:
 `su -s /bin/bash -c "<path-to-db2dir>/bin/db2 get snapshot for database on <db>" zabbix`
 
-## Item Configuration Examples
+## Installing Items from Template
 
-Note that each argument used to specify retrieved item must be placed within
-double quotes to properly distinct between parameters.
+Zabbix template for all items supported in configuration is
+[included](../templates/db2stat-template.xml). To configure it, at least macro
+value for DATABASE_NAME must be updated.
 
-Database status:
-`db2stat[<dbname>,"Database status"]`
+## Manual Item Configuration
 
-Current size of package cache heap for node 0:
-`db2stat[<dbname>,"Node number" "0" "Memory Pool Type" "Package Cache Heap" "Current size (bytes)"]`
+Provided user parameter configuration contains several parameters. Consult the
+[configuration file](../config/db2stat.conf) for full list.
+
+Simple statistics can be retrieved with two paramters, maximum snapshot age in seconds and database:
+
+`db2stat.database_status[60,SAMPLE]`
+
+Retrieving memory statistics additionally requires node number:
+
+`db2stat.package_cache_heap_size[60,SAMPLE,0]`
