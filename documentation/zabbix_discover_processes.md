@@ -4,10 +4,10 @@ files under the workdir configured in beginning of the script that needs to
 have write permissions. Files are cleaned when their age exceeds 1 day.
 Uses ps command for all functionality.
 
-Usage:
-Without parameters:
+# Usage:
+# Without parameters:
 - will print the JSON for discovered processes for Zabbix to use
-With parameters: cpu|mem|time <command_name> <ppid> filter
+# With parameters: cpu|mem|time <command_name> <ppid> filter
 - cpu -> gives the summed cpu percentage from child threads
 - mem -> gives the summed memory in bytes from child threads
 - time -> gives the time in seconds for longest running thread matching
@@ -18,7 +18,7 @@ With parameters: cpu|mem|time <command_name> <ppid> filter
 - filter -> will filter calculation based on command name and ignores
   sub processes that are spawned with different command
 
-Example commands:
+# Example commands:
   zabbix_discover_processes.pl cpu java
    -> summed up cpu of java processes and their children since last check
   zabbix_discover_processes.pl cpu java 1564
@@ -53,11 +53,11 @@ will get monitored.
 Setting either of the variables to 0 means that all processes will be
 monitored.
 
-Installation:
-  Put the script into /etc/zabbix/scripts folder and the configuration file
-  into /etc/zabbix/zabbix_agentd.d/ folder. Import the template into Zabbix.
-  After enabling the discovery template, process statistics should appear into 
-  Zabbix. 
+# Installation:
+Put the script into /etc/zabbix/scripts folder and the configuration file
+into /etc/zabbix/zabbix_agentd.d/ folder. Import the template into Zabbix.
+After enabling the discovery template, process statistics should appear into 
+Zabbix. 
 
 
 NOTE: The CPU is more accurate when check is done in larger intervals.
