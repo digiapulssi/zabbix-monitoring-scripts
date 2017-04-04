@@ -15,5 +15,5 @@ each script's own documentation.
 ## Provided Scripts
 
 - [DB2 database snapshot statistics](documentation/db2stat.md)
-- [Docker discovery and monitoring] (documentation/zabbix_discover_docker.md)
-- [Process discovery and monitoring] (documentation/zabbix_discover_processes.md)
+- [Docker discovery and monitoring](documentation/zabbix_discover_docker.md)
+- [Process discovery and monitoring](documentation/zabbix_discover_processes.md)
