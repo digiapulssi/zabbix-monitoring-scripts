@@ -19,20 +19,20 @@ Uses ps command for all functionality.
   sub processes that are spawned with different command
 
 # Example commands:
-  zabbix_discover_processes.pl cpu java
-   -> summed up cpu of java processes and their children since last check
-  zabbix_discover_processes.pl cpu java 1564
-   -> the cpu for java thread 1564 and all it's children
-  zabbix_discover_processes.pl cpu java 1564 filter
-   -> the cpu of the children of java thread 1564, but only ones
-      where the command is "java"
-  zabbix_discover_processes.pl mem java filter
-   -> summed up memory for processes where command is "java", but not their
-      children
-  zabbix_discover_processes.pl time java
-   -> the longest running java process elapsed time
-  zabbix_discover_processes.pl time java 1564
-   -> the elapsed time for java thread 1564
+    zabbix_discover_processes.pl cpu java
+    -> summed up cpu of java processes and their children since last check
+    zabbix_discover_processes.pl cpu java 1564
+    -> the cpu for java thread 1564 and all it's children
+    zabbix_discover_processes.pl cpu java 1564 filter
+    -> the cpu of the children of java thread 1564, but only ones
+       where the command is "java"
+    zabbix_discover_processes.pl mem java filter
+    -> summed up memory for processes where command is "java", but not their
+       children
+    zabbix_discover_processes.pl time java
+    -> the longest running java process elapsed time
+    zabbix_discover_processes.pl time java 1564
+    -> the elapsed time for java thread 1564
 
 The discovery sensitivity can be adjusted with the CPU_THRESHOLD (in
 percentage) and MEMORY_THRESHOLD (in Kb). These are used per thread, and not
