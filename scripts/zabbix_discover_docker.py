@@ -5,6 +5,8 @@ import argparse
 import sys
 import time
 import re
+import subprocess
+import tempfile
 from datetime import datetime
 import glob
 
@@ -15,8 +17,9 @@ _DEBUG = os.getenv("DEBUG", False)
 # The script assumes that the folders exists, and creates them
 # in bootstrap when the script is run for the first time. This
 # is to avoid having to check folder existing every time item is
-# updated.
-_WRK_DIR="/etc/zabbix/scripts/docker"
+# updated. User uid is used so that different users do not mixup the status
+# files
+_WRK_DIR=tempfile.gettempdir() + "/zabbix_discover_docker_" + str(os.getuid())
 try:
 	os.chdir(_WRK_DIR)
 except Exception, e:
@@ -89,6 +92,11 @@ def cpu(args):
 	cpuacct_usage_last = single_stat_check(args, "cpuacct.usage")
 	cpuacct_usage_new = single_stat_update(args, container_dir, "cpuacct.usage")
  	last_change = update_stat_time(args, "cpuacct.usage.utime")
+	# handle empty result, container not running anymore
+	if cpuacct_usage_new == "":
+		print "0"
+		exit()
+
 	# time used in division should be in nanoseconds scale, but take into account
 	# also that we want percentage of cpu which is x 100, so only multiply by 10 million
 	time_diff = (time.time() - float(last_change)) * 10000000
@@ -100,6 +108,9 @@ def net_received(args):
 	container_dir = "/sys/devices/virtual/net/eth0/statistics"
 	eth_last = single_stat_check(args, "rx_bytes")
 	eth_new = single_stat_update(args, container_dir, "rx_bytes")
+	if eth_new == "":
+		print "0"
+		exit()
 	last_change = update_stat_time(args, "rx_bytes.utime")
 	# we are dealing with seconds here, so no need to multiply
 	time_diff = (time.time() - float(last_change))
@@ -110,6 +121,9 @@ def net_sent(args):
 	container_dir = "/sys/devices/virtual/net/eth0/statistics"
 	eth_last = single_stat_check(args, "tx_bytes")
 	eth_new = single_stat_update(args, container_dir, "tx_bytes")
+	if eth_new == "":
+		print "0"
+		exit()
 	last_change = update_stat_time(args, "tx_bytes.utime")
 	# we are dealing with seconds here, so no need to multiply
 	time_diff = (time.time() - float(last_change))
@@ -170,13 +184,17 @@ def single_stat_check(args, filename):
 # helper function to update single stats
 def single_stat_update(args, container_dir, filename):
 
-	pipe = os.popen("docker exec " + args.container + " cat " + container_dir + "/" + filename  + " 2>&1")
-	for line in pipe:
-		stat = line
-	pipe.close()
-	# test that the docker command succeeded and pipe contained data
-	if not 'stat' in locals():
+	command = "docker exec " + args.container + " cat " + container_dir + "/" + filename
+
+	process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+	stat, error = process.communicate()
+
+	# if the container is not runnig, the error shoud not cause problem
+	# otherwise, raise the error
+	if "is not running" in error:
 		stat = ""
+	elif len(error) > 0:
+		raise error
 	try:
 		f = open(args.container + "/" + filename,"w")
 		f.write(stat)
@@ -222,12 +240,21 @@ def multi_stat_check(args, filename):
 def multi_stat_update(args, container_dir, filename):
 	dict = {}
 	try:
-		pipe = os.popen("docker exec " + args.container + " cat " + container_dir + "/" + filename  + " 2>&1")
-		for line in pipe:
+
+		command = "docker exec " + args.container + " cat " + container_dir + "/" + filename
+		process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+		stat, error = process.communicate()
+
+		# if the container is not runnig, the error shoud not cause problem
+		# otherwise, raise the error
+		if "is not running" in error:
+			stat = ""
+		elif len(error) > 0:
+			raise error
+		for line in stat.splitlines():
 			m = _STAT_RE.match(line)
 			if m:
 				dict[m.group(1)] = m.group(2)
-		pipe.close()
 		f = open(args.container + "/" + filename,"w")
 		for key in dict.keys():
 			f.write(key + " " + dict[key] + "\n")
@@ -252,10 +279,11 @@ def multi_stat_update(args, container_dir, filename):
 
 def memory(args):
 	container_dir = "/sys/fs/cgroup/memory"
-	memory_stat_last = {}
-	memory_stat_new = {}
 
 	memory_usage_last = single_stat_update(args, container_dir, "memory.usage_in_bytes")
+	if memory_usage_last == "":
+		print "0"
+		exit()
 
 	print memory_usage_last.strip()
 
@@ -318,5 +346,3 @@ if __name__ == "__main__":
 
 	if "debuglog" in globals():
 		debuglog.close()
-
-		
