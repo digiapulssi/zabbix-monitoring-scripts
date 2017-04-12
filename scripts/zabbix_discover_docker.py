@@ -38,7 +38,7 @@ def discover():
 
 	# test that the docker command succeeded, otherwise exit
 	if len(error) > 0:
-		print error
+		print(error)
 		sys.exit(1)
 
 	for line in dockerps.splitlines():
@@ -47,7 +47,7 @@ def discover():
 		ps["{#CONTAINERID}"] = line.strip().split()[1]
 		d["data"].append(ps)
 
-	print json.dumps(d)
+	print(json.dumps(d))
 
 def count_running():
 	command = "docker ps -q | wc -l"
@@ -55,7 +55,7 @@ def count_running():
 	output, error = process.communicate()
 
 	if len(error) > 0:
-		print error
+		print(error)
 		sys.exit(1)
 
 	print(output.strip())
@@ -68,16 +68,16 @@ def status(args):
 
 	# test that the docker command succeeded, otherwise exit
 	if len(error) > 0:
-		print error
-		exit(1)
+		print(error)
+		sys.exit(1)
 
 	statusjs = json.loads(status)
 	if statusjs["Running"]:
-		print "1"
+		print("1")
 	elif statusjs["ExitCode"] == 0:
-		print "2"
+		print("2")
 	else:
-		print "3"
+		print("3")
 
 # get the uptime in seconds, if the container is running
 def uptime(args):
@@ -87,16 +87,16 @@ def uptime(args):
 
 	# test that the docker command succeeded, otherwise exit
 	if len(error) > 0:
-		print error
-		exit(1)
+		print(error)
+		sys.exit(1)
 
 	statusjs = json.loads(status)
 	if statusjs["Running"]:
 		uptime = statusjs["StartedAt"]
 		start = time.strptime(uptime[:19], "%Y-%m-%dT%H:%M:%S")
-		print int(time.time() - time.mktime(start))
+		print(int(time.time() - time.mktime(start)))
 	else:
-		print "0"
+		print("0")
 
 # get the approximate disk usage
 # alt docker inspect -s -f {{.SizeRootFs}} 49219085bdaa
@@ -108,8 +108,8 @@ def disk(args):
 
 	# test that the docker command succeeded, otherwise exit
 	if len(error) > 0:
-		print error
-		exit(1)
+		print(error)
+		sys.exit(1)
 
 	print(stat.strip())
 
@@ -121,41 +121,41 @@ def cpu(args):
  	last_change = update_stat_time(args, "cpuacct.usage.utime")
 	# handle empty result, container not running anymore
 	if cpuacct_usage_new == "":
-		print "0"
-		exit()
+		print("0")
+		sys.exit(0)
 
 	# time used in division should be in nanoseconds scale, but take into account
 	# also that we want percentage of cpu which is x 100, so only multiply by 10 million
 	time_diff = (time.time() - float(last_change)) * 10000000
 
 	cpu = (int(cpuacct_usage_new) - int(cpuacct_usage_last)) / time_diff
-	print "{:.2f}".format(cpu)
+	print("{:.2f}".format(cpu))
 
 def net_received(args):
 	container_dir = "/sys/devices/virtual/net/eth0/statistics"
 	eth_last = single_stat_check(args, "rx_bytes")
 	eth_new = single_stat_update(args, container_dir, "rx_bytes")
 	if eth_new == "":
-		print "0"
-		exit()
+		print("0")
+		sys.exit(0)
 	last_change = update_stat_time(args, "rx_bytes.utime")
 	# we are dealing with seconds here, so no need to multiply
 	time_diff = (time.time() - float(last_change))
 	eth_bytes_per_second = (int(eth_new) - int(eth_last))/ time_diff
-	print int(eth_bytes_per_second)
+	print(int(eth_bytes_per_second))
 
 def net_sent(args):
 	container_dir = "/sys/devices/virtual/net/eth0/statistics"
 	eth_last = single_stat_check(args, "tx_bytes")
 	eth_new = single_stat_update(args, container_dir, "tx_bytes")
 	if eth_new == "":
-		print "0"
-		exit()
+		print("0")
+		sys.exit(0)
 	last_change = update_stat_time(args, "tx_bytes.utime")
 	# we are dealing with seconds here, so no need to multiply
 	time_diff = (time.time() - float(last_change))
 	eth_bytes_per_second = (int(eth_new) - int(eth_last))/ time_diff
-	print int(eth_bytes_per_second)
+	print(int(eth_bytes_per_second))
 
 # helper, fetch and update the time when stat has been updated
 # used in cpu calculation
@@ -215,12 +215,10 @@ def single_stat_update(args, container_dir, filename):
 	process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
 	stat, error = process.communicate()
 
-	# if the container is not runnig, the error shoud not cause problem
-	# otherwise, raise the error
-	if "is not running" in error:
-		stat = ""
-	elif len(error) > 0:
-		raise ValueError(error)
+	# test that the docker command succeeded, otherwise exit
+	if len(error) > 0:
+		print(error)
+		sys.exit(1)
 	try:
 		f = open(args.container + "/" + filename,"w")
 		f.write(stat)
@@ -271,12 +269,11 @@ def multi_stat_update(args, container_dir, filename):
 		process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
 		stat, error = process.communicate()
 
-		# if the container is not runnig, the error shoud not cause problem
-		# otherwise, raise the error
-		if "is not running" in error:
-			stat = ""
-		elif len(error) > 0:
-			raise error
+		# test that the docker command succeeded, otherwise exit
+		if len(error) > 0:
+			print(error)
+			sys.exit(1)
+
 		for line in stat.splitlines():
 			m = _STAT_RE.match(line)
 			if m:
@@ -308,10 +305,10 @@ def memory(args):
 
 	memory_usage_last = single_stat_update(args, container_dir, "memory.usage_in_bytes")
 	if memory_usage_last == "":
-		print "0"
-		exit()
+		print("0")
+		sys.exit(0)
 
-	print memory_usage_last.strip()
+	print(memory_usage_last.strip())
 
 
 
@@ -337,7 +334,7 @@ if __name__ == "__main__":
 		# validate the parameter for container
 		m = re.match("(^[a-zA-Z0-9-_]+$)", args.container)
 		if not m:
-			print "Invalid parameter for container id detected"
+			print("Invalid parameter for container id detected")
 			debug("Invalid parameter for container id detected" + str(args.container))
 			sys.exit(2)
 
