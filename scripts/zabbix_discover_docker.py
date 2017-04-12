@@ -31,60 +31,87 @@ except Exception, e:
 def discover():
 	d = {}
 	d["data"] = []
-	with os.popen("docker ps --format \"{{.Names}} {{.ID}}\"") as pipe:
-		for line in pipe:
-			ps = {}
-			ps["{#CONTAINERNAME}"] = line.strip().split()[0]
-			ps["{#CONTAINERID}"] = line.strip().split()[1]
-			d["data"].append(ps)
+
+	command = "docker ps --format \"{{.Names}} {{.ID}}\""
+	process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+	dockerps, error = process.communicate()
+
+	# test that the docker command succeeded, otherwise exit
+	if len(error) > 0:
+		print error
+		sys.exit(1)
+
+	for line in dockerps.splitlines():
+		ps = {}
+		ps["{#CONTAINERNAME}"] = line.strip().split()[0]
+		ps["{#CONTAINERID}"] = line.strip().split()[1]
+		d["data"].append(ps)
+
 	print json.dumps(d)
 
 def count_running():
-	with os.popen("docker ps -q | wc -l") as pipe:
-		print pipe.readline().strip()
+	command = "docker ps -q | wc -l"
+	process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+	output, error = process.communicate()
+
+	if len(error) > 0:
+		print error
+		sys.exit(1)
+
+	print(output.strip())
 
 # status: 0 = no container found, 1 = running, 2 = closed, 3 = abnormal
 def status(args):
-	with os.popen("docker inspect -f '{{json .State}}' " + args.container + " 2>&1") as pipe:
-		status = pipe.read().strip()
+	command = "docker inspect -f '{{json .State}}' " + args.container
+	process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+	status, error = process.communicate()
 
-	if "No such image or container" in status:
-		print "0"
+	# test that the docker command succeeded, otherwise exit
+	if len(error) > 0:
+		print error
+		exit(1)
+
+	statusjs = json.loads(status)
+	if statusjs["Running"]:
+		print "1"
+	elif statusjs["ExitCode"] == 0:
+		print "2"
 	else:
-		statusjs = json.loads(status)
-		if statusjs["Running"]:
-			print "1"
-		elif statusjs["ExitCode"] == 0:
-			print "2"
-		else:
-			print "3"
+		print "3"
 
 # get the uptime in seconds, if the container is running
 def uptime(args):
-	with os.popen("docker inspect -f '{{json .State}}' " + args.container + " 2>&1") as pipe:
-		status = pipe.read().strip()
-	if "No such image or container" in status:
-		print "0"
+	command = "docker inspect -f '{{json .State}}' " + args.container
+	process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+	status, error = process.communicate()
+
+	# test that the docker command succeeded, otherwise exit
+	if len(error) > 0:
+		print error
+		exit(1)
+
+	statusjs = json.loads(status)
+	if statusjs["Running"]:
+		uptime = statusjs["StartedAt"]
+		start = time.strptime(uptime[:19], "%Y-%m-%dT%H:%M:%S")
+		print int(time.time() - time.mktime(start))
 	else:
-		statusjs = json.loads(status)
-		if statusjs["Running"]:
-			uptime = statusjs["StartedAt"]
-			start = time.strptime(uptime[:19], "%Y-%m-%dT%H:%M:%S")
-			print int(time.time() - time.mktime(start))
-		else:
-			print "0"
+		print "0"
 
 # get the approximate disk usage
 # alt docker inspect -s -f {{.SizeRootFs}} 49219085bdaa
 # alt docker exec " + args.container + " du -s -b / 2> /dev/null
 def disk(args):
-	with os.popen("docker inspect -s -f {{.SizeRootFs}} " + args.container + " 2>&1") as pipe:
-		stat = pipe.read().strip()
-	pipe.close()
-	# test that the docker command succeeded and pipe contained data
-	if not 'stat' in locals():
-		stat = ""
-	print stat.split()[0]
+	command = "docker inspect -s -f {{.SizeRootFs}} " + args.container
+	process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+	stat, error = process.communicate()
+
+	# test that the docker command succeeded, otherwise exit
+	if len(error) > 0:
+		print error
+		exit(1)
+
+	print(stat.strip())
 
 def cpu(args):
 	container_dir = "/sys/fs/cgroup/cpuacct"
@@ -185,7 +212,6 @@ def single_stat_check(args, filename):
 def single_stat_update(args, container_dir, filename):
 
 	command = "docker exec " + args.container + " cat " + container_dir + "/" + filename
-
 	process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
 	stat, error = process.communicate()
 
@@ -194,7 +220,7 @@ def single_stat_update(args, container_dir, filename):
 	if "is not running" in error:
 		stat = ""
 	elif len(error) > 0:
-		raise error
+		raise ValueError(error)
 	try:
 		f = open(args.container + "/" + filename,"w")
 		f.write(stat)
@@ -307,6 +333,7 @@ if __name__ == "__main__":
 		parser.add_argument("container", help="container id")
 		parser.add_argument("stat", help="container stat", choices=["status", "uptime", "cpu","memory", "disk", "netin", "netout"])
 		args = parser.parse_args()
+
 		# validate the parameter for container
 		m = re.match("(^[a-zA-Z0-9-_]+$)", args.container)
 		if not m:
@@ -314,22 +341,39 @@ if __name__ == "__main__":
 			debug("Invalid parameter for container id detected" + str(args.container))
 			sys.exit(2)
 
-		# call the correct function to get the stats
-		if args.stat == "status":
+		# stats that can be reported without container running
+		if args.stat == "disk":
+			debug("calling disk for " + args.container)
+			disk(args)
+			sys.exit(0)
+		elif args.stat == "status":
 			debug("calling status for " + args.container)
 			status(args)
+			sys.exit(0)
 		elif args.stat == "uptime":
 			debug("calling uptime for " + args.container)
 			uptime(args)
+			sys.exit(0)
+
+		# check which containers are running, and print zero default value if not
+		command = "docker ps --format \"{{.Names}} {{.ID}}\""
+		process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+		output,error = process.communicate()
+		if len(error) > 0:
+			print(error)
+			sys.exit(1)
+		out = re.findall(r"(?:^|[\s]+)("+args.container+")(?:[\s|$])+", output,re.DOTALL)
+		if (not re.search(r"(?:^|[\s]+)("+args.container+")(?:[\s|$])+", output,re.DOTALL)):
+			print("0")
+			sys.exit(0)
+
+		# call the correct function to get the stats
 		elif args.stat == "cpu":
 			debug("calling cpu for " + args.container)
 			cpu(args)
 		elif args.stat == "memory":
 			debug("calling memory for " + args.container)
 			memory(args)
-		elif args.stat == "disk":
-			debug("calling disk for " + args.container)
-			disk(args)
 		elif args.stat == "netin":
 			debug("calling net_received for " + args.container)
 			net_received(args)
