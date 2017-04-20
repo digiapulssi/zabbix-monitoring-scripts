@@ -17,3 +17,4 @@ each script's own documentation.
 - [DB2 database snapshot statistics](documentation/db2stat.md)
 - [Docker discovery and monitoring](documentation/zabbix_discover_docker.md)
 - [Process discovery and monitoring](documentation/zabbix_discover_processes.md)
+- [Pacemaker monitoring](documentation/pacemaker_status.md)
