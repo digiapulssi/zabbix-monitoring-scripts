@@ -71,7 +71,7 @@ use Digest::MD5 qw(md5 md5_hex md5_base64);
 
 my $WORKDIR = File::Spec->tmpdir();
 
-my $CPU_THRESHOLD = 1.5; # percentage
+my $CPU_THRESHOLD = 2.0; # percentage
 my $MEMORY_THRESHOLD = 200000; # in Kb
 my $ps_regex = qr/^(.+)\s+(\d+)\s+(\d+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+([\d\-:]+)\s+([\d\-:]+)\s+(.+)$/;
 my $clean_regex = qr/[^0-9a-zA-Z_\-]/; # clean up regex
