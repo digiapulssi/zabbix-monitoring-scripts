@@ -11,11 +11,11 @@ Uses ps command for all functionality.
 - cpu -> gives the summed cpu percentage from child threads
 - mem -> gives the summed memory in bytes from child threads
 - time -> gives the time in seconds for longest running thread matching
-- <command_name> as seen by the ps command
-- <md5> -> optional parameter, md5 sum returned by discovery which is
+- \<command_name\> as seen by the ps command
+- \<md5\> -> optional parameter, md5 sum returned by discovery which is
   calculated with from full command arguments. Prevents losing process history
   due to new ppid
-- <ppid> -> optional parameter for the main pid, to return stats only for
+- \<ppid\> -> optional parameter for the main pid, to return stats only for
   the child processes of the given ppid. Without it will give summed stats
   for all processes based on <command_name> only.
 - filter -> will filter calculation based on command name and ignores
