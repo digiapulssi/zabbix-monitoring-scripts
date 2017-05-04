@@ -305,7 +305,11 @@ sub discover {
   foreach my $file (glob("${WORKDIR_USER}/*")) {
     my $age = -M $file;
     if ($age > 1) {
-      unlink $file;
+      # untaint file
+      if ($file =~ /^(\w+\.\d+)$/) {
+        $file = $1;
+        unlink $file;
+      }
     }
   }
 }
