@@ -184,7 +184,9 @@ sub discover {
       or die "Could not read $discovery_file";
     for my $line (<$fh>) {
       my ($pid) = $line =~ m/^\S+\s+(\d+)\s+\d+.*/;
-      $old_stats_hash{$pid} = $line;
+      if (defined $pid) {
+          $old_stats_hash{$pid} = $line;
+      }
     }
     close $fh;
     # to update the discover_file, old one must be deleted
