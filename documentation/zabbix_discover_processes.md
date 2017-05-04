@@ -11,8 +11,11 @@ Uses ps command for all functionality.
 - cpu -> gives the summed cpu percentage from child threads
 - mem -> gives the summed memory in bytes from child threads
 - time -> gives the time in seconds for longest running thread matching
-- <command_name> as seen by the ps command
-- <ppid> -> optional parameter for the main pid, to return stats only for
+- \<command_name\> as seen by the ps command
+- \<md5\> -> optional parameter, md5 sum returned by discovery which is
+  calculated with from full command arguments. Prevents losing process history
+  due to new ppid
+- \<ppid\> -> optional parameter for the main pid, to return stats only for
   the child processes of the given ppid. Without it will give summed stats
   for all processes based on <command_name> only.
 - filter -> will filter calculation based on command name and ignores
@@ -21,6 +24,10 @@ Uses ps command for all functionality.
 # Example commands:
     zabbix_discover_processes.pl cpu java
     -> summed up cpu of java processes and their children since last check
+    zabbix_discover_processes.pl cpu java 9691f8c443d519f7eada3c646dc42fed
+    -> the cpu for java process which md5 is given in parameter and it's
+      children. MD5 is calculated from full command arguments as seen by
+      ps command
     zabbix_discover_processes.pl cpu java 1564
     -> the cpu for java thread 1564 and all it's children
     zabbix_discover_processes.pl cpu java 1564 filter
@@ -67,3 +74,10 @@ in multi core environment, and can be more than 100%.
 NOTE: The memory reported does not take into account shared memory between
 threads, and can exceed the real amount used and even the maximum memory in
 the system in some special cases.
+
+NOTE: The md5 sum is preferred in the examples to prevent losing process
+history when ppid changes due to process restart. Since the process parameters
+can be same for two parallel processes, this will cause them to be detected
+as one process in zabbix. If this reduction in accuracy is not acceptable,
+ppid should be used instead, but it will generate more items in Zabbix.
+

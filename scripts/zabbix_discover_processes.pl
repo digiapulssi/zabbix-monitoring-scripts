@@ -9,11 +9,14 @@
 # Usage:
 # Without parameters:
 # - will print the JSON for discovered processes for Zabbix to use
-# With parameters: cpu|mem|time <command_name> <ppid> filter
+# With parameters: cpu|mem|time <command_name> <md5|ppid> filter
 # - cpu -> gives the summed cpu percentage from child threads
 # - mem -> gives the summed memory in bytes from child threads
 # - time -> gives the time in seconds for longest running thread matching
 # - <command_name> as seen by the ps command
+# - <md5> -> optional parameter, md5 sum returned by discovery which is
+#   calculated with from full command arguments. Prevents losing process history
+#   due to new ppid
 # - <ppid> -> optional parameter for the main pid, to return stats only for
 #   the child processes of the given ppid. Without it will give summed stats
 #   for all processes based on <command_name> only.
@@ -23,6 +26,10 @@
 # Example commands:
 #   zabbix_discover_processes.pl cpu java
 #    -> summed up cpu of java processes and their children since last check
+#   zabbix_discover_processes.pl cpu java 9691f8c443d519f7eada3c646dc42fed
+#    -> the cpu for java process which md5 is given in parameter and it's
+#       children. MD5 is calculated from full command arguments as seen by
+#       ps command
 #   zabbix_discover_processes.pl cpu java 1564
 #    -> the cpu for java thread 1564 and all it's children
 #   zabbix_discover_processes.pl cpu java 1564 filter
@@ -62,16 +69,24 @@
 # NOTE: The memory reported does not take into account shared memory between
 # threads, and can exceed the real amount used and even the maximum memory in
 # the system in some special cases.
+#
+# NOTE: The md5 sum is preferred in the examples to prevent losing process
+# history when ppid changes due to process restart. Since the process parameters
+# can be same for two parallel processes, this will cause them to be detected
+# as one process in zabbix. If this reduction in accuracy is not acceptable,
+# ppid should be used instead, but it will generate more items in Zabbix.
 ################################################################################
 $ENV{PATH} = "/bin";
 use strict;
 use warnings;
 use File::Spec;
+use Digest::MD5 qw(md5 md5_hex md5_base64);
 
 my $WORKDIR = File::Spec->tmpdir();
 
 my $CPU_THRESHOLD = 2.0; # percentage
 my $MEMORY_THRESHOLD = 200000; # in Kb
+my $ps_regex = qr/^(.+)\s+(\d+)\s+(\d+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+([\d\-:]+)\s+([\d\-:]+)\s+(.+)$/;
 my $clean_regex = qr/[^0-9a-zA-Z_\-]/; # clean up regex
 my $clean_file_regex = qr/[^0-9a-zA-Z_]/; # clean up regex for files
 my $user = getlogin || getpwuid($<) || "tmpuser";
@@ -98,7 +113,7 @@ sub discover {
   # create hash to speed things up a bit
   my %ps_hash = ();
 
-  for my $line (`ps -A -o pid,ppid,user,pcpu,pmem,rssize,time,etime,comm`) {
+  for my $line (`ps -A -o comm,pid,ppid,user,pcpu,pmem,rssize,time,etime,command`) {
     # skip heading line
     if ($first)
     {
@@ -110,8 +125,23 @@ sub discover {
       next;
     }
 
-    my ($pid, $ppid, $user, $pcpu, $pmem, $rss, $time, $etime, $comm) = $line
-      =~ m/(?:\s+)?(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(.+)$/;
+    my ($comm, $pid, $ppid, $user, $pcpu, $pmem, $rss, $time, $etime, $full_command)
+      = $line =~ m/$ps_regex/;
+
+    # if for some reason we can't determine the command, skip
+    # this is because AIX system ps command returns <defunct>, <exiting> and
+    # <idle> processes with no valid data
+    if (not defined $comm) {
+      # print unsupported line to log
+      open(my $fh, ">", "last_error")
+        or die "Cannot update last_error file.\n";
+      print $fh $line;
+      chmod 0660, $fh;
+      close $fh;
+      next;
+    }
+
+    my $md5 = "";
     # fill the hash
     my %stat_hash = ();
     $stat_hash{"pid"} = $pid;
@@ -125,6 +155,10 @@ sub discover {
     # special characters are always removed from command
     $comm =~ s/$clean_regex//g;
     $stat_hash{"comm"} = $comm;
+    # calculate MD5 for the full command, to try to distinguish between
+    # parallel main processes
+    $md5 = md5_hex($full_command);
+    $stat_hash{"md5"} = $md5;
     $ps_hash{$pid} = \%stat_hash;
   }
 
@@ -146,11 +180,13 @@ sub discover {
 
   # read old ps output if the file exists
   if (-e $discovery_file) {
-    open(my $fh, '<', $discovery_file)
-      or die "Could not read '$discovery_file'";
+    open(my $fh, "<", $discovery_file)
+      or die "Could not read $discovery_file";
     for my $line (<$fh>) {
-      my ($pid) = $line =~ m/^(?:\s+)?(\S+)\s+.*/;
-      $old_stats_hash{$pid} = $line;
+      my ($pid) = $line =~ m/^\S+\s+(\d+)\s+\d+.*/;
+      if (defined $pid) {
+          $old_stats_hash{$pid} = $line;
+      }
     }
     close $fh;
     # to update the discover_file, old one must be deleted
@@ -169,6 +205,7 @@ sub discover {
     my $rss = $ps_hash{$pid}{"rss"};
     my $time = $ps_hash{$pid}{"time"};
     my $etime = $ps_hash{$pid}{"etime"};
+    my $md5 = $ps_hash{$pid}{"md5"};
     my $old_stat = "";
 
     # find out if this is the root process, safeguard against trying to
@@ -184,10 +221,11 @@ sub discover {
 
     if ( $old_stat eq "") {
       # no old statistics found, means this is new process
-      $old_stat = join " ", $pid, $ppid, $user, $pcpu, $pmem, $rss, "00:00:00", "00:00", $comm;
+      $old_stat = join " ", $comm, $pid, $ppid, $user, $pcpu, $pmem, $rss, "00:00:00", "00:00", $md5;
     }
 
-    my ($time_old, $etime_old) = $old_stat =~ m/.*\s+(\S+)\s+(\S+)\s$comm$/;
+    my ($time_old, $etime_old) = $old_stat =~ m/^$comm.+\s+([\d\-:]+)\s+([\d\-:]+)\s+.+$/;
+
     if (not defined($time_old) or not defined($etime_old)) {
       die "Error in determining process times.\n";
     }
@@ -197,22 +235,21 @@ sub discover {
     my $esec = seconds($etime);
     my $esec_old = seconds($etime_old);
     my $cpu = 0;
+
     if ($esec - $esec_old gt 0) {
       $cpu = (100 * ($psec - $psec_old)) / ($esec - $esec_old);
     }
 
     # only discover processes that have used cpu time
-    # note that cpu percentage given by 'ps' command is the total cpu percentage
-    # during the whole process life time, and not the current instantaneous cpu
     # also use threshold memory in Kb for process detection
     if ($cpu >= $CPU_THRESHOLD or $rss >= $MEMORY_THRESHOLD) {
       push @processes, $pid;
     }
 
     # update the discovery_file
-    open(my $fh, '>>', $discovery_file)
-      or die "Cannot update ${$discovery_file}\n";
-    print $fh join " ", $pid, $ppid, $user, $pcpu, $pmem, $rss, $time, $etime, $comm;
+    open(my $fh, ">>", $discovery_file)
+      or die "Cannot update $discovery_file\n";
+    print $fh join " ", $comm, $pid, $ppid, $user, $pcpu, $pmem, $rss, $time, $etime, $md5;
     print $fh "\n";
     chmod 0660, $fh;
     close $fh;
@@ -223,18 +260,28 @@ sub discover {
   print "{\n";
   print "\t\"data\":[\n\n";
   my @main_pids = ();
+  my @main_md5s = ();
   for my $pid (@processes)  {
     my $comm = $ps_hash{$pid}{"comm"};
     my $user = $ps_hash{$pid}{"user"};
 
+
     # find the main pid for this command using subroutine
     my $main_pid = findMainProc($pid,$comm,\%ps_hash);
+
 
     # filter processes for which the main pid has already been found
     if ( grep( /^$main_pid$/, @main_pids ) ) {
       next;
     }
+
+    # filter processes for which the main md5 has already been found
+    my $main_md5 = $ps_hash{$pid}{"md5"};
+    if ( grep( /^$main_md5$/, @main_md5s ) ) {
+      next;
+    }
     push @main_pids, $main_pid;
+    push @main_md5s, $main_md5;
 
     if ($first)
     {
@@ -247,6 +294,7 @@ sub discover {
     print "\t\t\"{#PROCESSNAME}\":\"$comm\",\n";
     print "\t\t\"{#PID}\":\"$pid\",\n";
     print "\t\t\"{#MAIN_PID}\":\"$main_pid\",\n";
+    print "\t\t\"{#MAIN_MD5}\":\"$main_md5\",\n";
     print "\t\t\"{#USER}\":\"$user\"\n";
     print "\t}\n";
   }
@@ -257,7 +305,11 @@ sub discover {
   foreach my $file (glob("${WORKDIR_USER}/*")) {
     my $age = -M $file;
     if ($age > 1) {
-      unlink $file;
+      # untaint file
+      if ($file =~ /^(\w+\.\d+)$/) {
+        $file = $1;
+        unlink $file;
+      }
     }
   }
 }
@@ -279,12 +331,12 @@ sub checkProcesses {
   } elsif (not $stat_arg =~ m/^(cpu|mem|time)$/) {
     print "Invalid stat argument given, supported: cpu|mem|time\n";
     exit 2;
-  } elsif (defined($limit1_arg) && $limit1_arg !~ m/^\d+|filter$/) {
-    # optional ppid argument
-    print "Invalid PID or filter argument given. Exiting.\n";
+  } elsif (defined($limit1_arg) && $limit1_arg !~ m/^\S+|filter$/) {
+    # optional ppid | md5 | filter argument
+    print "Invalid PID or command filter argument given. Exiting.\n";
     exit 2;
-  } elsif (defined($limit2_arg) && $limit2_arg !~ m/^\d+|filter$/) {
-    print "Invalid PID or filter argument given.  Exiting.\n";
+  } elsif (defined($limit2_arg) && $limit2_arg !~ m/^\S+|filter$/) {
+    print "Invalid PID or command filter argument given. Exiting.\n";
     exit 2;
   }
 
@@ -294,17 +346,22 @@ sub checkProcesses {
   # set the limiting parameters according to the two limit arguments if defined
   my $command_filter = 0;
   my $main_pid_filter = 0;
+  my $main_args_md5 = "";
 
-  if ($limit1_arg && $limit1_arg =~ m/\d+/) {
-    $main_pid_filter = $limit1_arg; # pid given
-  } elsif ($limit1_arg && $limit1_arg =~ m/^filter$/) {
+  if ($limit1_arg && $limit1_arg =~ m/^filter$/) {
     $command_filter = 1;
+  } elsif ($limit1_arg && $limit1_arg =~ m/^\d+$/) {
+    $main_pid_filter = $limit1_arg; # pid given
+  } elsif ($limit1_arg && $limit1_arg =~ m/^[0-9a-fA-F]+$/) {
+    $main_args_md5 = $limit1_arg; # md5 arg filter given
   }
 
-  if ($limit2_arg && $limit2_arg =~ m/\d+/) {
-    $main_pid_filter = $limit2_arg; # pid given
-  } elsif ($limit2_arg && $limit2_arg =~ m/^filter$/) {
+  if ($limit2_arg && $limit2_arg =~ m/^filter$/) {
     $command_filter = 1;
+  } elsif ($limit2_arg && $limit2_arg =~ m/^\d+$/) {
+    $main_pid_filter = $limit2_arg; # pid given
+  } elsif ($limit2_arg && $limit2_arg =~ m/^[0-9a-fA-F]+$/) {
+    $main_args_md5 = $limit2_arg; # md5 arg filter given
   }
 
   my $time_tot = 0, my $mem_tot = 0, my $cpu_tot= 0;
@@ -314,7 +371,7 @@ sub checkProcesses {
   # create hash to speed things up a bit
   my %ps_hash = ();
 
-  for my $line (`ps -A -o pid,ppid,user,pcpu,pmem,rssize,time,etime,comm`) {
+  for my $line (`ps -A -o comm,pid,ppid,user,pcpu,pmem,rssize,time,etime,command`) {
     # skip heading line
     if ($first)
     {
@@ -326,10 +383,25 @@ sub checkProcesses {
       next;
     }
 
-    my ($pid, $ppid, $user, $pcpu, $pmem, $rss, $time, $etime, $comm) = $line
-      =~ m/(?:\s+)?(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(.+)$/;
+    my ($comm, $pid, $ppid, $user, $pcpu, $pmem, $rss, $time, $etime, $full_command) = $line
+      =~ m/$ps_regex/;
+
+    # if for some reason we can't determine the command, skip
+    # this is because AIX system ps command returns <defunct>, <exiting> and
+    # <idle> processes with no valid data
+    if (not defined $comm) {
+      # print unsupported line to log
+      open(my $fh, ">", "last_error")
+        or die "Cannot update last_error file.\n";
+      print $fh $line;
+      chmod 0660, $fh;
+      close $fh;
+      next;
+    }
+
     # fill the hash
     my %stat_hash = ();
+    my $md5 = "";
     $stat_hash{"pid"} = $pid;
     $stat_hash{"ppid"} = $ppid;
     $stat_hash{"user"} = $user;
@@ -340,6 +412,10 @@ sub checkProcesses {
     $stat_hash{"etime"} = $etime;
     $comm =~ s/$clean_regex//g;
     $stat_hash{"comm"} = $comm;
+    # calculate MD5 for the full command, to try to distinguish between
+    # parallel main processes
+    $md5 = md5_hex($full_command);
+    $stat_hash{"md5"} = $md5;
     $ps_hash{$pid} = \%stat_hash;
   }
 
@@ -347,9 +423,22 @@ sub checkProcesses {
   # 2. command and filter given -> find each main proc and sum only the named processes
   # 3. command and pid given -> find the one main process and go through all subs
   # 4. command pid and filter given -> find the main process, sum only the named processes
+  # 5. command and md5 given -> find the one main process based on md5 calculated from command parameters
+
   my @main_pids = ();
 
-  if (not $main_pid_filter) {
+  if ($main_args_md5) {
+    for my $pid (keys %ps_hash) {
+      my $md5 = $ps_hash{$pid}{"md5"};
+      if ( $md5 eq $main_args_md5 ) {
+        # this is the main proc we want to monitor
+        push @main_pids, $pid;
+      }
+    }
+  } elsif ($main_pid_filter) {
+    push @main_pids, $main_pid_filter;
+  }
+  else {
     # sum based on command names
     # find the main pids
     my $main_pid;
@@ -367,27 +456,24 @@ sub checkProcesses {
       }
 
     }
-  } elsif ($main_pid_filter) {
-    push @main_pids, $main_pid_filter;
   }
 
   # loop through the selected PID:s
   for my $main_pid (@main_pids) {
+
     # and check every process against them
     for my $pid (keys %ps_hash) {
       my $comm = $ps_hash{$pid}{"comm"};
       my $ppid = $ps_hash{$pid}{"ppid"};
+
       # skip root process
       if (not exists $ps_hash{$ppid} or $pid eq $ppid) {
         next;
       }
 
-      my $comm_clean = $comm;
-      $comm_clean =~ s/$clean_regex//g;
-
       # if command_filter, skip all lines that are not for the defined command
-      # skip other porcesses that are not being checked, if the limit arg is used
-      if ($command_filter and $comm_clean ne $pname_arg)
+      # skip other porcesses that are not being checked, if the limit filter is used
+      if ($command_filter and $comm ne $pname_arg)
       {
         next;
       }
@@ -406,6 +492,7 @@ sub checkProcesses {
       my $rss = $ps_hash{$pid}{"rss"};
       my $time = $ps_hash{$pid}{"time"};
       my $etime = $ps_hash{$pid}{"etime"};
+      my $md5 = $ps_hash{$pid}{"md5"};
 
       # calculate cpu percentage using elapsed time vs cpu time for each thread
       if ($stat_arg eq "cpu") {
@@ -427,17 +514,18 @@ sub checkProcesses {
         }
         # read old stats from PID file if it exists
         if (-e $stat_file) {
-          open(my $fh, '<', $stat_file)
+          open(my $fh, "<", $stat_file)
             or die "Could not read '$stat_file'";
           $old_stats = <$fh>;
           close $fh;
+
         } else {
           # if stat file does not exist, this is a new thread without previous
           # measure point -> set time values to zero
-          $old_stats = join " ", $pid, $ppid, $user, $pcpu, $pmem, $rss, "00:00:00", "00:00", $comm;
+          $old_stats = join " ", $comm, $pid, $ppid, $user, $pcpu, $pmem, $rss, "00:00:00", "00:00", $md5;
         }
 
-        my ($time_old, $etime_old) = $old_stats =~ m/.*\s+(\S+)\s+(\S+)\s+$comm$/;
+        my ($time_old, $etime_old) = $old_stats =~ m/$comm.*\s+([\d\-:]+)\s+([\d\-:]+)\s+.*$/;
         if (not defined($time_old) or not defined($etime_old)) {
           die "Error in determining process times.\n";
         }
@@ -454,9 +542,9 @@ sub checkProcesses {
         $cpu_tot += $cpu;
 
         # update stats for this command.pid
-        open(my $fh, '>', $stat_file)
+        open(my $fh, ">", $stat_file)
           or die "Cannot update ${stat_file}\n";
-        print $fh join " ", $pid, $ppid, $user, $pcpu, $pmem, $rss, $time, $etime, $comm;
+        print $fh join " ",$comm, $pid, $ppid, $user, $pcpu, $pmem, $rss, $time, $etime, $md5;
         print $fh "\n";
         chmod 0660, $fh;
         close $fh;
