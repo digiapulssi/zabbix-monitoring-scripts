@@ -2,11 +2,19 @@
 set -e
 
 # Find netcat command or die
-NC=$(command -v netcat || command -v nc || exit 1)
+NC_CMD=$(command -v netcat || command -v nc || exit 1)
 # Path of docker socket
-DOCKER_SOCKET=/coreos/var/run/docker.sock
+DOCKER_SOCKET=/var/run/docker.sock
 # Statistics directory (parent directory must exist and be writable for user running script)
-STATS_DIR=/var/lib/zabbix/stats
+STATS_DIR=/tmp/zabbix-docker-stats
+
+# Chech if docker socket is writable with the current user
+if [ -w "$DOCKER_SOCKET" ]; then
+  NC="$NC_CMD"
+else
+  # Current user does not belong to docker group, use sudo (requires that sudo rights given correctly in the system)
+  NC="sudo $NC_CMD"
+fi
 
 # Create statistics directory if it does not exist
 if [ ! -e "$STATS_DIR" ]; then
@@ -16,7 +24,7 @@ fi
 # Executes GET command to docker socket
 # Parameters: 1 - docker command
 docker_get() {
-  RESPONSE=$(printf "GET $1 HTTP/1.0\r\n\r\n" | sudo $NC -U $DOCKER_SOCKET | tail -n 1)
+  RESPONSE=$(printf "GET $1 HTTP/1.0\r\n\r\n" | $NC -U $DOCKER_SOCKET | tail -n 1)
 }
 
 # Executes command in docker container
@@ -25,11 +33,11 @@ docker_get() {
 docker_exec() {
   # Create command execution
   local BODY="{\"AttachStdout\": true, \"Cmd\": [$2]}"
-  local CREATE_RESPONSE=$(printf "POST /containers/$1/exec HTTP/1.0\r\nContent-Type: application/json\r\nContent-Length: ${#BODY}\r\n\r\n${BODY}" | sudo $NC -U $DOCKER_SOCKET | tail -n 1)
+  local CREATE_RESPONSE=$(printf "POST /containers/$1/exec HTTP/1.0\r\nContent-Type: application/json\r\nContent-Length: ${#BODY}\r\n\r\n${BODY}" | $NC -U $DOCKER_SOCKET | tail -n 1)
   local RUN_ID=$(echo $CREATE_RESPONSE | jq ".Id" | sed -e 's/"//g')
 
   # Start execution
-  RESPONSE=$(printf "POST /exec/$RUN_ID/start HTTP/1.0\r\nContent-Type: application/json\r\nContent-Length: 2\r\n\r\n{}" | sudo $NC -U $DOCKER_SOCKET)
+  RESPONSE=$(printf "POST /exec/$RUN_ID/start HTTP/1.0\r\nContent-Type: application/json\r\nContent-Length: 2\r\n\r\n{}" | $NC -U $DOCKER_SOCKET)
 }
 
 # Obtains last line from execution of cat file on docker container
@@ -94,7 +102,10 @@ discover() {
       NAME=$(echo "$RESPONSE"|jq ".[$I].Names[0]"|sed -e 's/"\//"/')
       ID=$(echo "$RESPONSE"|jq ".[$I].Id")
 
-      DATA="$DATA,"'{"{#CONTAINERNAME}":'$NAME',"{#CONTAINERID}":'$ID'}'
+      DATA="$DATA,"'{"{#CONTAINERNAME}":'$NAME',"{#CONTAINERID}":'$ID
+
+      # Compatibility with www.monitoringartist.com Docker template
+      DATA="$DATA,"'"{#HCONTAINERID}":'$ID'}'
 
   done
   echo '{"data":['${DATA#,}']}'
@@ -103,23 +114,36 @@ discover() {
 # Statistic: Container status
 status() {
   docker_get "/containers/$1/json"
-  STATUS=$(echo $RESPONSE | jq ".State.Status" | sed -e 's/\"//g')
+  STATUS=$(echo $RESPONSE | jq ".State.Status" 2>/dev/null | sed -e 's/\"//g')
 
   # Not existing
   if [ "$STATUS" = "null" ]; then
     echo "0"
   # Running
-  elif [ "$STATUS" = "running" ] || [ "$STATUS" = "restarting" ]; then
+  elif [ "$STATUS" = "running" ]; then
     echo "2"
   # Not running
-  elif [ "$STATUS" = "created" ] || [ "$STATUS" = "paused" ]; then
+  elif [ "$STATUS" = "created" ] || [ "$STATUS" = "paused" ] || [ "$STATUS" = "restarting" ]; then
     echo "1"
   # Stopped and exit status 0 -> not running
   elif [ "$STATUS" = "exited" ] && [ "$(echo $RESPONSE | jq '.State.ExitCode')" = "0" ]; then
     echo "1"
-  # Error
+  # Error (eg. not such container)
   else
     echo "3"
+  fi
+}
+
+# Container up and runnig? 1 (yes) or 0 (no)
+up() {
+  docker_get "/containers/$1/json"
+  STATUS=$(echo $RESPONSE | jq ".State.Status" 2>/dev/null | sed -e 's/\"//g')
+
+  # Running
+  if [ "$STATUS" = "running" ]; then
+    echo "1"
+  else
+    echo "0"
   fi
 }
 
@@ -183,6 +207,10 @@ elif [ $# -eq 1 ]; then
     count_running
   fi
 elif [ $# -eq 2 ]; then
+  # Compatibility with www.monitoringartist.com docker template:
+  # Remove leading slash from container id
+  CONT_ID=$(echo "$1" | sed 's/^\///')
+
   # Execute statistic function with container argument
-  $2 $1
+  $2 "$CONT_ID"
 fi
