@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>3.2</version>
-    <date>2017-09-28T11:28:33Z</date>
+    <date>2017-09-28T11:28:40Z</date>
     <groups>
         <group>
             <name>Templates</name>
@@ -9,8 +9,8 @@
     </groups>
     <templates>
         <template>
-            <template>Template App Pacemaker - digiapulssi</template>
-            <name>Template App Pacemaker - digiapulssi</name>
+            <template>Template App Pacemaker active - digiapulssi</template>
+            <name>Template App Pacemaker active - digiapulssi</name>
             <description/>
             <groups>
                 <group>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>3.2</version>
-    <date>2017-09-28T11:28:04Z</date>
+    <date>2017-09-28T11:28:11Z</date>
     <groups>
         <group>
             <name>Templates</name>
@@ -9,8 +9,8 @@
     </groups>
     <templates>
         <template>
-            <template>Template App Docker - digiapulssi</template>
-            <name>Template App Docker - digiapulssi</name>
+            <template>Template App Docker active - digiapulssi</template>
+            <name>Template App Docker active - digiapulssi</name>
             <description/>
             <groups>
                 <group>
@@ -49,7 +49,7 @@
             <items>
                 <item>
                     <name>Containers count</name>
-                    <type>0</type>
+                    <type>7</type>
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
@@ -97,11 +97,11 @@
             <discovery_rules>
                 <discovery_rule>
                     <name>Docker containers discovery</name>
-                    <type>0</type>
+                    <type>7</type>
                     <snmp_community/>
                     <snmp_oid/>
                     <key>docker.containers.discovery</key>
-                    <delay>600</delay>
+                    <delay>60</delay>
                     <status>0</status>
                     <allowed_hosts/>
                     <snmpv3_contextname/>
@@ -130,7 +130,7 @@
                     <item_prototypes>
                         <item_prototype>
                             <name>Container {#CONTAINERNAME} cpu:</name>
-                            <type>0</type>
+                            <type>7</type>
                             <snmp_community/>
                             <multiplier>0</multiplier>
                             <snmp_oid/>
@@ -179,7 +179,7 @@
                         </item_prototype>
                         <item_prototype>
                             <name>Container {#CONTAINERNAME} disk usage:</name>
-                            <type>0</type>
+                            <type>7</type>
                             <snmp_community/>
                             <multiplier>0</multiplier>
                             <snmp_oid/>
@@ -226,7 +226,7 @@
                         </item_prototype>
                         <item_prototype>
                             <name>Container {#CONTAINERNAME} memory:</name>
-                            <type>0</type>
+                            <type>7</type>
                             <snmp_community/>
                             <multiplier>1</multiplier>
                             <snmp_oid/>
@@ -237,7 +237,7 @@
                             <status>0</status>
                             <value_type>3</value_type>
                             <allowed_hosts/>
-                            <units>Bytes</units>
+                            <units/>
                             <delta>0</delta>
                             <snmpv3_contextname/>
                             <snmpv3_securityname/>
@@ -273,7 +273,7 @@
                         </item_prototype>
                         <item_prototype>
                             <name>Container {#CONTAINERNAME} incoming traffic:</name>
-                            <type>0</type>
+                            <type>7</type>
                             <snmp_community/>
                             <multiplier>0</multiplier>
                             <snmp_oid/>
@@ -320,7 +320,7 @@
                         </item_prototype>
                         <item_prototype>
                             <name>Container {#CONTAINERNAME} outgoing traffic:</name>
-                            <type>0</type>
+                            <type>7</type>
                             <snmp_community/>
                             <multiplier>0</multiplier>
                             <snmp_oid/>
@@ -367,7 +367,7 @@
                         </item_prototype>
                         <item_prototype>
                             <name>Container {#CONTAINERNAME} status:</name>
-                            <type>0</type>
+                            <type>7</type>
                             <snmp_community/>
                             <multiplier>0</multiplier>
                             <snmp_oid/>
@@ -414,7 +414,7 @@
                         </item_prototype>
                         <item_prototype>
                             <name>Container {#CONTAINERNAME} uptime:</name>
-                            <type>0</type>
+                            <type>7</type>
                             <snmp_community/>
                             <multiplier>0</multiplier>
                             <snmp_oid/>

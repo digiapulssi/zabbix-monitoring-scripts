@@ -1,6 +1,7 @@
 Get Pacemaker status. Adding -v option to command prints a more verbose string. Otherwise the script returns decimal or single word statuses.
 
-#Usage:
+# Script Usage
+
 Get the cluster status in verbose format:
 	pacemaker_status.py -i cluster -v
 Get the simple cluster status,  0 if no nodes, 1 if running ok, 2 if any in standby 3 if any in maintenance, 4 if any in shutdown:
@@ -20,6 +21,6 @@ Get the nodes where resource is active. Returns in format resource:node1,node2
 Get all resources in the cluster and nodes where they are active. Returns each resource and the nodes, separated by space
 	pacemaker_status.py -i cluster -l
 	
-#Example verbose output
+# Example verbose output
 
 	application1:online:standby:resources_running=0 application2:online:resources_running=10 resources=10/12

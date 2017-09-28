@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>3.2</version>
-    <date>2017-03-10T11:49:03Z</date>
+    <date>2017-09-28T11:27:43Z</date>
     <groups>
         <group>
-            <name>Discovered hosts</name>
+            <name>Templates</name>
         </group>
     </groups>
     <templates>
         <template>
-            <template>DB2 Snapshot Statistics</template>
-            <name>DB2 Snapshot Statistics</name>
+            <template>Template App DB2 - digiapulssi</template>
+            <name>Template App DB2 - digiapulssi</name>
             <description/>
             <groups>
                 <group>
-                    <name>Discovered hosts</name>
+                    <name>Templates</name>
                 </group>
             </groups>
             <applications>

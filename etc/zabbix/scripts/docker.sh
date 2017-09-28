@@ -88,14 +88,28 @@ update_stat() {
 }
 
 # Statistic: Number of running docker containers
-count_running() {
-  docker_get "/containers/json"
+# Parameters: 1 - all or running; defaults to running
+count() {
+  if [ "$1" = "all" ]; then
+    docker_get "/containers/json?all=true"
+  else
+    docker_get "/containers/json"
+  fi
   echo $RESPONSE | jq "length"
 }
 
+count_all() {
+  count all
+}
+
 # Docker container discovery
+# Parameters: 1 - all or running; defaults to running
 discover() {
-  docker_get "/containers/json"
+  if [ "$1" = "all" ]; then
+    docker_get "/containers/json?all=true"
+  else
+    docker_get "/containers/json"
+  fi
   LEN=$(echo $RESPONSE | jq "length")
   for I in $(seq 0 $((LEN-1)))
   do
@@ -111,16 +125,17 @@ discover() {
   echo '{"data":['${DATA#,}']}'
 }
 
+discover_all() {
+  discover all
+}
+
 # Statistic: Container status
 status() {
   docker_get "/containers/$1/json"
   STATUS=$(echo $RESPONSE | jq ".State.Status" 2>/dev/null | sed -e 's/\"//g')
 
-  # Not existing
-  if [ "$STATUS" = "null" ]; then
-    echo "0"
   # Running
-  elif [ "$STATUS" = "running" ]; then
+  if [ "$STATUS" = "running" ]; then
     echo "2"
   # Not running
   elif [ "$STATUS" = "created" ] || [ "$STATUS" = "paused" ] || [ "$STATUS" = "restarting" ]; then
@@ -128,9 +143,9 @@ status() {
   # Stopped and exit status 0 -> not running
   elif [ "$STATUS" = "exited" ] && [ "$(echo $RESPONSE | jq '.State.ExitCode')" = "0" ]; then
     echo "1"
-  # Error (eg. not such container)
+  # Error (eg. no such container exists)
   else
-    echo "3"
+    echo "0"
   fi
 }
 
@@ -201,11 +216,10 @@ netout() {
 }
 
 if [ $# -eq 0 ]; then
-  discover
+  echo "No arguments"
+  exit 1
 elif [ $# -eq 1 ]; then
-  if [ "$1" = "count" ]; then
-    count_running
-  fi
+  $1
 elif [ $# -eq 2 ]; then
   # Compatibility with www.monitoringartist.com docker template:
   # Remove leading slash from container id

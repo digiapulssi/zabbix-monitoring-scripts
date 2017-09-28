@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>3.2</version>
-    <date>2017-09-28T11:28:48Z</date>
+    <date>2017-09-28T11:28:55Z</date>
     <groups>
         <group>
             <name>Templates</name>
@@ -9,8 +9,8 @@
     </groups>
     <templates>
         <template>
-            <template>Template App Process - digiapulssi</template>
-            <name>Template App Process - digiapulssi</name>
+            <template>Template App Process active - digiapulssi</template>
+            <name>Template App Process active - digiapulssi</name>
             <description/>
             <groups>
                 <group>
@@ -20,6 +20,9 @@
             <applications>
                 <application>
                     <name>Processes</name>
+                </application>
+                <application>
+                    <name>Processes count</name>
                 </application>
                 <application>
                     <name>Processes CPU</name>
@@ -35,7 +38,7 @@
             <discovery_rules>
                 <discovery_rule>
                     <name>Process discovery</name>
-                    <type>0</type>
+                    <type>7</type>
                     <snmp_community/>
                     <snmp_oid/>
                     <key>discover.processes</key>
@@ -68,7 +71,7 @@
                     <item_prototypes>
                         <item_prototype>
                             <name>CPU utilization on command {#COMMAND}</name>
-                            <type>0</type>
+                            <type>7</type>
                             <snmp_community/>
                             <multiplier>0</multiplier>
                             <snmp_oid/>
@@ -115,7 +118,7 @@
                         </item_prototype>
                         <item_prototype>
                             <name>Memory usage on command {#COMMAND}</name>
-                            <type>0</type>
+                            <type>7</type>
                             <snmp_community/>
                             <multiplier>0</multiplier>
                             <snmp_oid/>
@@ -162,7 +165,7 @@
                         </item_prototype>
                         <item_prototype>
                             <name>Number of processes on command {#COMMAND}</name>
-                            <type>0</type>
+                            <type>7</type>
                             <snmp_community/>
                             <multiplier>0</multiplier>
                             <snmp_oid/>
@@ -200,7 +203,7 @@
                                     <name>Processes</name>
                                 </application>
                                 <application>
-                                    <name>Processes runtime</name>
+                                    <name>Processes count</name>
                                 </application>
                             </applications>
                             <valuemap/>
