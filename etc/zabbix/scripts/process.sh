@@ -8,7 +8,8 @@ set -e
 
 echo -n '{"data":['
 # Filter away processes with no cumulative CPU time with grep -v
+# Filter away kernel processes (and also zombie processes) by filtering out processes that don't use any user memory (vsz == 0)
 # Take only 15 characters (to leave out the time portion) with cut
 # Remove duplicates with awk, format to json with sed
-ps -A -o comm= -o time= | grep -v ' 00:00:00' | cut -c-15 | sed 's/ *$//' | awk '!a[$0]++' | sed 's/\(.*\)/{"{#COMMAND}":"\1"}/g' | sed '$!s/$/,/' | tr '\n' ' '
+ps -A -o comm= -o time= -o vsz= | grep -v ' 00:00:00' | awk '$3 != 0' | cut -c-15 | sed 's/ *$//' | awk '!a[$0]++' | sed 's/\(.*\)/{"{#COMMAND}":"\1"}/g' | sed '$!s/$/,/' | tr '\n' ' '
 echo -n ']}'

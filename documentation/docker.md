@@ -1,4 +1,4 @@
-Discover and monitoring script for docker containers.
+# Docker containers discovery and monitoring
 
 Requirements: 
 - Python 2.7.13
@@ -11,7 +11,7 @@ The zabbix user must have enough privileges to monitor docker
 * Either add zabbix user to docker group `sudo usermod -aG docker zabbix`
 * Or add a file under `/etc/sudoers.d` containing line `zabbix ALL=(ALL:ALL) NOPASSWD: /bin/netcat`
 
-# Usage
+## Usage
 
 Item Syntax | Description | Units |
 ----------- | ----------- | ----- |
@@ -27,3 +27,7 @@ docker.containers[{#CONTAINERID}, memory] | Container memory usage | bytes |
 docker.containers[{#CONTAINERID}, uptime] | Container uptime | uptime (seconds) |
 docker.containers[{#CONTAINERID}, up] | Is container up and running? | 1 (yes), 0 (no) |
 docker.containers[{#CONTAINERID}, status] | Container status | 0 (exited with error or no such container), 1 (not running), 2 (running) |
+
+## Example
+
+![Screenshot](docker.png)

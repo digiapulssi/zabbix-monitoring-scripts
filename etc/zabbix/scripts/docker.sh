@@ -104,7 +104,7 @@ count_all() {
 
 # Docker container discovery
 # Parameters: 1 - all or running; defaults to running
-discover() {
+discovery() {
   if [ "$1" = "all" ]; then
     docker_get "/containers/json?all=true"
   else
@@ -125,8 +125,8 @@ discover() {
   echo '{"data":['${DATA#,}']}'
 }
 
-discover_all() {
-  discover all
+discovery_all() {
+  discovery all
 }
 
 # Statistic: Container status
