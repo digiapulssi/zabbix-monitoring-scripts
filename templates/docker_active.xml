@@ -1,44 +1,106 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
-    <version>3.0</version>
-    <date>2017-05-03T07:36:24Z</date>
+    <version>3.2</version>
+    <date>2017-09-28T11:28:11Z</date>
     <groups>
         <group>
-            <name>Linux servers</name>
+            <name>Templates</name>
         </group>
     </groups>
     <templates>
         <template>
-            <template>Pulssi Top Processes Active</template>
-            <name>Pulssi Top Processes Active</name>
+            <template>Template App Docker active - digiapulssi</template>
+            <name>Template App Docker active - digiapulssi</name>
             <description/>
             <groups>
                 <group>
-                    <name>Linux servers</name>
+                    <name>Templates</name>
                 </group>
             </groups>
             <applications>
                 <application>
-                    <name>Processes</name>
+                    <name>Docker</name>
                 </application>
                 <application>
-                    <name>Processes CPU</name>
+                    <name>Docker container count</name>
                 </application>
                 <application>
-                    <name>Processes memory</name>
+                    <name>Docker cpu</name>
                 </application>
                 <application>
-                    <name>Processes runtime</name>
+                    <name>Docker disk usage</name>
+                </application>
+                <application>
+                    <name>Docker memory</name>
+                </application>
+                <application>
+                    <name>Docker netin</name>
+                </application>
+                <application>
+                    <name>Docker netout</name>
+                </application>
+                <application>
+                    <name>Docker status</name>
+                </application>
+                <application>
+                    <name>Docker uptime</name>
                 </application>
             </applications>
-            <items/>
+            <items>
+                <item>
+                    <name>Containers count</name>
+                    <type>7</type>
+                    <snmp_community/>
+                    <multiplier>0</multiplier>
+                    <snmp_oid/>
+                    <key>docker.containers.count</key>
+                    <delay>300</delay>
+                    <history>30</history>
+                    <trends>365</trends>
+                    <status>0</status>
+                    <value_type>3</value_type>
+                    <allowed_hosts/>
+                    <units/>
+                    <delta>0</delta>
+                    <snmpv3_contextname/>
+                    <snmpv3_securityname/>
+                    <snmpv3_securitylevel>0</snmpv3_securitylevel>
+                    <snmpv3_authprotocol>0</snmpv3_authprotocol>
+                    <snmpv3_authpassphrase/>
+                    <snmpv3_privprotocol>0</snmpv3_privprotocol>
+                    <snmpv3_privpassphrase/>
+                    <formula>1</formula>
+                    <delay_flex/>
+                    <params/>
+                    <ipmi_sensor/>
+                    <data_type>0</data_type>
+                    <authtype>0</authtype>
+                    <username/>
+                    <password/>
+                    <publickey/>
+                    <privatekey/>
+                    <port/>
+                    <description/>
+                    <inventory_link>0</inventory_link>
+                    <applications>
+                        <application>
+                            <name>Docker</name>
+                        </application>
+                        <application>
+                            <name>Docker container count</name>
+                        </application>
+                    </applications>
+                    <valuemap/>
+                    <logtimefmt/>
+                </item>
+            </items>
             <discovery_rules>
                 <discovery_rule>
-                    <name>Discover processes</name>
+                    <name>Docker containers discovery</name>
                     <type>7</type>
                     <snmp_community/>
                     <snmp_oid/>
-                    <key>discover.processes</key>
+                    <key>docker.containers.discovery</key>
                     <delay>60</delay>
                     <status>0</status>
                     <allowed_hosts/>
@@ -63,19 +125,19 @@
                         <formula/>
                         <conditions/>
                     </filter>
-                    <lifetime>3</lifetime>
+                    <lifetime>7</lifetime>
                     <description/>
                     <item_prototypes>
                         <item_prototype>
-                            <name>{#USER}:{#PROCESSNAME} cpu</name>
+                            <name>Container {#CONTAINERNAME} cpu:</name>
                             <type>7</type>
                             <snmp_community/>
                             <multiplier>0</multiplier>
                             <snmp_oid/>
-                            <key>discover.processes.stat[cpu,{#PROCESSNAME},{#MAIN_MD5}]</key>
+                            <key>docker.containers[{#CONTAINERID}, cpu]</key>
                             <delay>60</delay>
                             <history>30</history>
-                            <trends>60</trends>
+                            <trends>365</trends>
                             <status>0</status>
                             <value_type>0</value_type>
                             <allowed_hosts/>
@@ -103,30 +165,32 @@
                             <inventory_link>0</inventory_link>
                             <applications>
                                 <application>
-                                    <name>Processes</name>
+                                    <name>Docker</name>
                                 </application>
                                 <application>
-                                    <name>Processes CPU</name>
+                                    <name>Docker cpu</name>
                                 </application>
                             </applications>
-                            <valuemap/>
+                            <valuemap>
+                                <name>Service state</name>
+                            </valuemap>
                             <logtimefmt/>
                             <application_prototypes/>
                         </item_prototype>
                         <item_prototype>
-                            <name>{#USER}:{#PROCESSNAME} memory</name>
+                            <name>Container {#CONTAINERNAME} disk usage:</name>
                             <type>7</type>
                             <snmp_community/>
                             <multiplier>0</multiplier>
                             <snmp_oid/>
-                            <key>discover.processes.stat[mem,{#PROCESSNAME},{#MAIN_MD5}]</key>
-                            <delay>60</delay>
+                            <key>docker.containers[{#CONTAINERID}, disk]</key>
+                            <delay>600</delay>
                             <history>30</history>
-                            <trends>60</trends>
+                            <trends>365</trends>
                             <status>0</status>
                             <value_type>3</value_type>
                             <allowed_hosts/>
-                            <units>b</units>
+                            <units>Bytes</units>
                             <delta>0</delta>
                             <snmpv3_contextname/>
                             <snmpv3_securityname/>
@@ -150,10 +214,10 @@
                             <inventory_link>0</inventory_link>
                             <applications>
                                 <application>
-                                    <name>Processes</name>
+                                    <name>Docker</name>
                                 </application>
                                 <application>
-                                    <name>Processes memory</name>
+                                    <name>Docker disk usage</name>
                                 </application>
                             </applications>
                             <valuemap/>
@@ -161,19 +225,66 @@
                             <application_prototypes/>
                         </item_prototype>
                         <item_prototype>
-                            <name>{#USER}:{#PROCESSNAME} runtime</name>
+                            <name>Container {#CONTAINERNAME} memory:</name>
+                            <type>7</type>
+                            <snmp_community/>
+                            <multiplier>1</multiplier>
+                            <snmp_oid/>
+                            <key>docker.containers[{#CONTAINERID}, memory]</key>
+                            <delay>600</delay>
+                            <history>30</history>
+                            <trends>365</trends>
+                            <status>0</status>
+                            <value_type>3</value_type>
+                            <allowed_hosts/>
+                            <units/>
+                            <delta>0</delta>
+                            <snmpv3_contextname/>
+                            <snmpv3_securityname/>
+                            <snmpv3_securitylevel>0</snmpv3_securitylevel>
+                            <snmpv3_authprotocol>0</snmpv3_authprotocol>
+                            <snmpv3_authpassphrase/>
+                            <snmpv3_privprotocol>0</snmpv3_privprotocol>
+                            <snmpv3_privpassphrase/>
+                            <formula>1</formula>
+                            <delay_flex/>
+                            <params/>
+                            <ipmi_sensor/>
+                            <data_type>0</data_type>
+                            <authtype>0</authtype>
+                            <username/>
+                            <password/>
+                            <publickey/>
+                            <privatekey/>
+                            <port/>
+                            <description/>
+                            <inventory_link>0</inventory_link>
+                            <applications>
+                                <application>
+                                    <name>Docker</name>
+                                </application>
+                                <application>
+                                    <name>Docker memory</name>
+                                </application>
+                            </applications>
+                            <valuemap/>
+                            <logtimefmt/>
+                            <application_prototypes/>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>Container {#CONTAINERNAME} incoming traffic:</name>
                             <type>7</type>
                             <snmp_community/>
                             <multiplier>0</multiplier>
                             <snmp_oid/>
-                            <key>discover.processes.stat[time,{#PROCESSNAME},{#MAIN_MD5}]</key>
+                            <key>docker.containers[{#CONTAINERID}, netin]</key>
                             <delay>300</delay>
                             <history>30</history>
-                            <trends>60</trends>
+                            <trends>365</trends>
                             <status>0</status>
                             <value_type>3</value_type>
                             <allowed_hosts/>
-                            <units>s</units>
+                            <units>B/s</units>
                             <delta>0</delta>
                             <snmpv3_contextname/>
                             <snmpv3_securityname/>
@@ -197,10 +308,151 @@
                             <inventory_link>0</inventory_link>
                             <applications>
                                 <application>
-                                    <name>Processes</name>
+                                    <name>Docker</name>
                                 </application>
                                 <application>
-                                    <name>Processes runtime</name>
+                                    <name>Docker netin</name>
+                                </application>
+                            </applications>
+                            <valuemap/>
+                            <logtimefmt/>
+                            <application_prototypes/>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>Container {#CONTAINERNAME} outgoing traffic:</name>
+                            <type>7</type>
+                            <snmp_community/>
+                            <multiplier>0</multiplier>
+                            <snmp_oid/>
+                            <key>docker.containers[{#CONTAINERID}, netout]</key>
+                            <delay>300</delay>
+                            <history>30</history>
+                            <trends>365</trends>
+                            <status>0</status>
+                            <value_type>3</value_type>
+                            <allowed_hosts/>
+                            <units>B/s</units>
+                            <delta>0</delta>
+                            <snmpv3_contextname/>
+                            <snmpv3_securityname/>
+                            <snmpv3_securitylevel>0</snmpv3_securitylevel>
+                            <snmpv3_authprotocol>0</snmpv3_authprotocol>
+                            <snmpv3_authpassphrase/>
+                            <snmpv3_privprotocol>0</snmpv3_privprotocol>
+                            <snmpv3_privpassphrase/>
+                            <formula>1</formula>
+                            <delay_flex/>
+                            <params/>
+                            <ipmi_sensor/>
+                            <data_type>0</data_type>
+                            <authtype>0</authtype>
+                            <username/>
+                            <password/>
+                            <publickey/>
+                            <privatekey/>
+                            <port/>
+                            <description/>
+                            <inventory_link>0</inventory_link>
+                            <applications>
+                                <application>
+                                    <name>Docker</name>
+                                </application>
+                                <application>
+                                    <name>Docker netout</name>
+                                </application>
+                            </applications>
+                            <valuemap/>
+                            <logtimefmt/>
+                            <application_prototypes/>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>Container {#CONTAINERNAME} status:</name>
+                            <type>7</type>
+                            <snmp_community/>
+                            <multiplier>0</multiplier>
+                            <snmp_oid/>
+                            <key>docker.containers[{#CONTAINERID}, status]</key>
+                            <delay>60</delay>
+                            <history>30</history>
+                            <trends>365</trends>
+                            <status>0</status>
+                            <value_type>3</value_type>
+                            <allowed_hosts/>
+                            <units/>
+                            <delta>0</delta>
+                            <snmpv3_contextname/>
+                            <snmpv3_securityname/>
+                            <snmpv3_securitylevel>0</snmpv3_securitylevel>
+                            <snmpv3_authprotocol>0</snmpv3_authprotocol>
+                            <snmpv3_authpassphrase/>
+                            <snmpv3_privprotocol>0</snmpv3_privprotocol>
+                            <snmpv3_privpassphrase/>
+                            <formula>1</formula>
+                            <delay_flex/>
+                            <params/>
+                            <ipmi_sensor/>
+                            <data_type>0</data_type>
+                            <authtype>0</authtype>
+                            <username/>
+                            <password/>
+                            <publickey/>
+                            <privatekey/>
+                            <port/>
+                            <description/>
+                            <inventory_link>0</inventory_link>
+                            <applications>
+                                <application>
+                                    <name>Docker</name>
+                                </application>
+                                <application>
+                                    <name>Docker status</name>
+                                </application>
+                            </applications>
+                            <valuemap/>
+                            <logtimefmt/>
+                            <application_prototypes/>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>Container {#CONTAINERNAME} uptime:</name>
+                            <type>7</type>
+                            <snmp_community/>
+                            <multiplier>0</multiplier>
+                            <snmp_oid/>
+                            <key>docker.containers[{#CONTAINERID}, uptime]</key>
+                            <delay>60</delay>
+                            <history>30</history>
+                            <trends>365</trends>
+                            <status>0</status>
+                            <value_type>3</value_type>
+                            <allowed_hosts/>
+                            <units>uptime</units>
+                            <delta>0</delta>
+                            <snmpv3_contextname/>
+                            <snmpv3_securityname/>
+                            <snmpv3_securitylevel>0</snmpv3_securitylevel>
+                            <snmpv3_authprotocol>0</snmpv3_authprotocol>
+                            <snmpv3_authpassphrase/>
+                            <snmpv3_privprotocol>0</snmpv3_privprotocol>
+                            <snmpv3_privpassphrase/>
+                            <formula>1</formula>
+                            <delay_flex/>
+                            <params/>
+                            <ipmi_sensor/>
+                            <data_type>0</data_type>
+                            <authtype>0</authtype>
+                            <username/>
+                            <password/>
+                            <publickey/>
+                            <privatekey/>
+                            <port/>
+                            <description/>
+                            <inventory_link>0</inventory_link>
+                            <applications>
+                                <application>
+                                    <name>Docker</name>
+                                </application>
+                                <application>
+                                    <name>Docker uptime</name>
                                 </application>
                             </applications>
                             <valuemap/>
@@ -213,218 +465,25 @@
                     <host_prototypes/>
                 </discovery_rule>
             </discovery_rules>
-            <macros/>
-            <templates/>
-            <screens/>
-        </template>
-        <template>
-            <template>Pulssi Top Processes</template>
-            <name>Pulssi Top Processes</name>
-            <description/>
-            <groups>
-                <group>
-                    <name>Linux servers</name>
-                </group>
-            </groups>
-            <applications>
-                <application>
-                    <name>Processes</name>
-                </application>
-                <application>
-                    <name>Processes CPU</name>
-                </application>
-                <application>
-                    <name>Processes memory</name>
-                </application>
-                <application>
-                    <name>Processes runtime</name>
-                </application>
-            </applications>
-            <items/>
-            <discovery_rules>
-                <discovery_rule>
-                    <name>Discover processes</name>
-                    <type>0</type>
-                    <snmp_community/>
-                    <snmp_oid/>
-                    <key>discover.processes</key>
-                    <delay>60</delay>
-                    <status>0</status>
-                    <allowed_hosts/>
-                    <snmpv3_contextname/>
-                    <snmpv3_securityname/>
-                    <snmpv3_securitylevel>0</snmpv3_securitylevel>
-                    <snmpv3_authprotocol>0</snmpv3_authprotocol>
-                    <snmpv3_authpassphrase/>
-                    <snmpv3_privprotocol>0</snmpv3_privprotocol>
-                    <snmpv3_privpassphrase/>
-                    <delay_flex/>
-                    <params/>
-                    <ipmi_sensor/>
-                    <authtype>0</authtype>
-                    <username/>
-                    <password/>
-                    <publickey/>
-                    <privatekey/>
-                    <port/>
-                    <filter>
-                        <evaltype>0</evaltype>
-                        <formula/>
-                        <conditions/>
-                    </filter>
-                    <lifetime>3</lifetime>
-                    <description/>
-                    <item_prototypes>
-                        <item_prototype>
-                            <name>{#USER}:{#PROCESSNAME} cpu</name>
-                            <type>0</type>
-                            <snmp_community/>
-                            <multiplier>0</multiplier>
-                            <snmp_oid/>
-                            <key>discover.processes.stat[cpu,{#PROCESSNAME},{#MAIN_MD5}]</key>
-                            <delay>60</delay>
-                            <history>30</history>
-                            <trends>60</trends>
-                            <status>0</status>
-                            <value_type>0</value_type>
-                            <allowed_hosts/>
-                            <units>%</units>
-                            <delta>0</delta>
-                            <snmpv3_contextname/>
-                            <snmpv3_securityname/>
-                            <snmpv3_securitylevel>0</snmpv3_securitylevel>
-                            <snmpv3_authprotocol>0</snmpv3_authprotocol>
-                            <snmpv3_authpassphrase/>
-                            <snmpv3_privprotocol>0</snmpv3_privprotocol>
-                            <snmpv3_privpassphrase/>
-                            <formula>1</formula>
-                            <delay_flex/>
-                            <params/>
-                            <ipmi_sensor/>
-                            <data_type>0</data_type>
-                            <authtype>0</authtype>
-                            <username/>
-                            <password/>
-                            <publickey/>
-                            <privatekey/>
-                            <port/>
-                            <description/>
-                            <inventory_link>0</inventory_link>
-                            <applications>
-                                <application>
-                                    <name>Processes</name>
-                                </application>
-                                <application>
-                                    <name>Processes CPU</name>
-                                </application>
-                            </applications>
-                            <valuemap/>
-                            <logtimefmt/>
-                            <application_prototypes/>
-                        </item_prototype>
-                        <item_prototype>
-                            <name>{#USER}:{#PROCESSNAME} memory</name>
-                            <type>0</type>
-                            <snmp_community/>
-                            <multiplier>0</multiplier>
-                            <snmp_oid/>
-                            <key>discover.processes.stat[mem,{#PROCESSNAME},{#MAIN_MD5}]</key>
-                            <delay>60</delay>
-                            <history>30</history>
-                            <trends>60</trends>
-                            <status>0</status>
-                            <value_type>3</value_type>
-                            <allowed_hosts/>
-                            <units>b</units>
-                            <delta>0</delta>
-                            <snmpv3_contextname/>
-                            <snmpv3_securityname/>
-                            <snmpv3_securitylevel>0</snmpv3_securitylevel>
-                            <snmpv3_authprotocol>0</snmpv3_authprotocol>
-                            <snmpv3_authpassphrase/>
-                            <snmpv3_privprotocol>0</snmpv3_privprotocol>
-                            <snmpv3_privpassphrase/>
-                            <formula>1</formula>
-                            <delay_flex/>
-                            <params/>
-                            <ipmi_sensor/>
-                            <data_type>0</data_type>
-                            <authtype>0</authtype>
-                            <username/>
-                            <password/>
-                            <publickey/>
-                            <privatekey/>
-                            <port/>
-                            <description/>
-                            <inventory_link>0</inventory_link>
-                            <applications>
-                                <application>
-                                    <name>Processes</name>
-                                </application>
-                                <application>
-                                    <name>Processes memory</name>
-                                </application>
-                            </applications>
-                            <valuemap/>
-                            <logtimefmt/>
-                            <application_prototypes/>
-                        </item_prototype>
-                        <item_prototype>
-                            <name>{#USER}:{#PROCESSNAME} runtime</name>
-                            <type>0</type>
-                            <snmp_community/>
-                            <multiplier>0</multiplier>
-                            <snmp_oid/>
-                            <key>discover.processes.stat[time,{#PROCESSNAME},{#MAIN_MD5}]</key>
-                            <delay>300</delay>
-                            <history>30</history>
-                            <trends>60</trends>
-                            <status>0</status>
-                            <value_type>3</value_type>
-                            <allowed_hosts/>
-                            <units>s</units>
-                            <delta>0</delta>
-                            <snmpv3_contextname/>
-                            <snmpv3_securityname/>
-                            <snmpv3_securitylevel>0</snmpv3_securitylevel>
-                            <snmpv3_authprotocol>0</snmpv3_authprotocol>
-                            <snmpv3_authpassphrase/>
-                            <snmpv3_privprotocol>0</snmpv3_privprotocol>
-                            <snmpv3_privpassphrase/>
-                            <formula>1</formula>
-                            <delay_flex/>
-                            <params/>
-                            <ipmi_sensor/>
-                            <data_type>0</data_type>
-                            <authtype>0</authtype>
-                            <username/>
-                            <password/>
-                            <publickey/>
-                            <privatekey/>
-                            <port/>
-                            <description/>
-                            <inventory_link>0</inventory_link>
-                            <applications>
-                                <application>
-                                    <name>Processes</name>
-                                </application>
-                                <application>
-                                    <name>Processes runtime</name>
-                                </application>
-                            </applications>
-                            <valuemap/>
-                            <logtimefmt/>
-                            <application_prototypes/>
-                        </item_prototype>
-                    </item_prototypes>
-                    <trigger_prototypes/>
-                    <graph_prototypes/>
-                    <host_prototypes/>
-                </discovery_rule>
-            </discovery_rules>
+            <httptests/>
             <macros/>
             <templates/>
             <screens/>
         </template>
     </templates>
+    <value_maps>
+        <value_map>
+            <name>Service state</name>
+            <mappings>
+                <mapping>
+                    <value>0</value>
+                    <newvalue>Down</newvalue>
+                </mapping>
+                <mapping>
+                    <value>1</value>
+                    <newvalue>Up</newvalue>
+                </mapping>
+            </mappings>
+        </value_map>
+    </value_maps>
 </zabbix_export>

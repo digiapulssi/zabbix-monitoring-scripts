@@ -1,20 +1,23 @@
-# Monitoring Scripts for Zabbix Agents
+# Zabbix Monitoring Scripts
 
-This project contains various custom monitoring scripts for Zabbix agents.
+This project contains various custom Zabbix monitoring scripts used as user parameters by Zabbix agent.
 
-## Using Individual Scripts
+## Installation
 
-With usual Zabbix agent setup each script can be copied individually to
-/etc/zabbix/scripts folder and enable respective UserParameter by copying
-accompanying Zabbix agent configuration file from config folder to
-/etc/zabbix/zabbix_agent.d folder.
+The repository includes ready-to-install files for Zabbix Agent.
 
-Scripts may require additional setup or modification which is documented in
-each script's own documentation.
+* Copy the files under [etc/zabbix/scripts](etc/zabbix/scripts) to `/etc/zabbix/scripts`
+* Copy the files under [etc/zabbix/zabbix_agentd.d](etc/zabbix/zabbix_agentd.d) to `/etc/zabbix/zabbix_agentd.d`
 
-## Provided Scripts
+## Templates
+
+Each monitoring script has a corresponding template that can be imported to Zabbix Server. Templates can be found under [templates](templates).
+
+## Usage
+
+See the below documentation for each monitoring script.
 
 - [DB2 database snapshot statistics](documentation/db2stat.md)
-- [Docker discovery and monitoring](documentation/zabbix_discover_docker.md)
-- [Process discovery and monitoring](documentation/zabbix_discover_processes.md)
-- [Pacemaker monitoring](documentation/pacemaker_status.md)
+- [Docker discovery and monitoring](documentation/docker.md)
+- [Process discovery and monitoring](documentation/process.md)
+- [Pacemaker monitoring](documentation/pacemaker.md)

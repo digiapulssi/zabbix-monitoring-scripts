@@ -11,7 +11,7 @@ script.
 Zabbix agent user must also have permission to create database snapshots. See
 below on how to do this.
 
-See the [script file](../scripts/db2stat) for detailed information.
+See the [script file](../etc/zabbix/scripts/db2stat.pl) for detailed information.
 
 ## Enabling DB2 Snapshots for Zabbix User
 
@@ -34,13 +34,13 @@ To test taking the snapshot with zabbix user in Linux as root:
 ## Installing Items from Template
 
 Zabbix template for all items supported in configuration is
-[included](../templates/db2stat-template.xml). To configure it, at least macro
+[included](../templates/db2stat.xml). To configure it, at least macro
 value for DATABASE_NAME must be updated.
 
 ## Manual Item Configuration
 
 Provided user parameter configuration contains several parameters. Consult the
-[configuration file](../config/db2stat.conf) for full list.
+[configuration file](../etc/zabbix/zabbix_agentd.d/db2stat.conf) for a full list.
 
 Simple statistics can be retrieved with two paramters, maximum snapshot age in seconds and database:
 
