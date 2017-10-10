@@ -134,7 +134,7 @@
                             <snmp_community/>
                             <multiplier>0</multiplier>
                             <snmp_oid/>
-                            <key>docker.containers[{#CONTAINERID}, cpu]</key>
+                            <key>docker.containers[{#CONTAINERNAME}, cpu]</key>
                             <delay>60</delay>
                             <history>30</history>
                             <trends>365</trends>
@@ -183,7 +183,7 @@
                             <snmp_community/>
                             <multiplier>0</multiplier>
                             <snmp_oid/>
-                            <key>docker.containers[{#CONTAINERID}, disk]</key>
+                            <key>docker.containers[{#CONTAINERNAME}, disk]</key>
                             <delay>600</delay>
                             <history>30</history>
                             <trends>365</trends>
@@ -230,7 +230,7 @@
                             <snmp_community/>
                             <multiplier>1</multiplier>
                             <snmp_oid/>
-                            <key>docker.containers[{#CONTAINERID}, memory]</key>
+                            <key>docker.containers[{#CONTAINERNAME}, memory]</key>
                             <delay>600</delay>
                             <history>30</history>
                             <trends>365</trends>
@@ -277,7 +277,7 @@
                             <snmp_community/>
                             <multiplier>0</multiplier>
                             <snmp_oid/>
-                            <key>docker.containers[{#CONTAINERID}, netin]</key>
+                            <key>docker.containers[{#CONTAINERNAME}, netin]</key>
                             <delay>300</delay>
                             <history>30</history>
                             <trends>365</trends>
@@ -324,7 +324,7 @@
                             <snmp_community/>
                             <multiplier>0</multiplier>
                             <snmp_oid/>
-                            <key>docker.containers[{#CONTAINERID}, netout]</key>
+                            <key>docker.containers[{#CONTAINERNAME}, netout]</key>
                             <delay>300</delay>
                             <history>30</history>
                             <trends>365</trends>
@@ -371,7 +371,7 @@
                             <snmp_community/>
                             <multiplier>0</multiplier>
                             <snmp_oid/>
-                            <key>docker.containers[{#CONTAINERID}, status]</key>
+                            <key>docker.containers[{#CONTAINERNAME}, status]</key>
                             <delay>60</delay>
                             <history>30</history>
                             <trends>365</trends>
@@ -418,7 +418,7 @@
                             <snmp_community/>
                             <multiplier>0</multiplier>
                             <snmp_oid/>
-                            <key>docker.containers[{#CONTAINERID}, uptime]</key>
+                            <key>docker.containers[{#CONTAINERNAME}, uptime]</key>
                             <delay>60</delay>
                             <history>30</history>
                             <trends>365</trends>
