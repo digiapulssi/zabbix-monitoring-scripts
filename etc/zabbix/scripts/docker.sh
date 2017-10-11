@@ -136,13 +136,13 @@ status() {
 
   # Running
   if [ "$STATUS" = "running" ]; then
-    echo "2"
+    echo "1"
   # Not running
   elif [ "$STATUS" = "created" ] || [ "$STATUS" = "paused" ] || [ "$STATUS" = "restarting" ]; then
-    echo "1"
+    echo "2"
   # Stopped and exit status 0 -> not running
   elif [ "$STATUS" = "exited" ] && [ "$(echo $RESPONSE | jq '.State.ExitCode')" = "0" ]; then
-    echo "1"
+    echo "2"
   # Error (eg. no such container exists)
   else
     echo "0"
