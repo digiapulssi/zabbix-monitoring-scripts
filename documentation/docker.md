@@ -3,6 +3,7 @@
 Requirements: 
 - Python 2.7.13
 - netcat (ubuntu: `sudo apt-get install netcat`)
+- jq (ubuntu: `sudo apt-get install jq`)
 
 In addition to the provided [template](../templates) the script is compatible with www.monitoringartist.com docker monitoring templates that's included by default in [zabbix-xxl](https://github.com/monitoringartist/dockbix-xxl).
 
