@@ -9,6 +9,8 @@
 # 	pacemaker_status.py -i cluster
 # Count the resources in given state. e.g. how many failed:
 # 	pacemaker_status.py -i cluster -p failed
+# Sum the failcount in cluster:
+# 	pacemaker_status.py -i cluster -p fail-count
 # Get status of the single resource. Returns count of resources running
 # 	pacemaker_status.py -i resource -n Grafana
 # Get the property value for single resource in given node. If node is not given
@@ -23,10 +25,14 @@
 # Get all resources in the cluster and nodes where they are active. Returns each
 # resource and the nodes, separated by space
 #	pacemaker_status.py -i cluster -l
+# Get last failure in cluster
+#	pacemaker_status.py -i cluster -f
+
 
 import argparse
 import sys
 import subprocess
+from datetime import datetime
 from lxml import etree
 
 def process_xml():
@@ -41,7 +47,7 @@ def process_xml():
 	except Exception, e:
 		if ("Connection to cluster failed: Transport endpoint is not connected" in xml):
 			# cluster is not running, all queries default to 0
-			print "0"
+			print("0")
 			exit()
 		else:
 			print("Could not get xml from crm_mon, check command righs.")
@@ -51,16 +57,22 @@ def process_xml():
 
 # simple check, return count of active nodes that are running
 # or return true if property is true for the nodeset or node, otherwise false
+# for fail-count, return the summed up fail-count
 def resource_status_simple(args):
 	root = process_xml()
-
-	if args.property:
+	if args.property and args.property == "fail-count":
+		xpath = "sum(/crm_mon/node_history/node/resource_history[@id = '" + args.name +"']/@fail-count)"
+		if args.node:
+			xpath = "sum(/crm_mon/node_history/node[@name='" + args.node + "']/resource_history[@id = '" + args.name +"']/@fail-count)"
+		fail_count = root.xpath(xpath)
+		print(fail_count)
+	elif args.property:
 		prop_status = "true"
 		xpath = "/crm_mon/resources//resource[@id='" + args.name + "']/@" + args.property
 		if args.node:
 			# if a node was defined, check only that one with xpath, otherwise print false if
 			# any of the nodes had false status
-			xpath = "/crm_mon/resources//resource[@id='" + args.name + "']/@" + args.property
+			xpath = "/crm_mon/resources//resource[node/@name = '" +args.node+ "'][@id='" + args.name + "']/@" + args.property
 		props = root.xpath(xpath)
 		for prop in props:
 			if prop == "false":
@@ -70,63 +82,92 @@ def resource_status_simple(args):
 		xpath = "count(/crm_mon/resources//resource[@id='" + args.name + "' and (@role = 'Started' or 'Master')][@active='true'][@orphaned='false'][@managed='true'][@failed='false'][@failure_ignored='false'][@nodes_running_on > 0])"
 		if args.node:
 			# if a node was defined, check only that one with xpath
-			xpath = "count(/crm_mon/resources//resource[@id='" + args.name + "' and (@role = 'Started' or 'Master')][@active='true'][@orphaned='false'][@managed='true'][@failed='false'][@failure_ignored='false'][@nodes_running_on > 0][node/@name = '" + args.node + "'])"
+			xpath = "count(/crm_mon/resources//resource[node/@name = '" +args.node+ "'][@id='" + args.name + "' and (@role = 'Started' or 'Master')][@active='true'][@orphaned='false'][@managed='true'][@failed='false'][@failure_ignored='false'][@nodes_running_on > 0][node/@name = '" + args.node + "'])"
 		count = root.xpath(xpath)
 		print(count)
 
-# check the status of given resource, return node:status for each active resource
-# property checks are handled by the simple check
+# check the status of given resource, return node:status for resources
 def resource_status(args):
 	root = process_xml()
-	xpath = "/crm_mon/resources//resource[@id='" + args.name + "']/@role"
-	node_select = ""
+	resource_status = ""
 	if args.node:
-		node_select = "[node/@name = '" + args.node + "']"
+		status = resource_verbose(root, args.node, args.name)
+		xpath = "/crm_mon/resources//resource[@id='" + args.name + "'][node/@name = '" +args.node+ "']/@role"
+		role_query = root.xpath(xpath)
 
-	xpath = "/crm_mon/resources//resource[@id='" + args.name + "']" + node_select + "/node/@name"
-	nodes = root.xpath(xpath)
+		if role_query:
+			role = role_query[0]
+		else:
+			role = "NotRunning"
 
-	if len(nodes) == 0:
-		print(args.name+":Not found")
-		exit()
+		resource_status = args.node + ":" + role
 
-	xpath = "/crm_mon/resources//resource[@id='" + args.name + "']" + node_select + "/@role"
-	status = root.xpath(xpath)
-	xpath = "/crm_mon/resources//resource[@id='" + args.name + "']" + node_select + "/@active"
+		if status != "":
+			resource_status += "[" + status + "]"
+
+	else:
+		# get list of nodes
+		xpath = "/crm_mon/nodes/node/@name"
+		nodes = root.xpath(xpath)
+
+		# get status for each node
+		for i in range(len(nodes)):
+			if i > 0:
+				resource_status += " "
+			status = resource_verbose(root, nodes[i], args.name)
+			xpath = "/crm_mon/resources//resource[@id='" + args.name + "'][node/@name = '" +nodes[i]+ "']/@role"
+			role_query = root.xpath(xpath)
+			if role_query:
+				role = role_query[0]
+			else:
+				role = "NotRunning"
+
+			resource_status += nodes[i] + ":" + role
+
+			if status != "":
+				resource_status += "[" + status + "]"
+
+	print(resource_status)
+
+# verbose resource printout, used for node and cluster also
+def resource_verbose(root,node,resource):
+	resource_status = ""
+	resource_statuses = []
+
+	xpath = "/crm_mon/resources//resource[@id='" + resource + "'][node/@name = '" + node + "']/@active"
 	active = root.xpath(xpath)
-	xpath = "/crm_mon/resources//resource[@id='" + args.name + "']" + node_select + "/@orphaned"
+	xpath = "/crm_mon/resources//resource[@id='" + resource + "'][node/@name = '" + node + "']/@orphaned"
 	orphaned = root.xpath(xpath)
-	xpath = "/crm_mon/resources//resource[@id='" + args.name + "']" + node_select + "/@managed"
+	xpath = "/crm_mon/resources//resource[@id='" + resource + "'][node/@name = '" + node + "']/@managed"
 	managed = root.xpath(xpath)
-	xpath = "/crm_mon/resources//resource[@id='" + args.name + "']" + node_select + "/@failed"
+	xpath = "/crm_mon/resources//resource[@id='" + resource + "'][node/@name = '" + node + "']/@failed"
 	failed = root.xpath(xpath)
-	xpath = "/crm_mon/resources//resource[@id='" + args.name + "']" + node_select + "/@failure_ignored"
+	xpath = "/crm_mon/resources//resource[@id='" + resource + "'][node/@name = '" + node + "']/@failure_ignored"
 	failure_ignored = root.xpath(xpath)
+	xpath = "/crm_mon/resources//resource[@id='" + resource + "'][node/@name = '" + node + "']/@nodes_running_on"
+	nodes_running = root.xpath(xpath)
+	xpath = "/crm_mon/node_history/node[@name='" + node + "']/resource_history[@id = '" + resource +"']/@fail-count"
+	fail_count = root.xpath(xpath)
 
-	sibling_status = ""
 
-	for i in range(len(nodes)):
-		if i > 0:
-			sibling_status += " "
+	if "false" in active:
+		resource_statuses.append("inactive")
+	if "false" in managed:
+		resource_statuses.append("unmanaged")
+	if "true" in orphaned:
+		resource_statuses.append("orphaned")
+	if "true" in failed:
+		resource_statuses.append("failed")
+	if "true" in failure_ignored:
+		resource_statuses.append("failure_ignored")
+	if "0" in nodes_running:
+		resource_statuses.append("nodes_running_on=0")
+	if fail_count:
+		resource_statuses.append("fail-count=" + fail_count[0])
 
-		sibling_status += nodes[i] + ":" + status[i]
+	resource_status += ",".join(resource_statuses)
 
-		if active[i] == "true":
-			sibling_status += ":active"
-		else:
-			sibling_status += ":inactive"
-		if orphaned[i] == "true":
-			sibling_status += ":orphaned"
-		if managed[i] == "true":
-			sibling_status += ":managed"
-		else:
-			sibling_status += ":unmanaged"
-		if failed[i] == "true":
-			sibling_status += ":failed"
-		if failure_ignored[i] == "true":
-			sibling_status += ":failure_ignored"
-
-	print(sibling_status)
+	return resource_status
 
 def node_status_simple(args):
 	root = process_xml()
@@ -137,6 +178,7 @@ def node_status_simple(args):
 	else:
 		print("0")
 
+# used also in cluster status
 def node_verbose(root,node):
 	xpath = "/crm_mon/nodes/node[@name='" + node + "']/@online"
 	online = root.xpath(xpath)
@@ -145,7 +187,7 @@ def node_verbose(root,node):
 	xpath = "/crm_mon/nodes/node[@name='" + node + "']/@maintenance"
 	maintenance = root.xpath(xpath)
 	xpath = "/crm_mon/nodes/node[@name='" + node + "']/@resources_running"
-	count = root.xpath(xpath)
+	resource_count = root.xpath(xpath)
 	node_status = node
 
 	if not(online):
@@ -165,44 +207,25 @@ def node_verbose(root,node):
 		for resource in resources:
 			resources_status[resource] = []
 
-		xpath = "/crm_mon/resources//resource[@active='false'][node/@name = '" + node + "']/@id"
-		inactive_resources = root.xpath(xpath)
-		xpath = "/crm_mon/resources//resource[@managed='false'][node/@name = '" + node + "']/@id"
-		unmanaged_resources = root.xpath(xpath)
-		xpath = "/crm_mon/resources//resource[@orphaned='true'][node/@name = '" + node + "']/@id"
-		orphaned_resources = root.xpath(xpath)
-		xpath = "/crm_mon/resources//resource[@failed='true'][node/@name = '" + node + "']/@id"
-		failed_resources = root.xpath(xpath)
-		xpath = "/crm_mon/resources//resource[@fail_ignored='true'][node/@name = '" + node + "']/@id"
-		failure_ignored_resources = root.xpath(xpath)
-		xpath = "/crm_mon/resources//resource[@nodes_running_on=0][node/@name = '" + node + "']/@id"
-		notrunning_resources = root.xpath(xpath)
-
-		for resource in inactive_resources:
-			resources_status[resource].append("inactive")
-		for resource in unmanaged_resources:
-			resources_status[resource].append("unmanaged")
-		for resource in orphaned_resources:
-			resources_status[resource].append("orphaned")
-		for resource in failed_resources:
-			resources_status[resource].append("failed")
-		for resource in failure_ignored_resources:
-			resources_status[resource].append("failure_ignored")
-		for resource in notrunning_resources:
-			resources_status[resource].append("not_running")
+		# include also node history
+		xpath = "/crm_mon/node_history/node[@name='"+node+"']/resource_history/@id"
+		resources_history = root.xpath(xpath)
+		for resource in resources_history:
+			resources_status[resource] = []
 
 		for resource in resources_status:
-			if len(resources_status[resource]) > 0:
-				node_status += ":" + resource + "[" + ",".join(resources_status[resource]) + "]"
+			status = resource_verbose(root,node,resource)
+			if len(status) > 0:
+				node_status += ":" + resource + "[" + status + "]"
 
-		node_status += ":resources_running=" + count[0]
+		node_status += ":resources_running=" + resource_count[0]
 
 	return node_status
 
 def node_status(args):
 	root = process_xml()
 	node_status = node_verbose(root,args.name)
-	print node_status
+	print(node_status)
 
 # print cluster status in a string of data
 # includes resources information
@@ -267,12 +290,16 @@ def cluster_status_simple():
 def cluster_statuses_simple(args):
 	root = process_xml()
 
-	xpath = "count(/crm_mon/resources//resource[@" + args.property + " = 'true'])"
-	property_count = root.xpath(xpath)
-
 	if args.property == "nodes_running_on":
 		print("Nonsensical parameter for cluster proprety count.")
 		exit()
+	elif args.property == "fail-count":
+		xpath = "sum(/crm_mon/node_history/node/resource_history/@fail-count)"
+		property_count = root.xpath(xpath)
+
+	else:
+		xpath = "count(/crm_mon/resources//resource[@" + args.property + " = 'true'])"
+		property_count = root.xpath(xpath)
 
 	print(property_count)
 
@@ -303,6 +330,37 @@ def resource_location(args):
 
 	print(locations)
 
+# print last failures
+def cluster_failures():
+	root = process_xml()
+
+	xpath = "/crm_mon/failures/failure/@op_key"
+	failures = root.xpath(xpath)
+	# get the latest failure
+	if len(failures) > 0:
+		failure_info = ""
+		newest = datetime(1970, 1, 1, 0, 0)
+		for failure in failures:
+
+			xpath = "/crm_mon/failures/failure[@op_key = '"+failure+"']"
+			element = root.xpath(xpath)
+			#Sun Apr 16 21:46:27 2017
+			failure_time = datetime.strptime(element[0].get("last-rc-change"), "%a %b %d %H:%M:%S %Y")
+			if failure_time > newest:
+				newest = failure_time
+				failure_info += element[0].get("node")
+				failure_info += ":" + element[0].get("op_key")
+				failure_info += ":" + element[0].get("status")
+				failure_info += ":" + element[0].get("last-rc-change")
+
+		print(failure_info)
+
+	else:
+		# no failures
+		exit()
+
+
+
 if __name__ == "__main__":
 
 	parser = argparse.ArgumentParser(prog="pacemaker_status.py", description="Check the pacemaker cluster status")
@@ -310,8 +368,9 @@ if __name__ == "__main__":
 	parser.add_argument("-n", "--name", help="Resource or node name to check.")
 	parser.add_argument("-l", "--location", help="Return the node where is running.", action="store_true")
 	parser.add_argument("-N", "--node", help="Node to check the resource in. Default checks all nodes.")
-	parser.add_argument("-p", "--property", help="Check status of resource property", choices=["active","orphaned","managed","failed","failure_ignored","nodes_running_on"])
+	parser.add_argument("-p", "--property", help="Check status of resource property", choices=["active","orphaned","managed","failed","failure_ignored","nodes_running_on","fail-count"])
 	parser.add_argument("-v", "--verbose", help="Verbose status", action="store_true")
+	parser.add_argument("-f", "--failures", help="Failures", action="store_true")
 
 	if len(sys.argv) > 1:
 
@@ -336,6 +395,8 @@ if __name__ == "__main__":
 		elif (args.item == "cluster"):
 			if (args.property):
 				cluster_statuses_simple(args)
+			elif (args.failures):
+				cluster_failures()
 			elif (args.verbose):
 				cluster_status()
 			elif (args.location):
