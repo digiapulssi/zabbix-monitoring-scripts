@@ -21,3 +21,4 @@ See the below documentation for each monitoring script.
 - [Docker discovery and monitoring](documentation/docker.md)
 - [Process discovery and monitoring](documentation/process.md)
 - [Pacemaker monitoring](documentation/pacemaker.md)
+- [PEM file certificate monitoring](documentation/certificates.md)
