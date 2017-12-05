@@ -33,11 +33,16 @@ docker_get() {
 docker_exec() {
   # Create command execution
   local BODY="{\"AttachStdout\": true, \"Cmd\": [$2]}"
-  local CREATE_RESPONSE=$(printf "POST /containers/$1/exec HTTP/1.0\r\nContent-Type: application/json\r\nContent-Length: ${#BODY}\r\n\r\n${BODY}" | $NC -U $DOCKER_SOCKET | tail -n 1)
-  local RUN_ID=$(echo $CREATE_RESPONSE | jq ".Id" | sed -e 's/"//g')
+  local CREATE_RESPONSE
+  CREATE_RESPONSE=$(printf "POST /containers/$1/exec HTTP/1.0\r\nContent-Type: application/json\r\nContent-Length: ${#BODY}\r\n\r\n${BODY}" | $NC -U $DOCKER_SOCKET | tail -n 1)
+  local RUN_ID=$(echo $CREATE_RESPONSE | jq ".Id // empty " | sed -e 's/"//g')
 
   # Start execution
-  RESPONSE=$(printf "POST /exec/$RUN_ID/start HTTP/1.0\r\nContent-Type: application/json\r\nContent-Length: 2\r\n\r\n{}" | $NC -U $DOCKER_SOCKET)
+  if [ "$RUN_ID" != "" ]; then
+    RESPONSE=$(printf "POST /exec/$RUN_ID/start HTTP/1.0\r\nContent-Type: application/json\r\nContent-Length: 2\r\n\r\n{}" | $NC -U $DOCKER_SOCKET)
+  else
+    RESPONSE=""
+  fi
 }
 
 # Obtains last line from execution of cat file on docker container
@@ -194,25 +199,37 @@ disk() {
 # Statistic: Container CPU usage
 cpu() {
   NEW_VALUE=$(cat_single_value $1 "/sys/fs/cgroup/cpuacct/cpuacct.usage")
-  OLD_VALUE=$(update_stat $1 "cpuacct.usage" "$NEW_VALUE")
-  TIMEDIFF=$(update_stat_time $1 "cpuacct.usage")
-  perl -e "print sprintf(\"%.4f\", (($NEW_VALUE-$OLD_VALUE)/$TIMEDIFF*100))" # nanos to seconds
+  if [ "$NEW_VALUE" = "" ]; then
+    echo "0.0000"
+  else
+    OLD_VALUE=$(update_stat $1 "cpuacct.usage" "$NEW_VALUE")
+    TIMEDIFF=$(update_stat_time $1 "cpuacct.usage")
+    perl -e "print sprintf(\"%.4f\", (($NEW_VALUE-$OLD_VALUE)/$TIMEDIFF*100))" # nanos to seconds
+  fi
 }
 
 # Statistic: Container network traffic in
 netin() {
   NEW_VALUE=$(cat_single_value $1 "/sys/devices/virtual/net/eth0/statistics/rx_bytes")
-  OLD_VALUE=$(update_stat $1 "rx_bytes" "$NEW_VALUE")
-  TIMEDIFF=$(update_stat_time $1 "rx_bytes")
-  perl -e "print int(($NEW_VALUE-$OLD_VALUE)/$TIMEDIFF*1000000000)" # nanos to seconds
+  if [ "$NEW_VALUE" = "" ]; then
+    echo "0"
+  else
+    OLD_VALUE=$(update_stat $1 "rx_bytes" "$NEW_VALUE")
+    TIMEDIFF=$(update_stat_time $1 "rx_bytes")
+    perl -e "print int(($NEW_VALUE-$OLD_VALUE)/$TIMEDIFF*1000000000)" # nanos to seconds
+  fi
 }
 
 # Statistic: Container network traffic out
 netout() {
   NEW_VALUE=$(cat_single_value $1 "/sys/devices/virtual/net/eth0/statistics/tx_bytes")
-  OLD_VALUE=$(update_stat $1 "tx_bytes" "$NEW_VALUE")
-  TIMEDIFF=$(update_stat_time $1 "tx_bytes")
-  perl -e "print int(($NEW_VALUE-$OLD_VALUE)/$TIMEDIFF*1000000000)" # nanos to seconds
+  if [ "$NEW_VALUE" = "" ]; then
+    echo "0"
+  else
+    OLD_VALUE=$(update_stat $1 "tx_bytes" "$NEW_VALUE")
+    TIMEDIFF=$(update_stat_time $1 "tx_bytes")
+    perl -e "print int(($NEW_VALUE-$OLD_VALUE)/$TIMEDIFF*1000000000)" # nanos to seconds
+  fi
 }
 
 if [ $# -eq 0 ]; then
