@@ -35,8 +35,8 @@ docker.containers[{#IMAGENAME}, image_disk] | Disk usage of only container runni
 docker.containers[{#IMAGENAME}, image_memory] | Memory usage of only container running given image | bytes |
 docker.containers[{#IMAGENAME}, image_uptime] | Uptime of only container running given image | uptime (seconds) |
 docker.containers[{#IMAGENAME}, image_up] | Is there single container running image up and running? | 1 (yes), 0 (no) |
-docker.containers[{#IMAGENAME}, image_containerids | List of running container IDs with imagename | container IDs, one per line ]
-docker.containers[{#IMAGENAME}, image_containerids_all | List of all container IDs with imagename | container IDs, one per line ]
+docker.containers[{#IMAGENAME}, image_containerids] | List of running container IDs with imagename | container IDs, one per line |
+docker.containers[{#IMAGENAME}, image_containerids_all] | List of all container IDs with imagename | container IDs, one per line |
 
 * Items returning container metrics or status with image name will error if multiple containers with image are running
 * Items with image name also allow specifying imagename + tag (i.e. {#IMAGENAME}:{#IMAGETAG})
