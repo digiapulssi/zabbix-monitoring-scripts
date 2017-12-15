@@ -120,8 +120,10 @@ discovery() {
   do
       NAME=$(echo "$RESPONSE"|jq ".[$I].Names[0]"|sed -e 's/"\//"/')
       ID=$(echo "$RESPONSE"|jq ".[$I].Id")
+      IMAGENAME=$(echo "$RESPONSE"|jq ".[$I].Image"|sed -e 's/:.*//')
+      IMAGETAG=$(echo "$RESPONSE"|jq ".[$I].Image"|sed -e 's/.*://')
 
-      DATA="$DATA,"'{"{#CONTAINERNAME}":'$NAME',"{#CONTAINERID}":'$ID
+      DATA="$DATA,"'{"{#CONTAINERNAME}":'$NAME',"{#CONTAINERID}":'$ID',"{#IMAGENAME}":'$IMAGENAME'","{#IMAGETAG}":"'$IMAGETAG
 
       # Compatibility with www.monitoringartist.com Docker template
       DATA="$DATA,"'"{#HCONTAINERID}":'$ID'}'
@@ -230,6 +232,119 @@ netout() {
     TIMEDIFF=$(update_stat_time $1 "tx_bytes")
     perl -e "print int(($NEW_VALUE-$OLD_VALUE)/$TIMEDIFF*1000000000)" # nanos to seconds
   fi
+}
+
+# Container image up and runnig? 1 (yes) or 0 (no)
+image_up() {
+  running_containerid $1
+  if [ "$CONTAINER_ID" = "" ]; then
+    echo 0
+  else
+    echo 1
+  fi
+}
+
+# Statistic: Container image uptime
+image_uptime() {
+  running_containerid $1
+  if [ "$CONTAINER_ID" = "" ]; then
+    echo 0
+  else
+    uptime $CONTAINER_ID
+  fi
+}
+
+# Statistic: Container image memory
+image_memory() {
+  running_containerid $1
+  if [ "$CONTAINER_ID" = "" ]; then
+    echo 0
+  else
+    memory $CONTAINER_ID
+  fi
+}
+
+# Statistic: Container image disk usage
+image_disk() {
+  running_containerid $1
+  if [ "$CONTAINER_ID" = "" ]; then
+    echo 0
+  else
+    disk $CONTAINER_ID
+  fi
+}
+
+# Statistic: Container image CPU usage
+image_cpu() {
+  running_containerid $1
+  if [ "$CONTAINER_ID" = "" ]; then
+    echo 0
+  else
+    cpu $CONTAINER_ID
+  fi
+}
+
+# Statistic: Container image network traffic in
+image_netin() {
+  running_containerid $1
+  if [ "$CONTAINER_ID" = "" ]; then
+    echo 0
+  else
+    netin $CONTAINER_ID
+  fi
+}
+
+# Statistic: Container image network traffic out
+image_netout() {
+  running_containerid $1
+  if [ "$CONTAINER_ID" = "" ]; then
+    echo 0
+  else
+    netout $CONTAINER_ID
+  fi
+}
+
+# Returns all running container IDs for image, one per line
+image_containerids() {
+  containerids $1
+  for i in $CONTAINER_IDS; do
+    echo $i
+  done
+}
+
+# Returns all existing container IDs for image, one per line
+image_containerids_all() {
+  containerids $1 all
+  for i in $CONTAINER_IDS; do
+    echo $i
+  done
+}
+
+# Get sole running container ID for image into CONTAINER_ID
+# - Exit with message if multiple running
+# - Empty CONTAINER_ID if there are no running containers
+running_containerid() {
+  CONTAINER_ID=""
+  containerids $1
+  for i in $CONTAINER_IDS; do
+    if [ "$CONTAINER_ID" = "" ]; then
+      CONTAINER_ID=$i
+    else
+      echo "Multiple running containers for image"
+      exit 1
+    fi
+  done
+}
+
+# Get container IDs for imagename into CONTAINER_IDS
+containerids() {
+  IMAGENAME=$1
+  if [ "$2" = "all" ]; then
+    docker_get "/containers/json?all=true"
+  else
+    docker_get "/containers/json"
+  fi
+  CONTAINER_IDS=$(echo $RESPONSE | jq '.[]|select(.Image|test("^'$IMAGENAME'(:.*)?$"))|.Id' | sed -e 's/\"//g')
 }
 
 if [ $# -eq 0 ]; then
