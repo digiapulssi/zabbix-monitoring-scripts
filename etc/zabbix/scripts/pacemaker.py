@@ -1,4 +1,5 @@
 #!/usr/bin/python
+# Version: 1.0
 # Get Pacemaker status. Adding -v option to command prints a more verbose string
 # Otherwise returns decimal or single word statuses.
 #

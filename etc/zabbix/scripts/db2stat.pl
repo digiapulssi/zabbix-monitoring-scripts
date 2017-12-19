@@ -1,5 +1,5 @@
 #!/usr/bin/perl -wT
-#
+# Version: 1.0
 # Usage: db2stat <timeout> <dbname> [<key> <value> ...] <stat>
 #
 # timeout   - Timeout of snapshot in seconds (new snapshot will be taken if
