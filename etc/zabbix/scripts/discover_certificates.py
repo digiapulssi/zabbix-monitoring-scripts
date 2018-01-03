@@ -1,5 +1,5 @@
 #!/usr/bin/python
-
+# Version: 1.0
 """
 Zabbix discovery for certificates stored in PEM files.
 """

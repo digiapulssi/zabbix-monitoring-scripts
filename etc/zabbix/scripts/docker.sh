@@ -1,4 +1,5 @@
 #!/bin/bash
+# Version: 1.0
 set -e
 
 # Find netcat command or die

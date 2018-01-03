@@ -1,4 +1,5 @@
 #!/bin/sh
+# Version: 1.0
 set -e
 
 # Discover all running process names

@@ -13,6 +13,14 @@ The repository includes ready-to-install files for Zabbix Agent.
 
 Each monitoring script has a corresponding template that can be imported to Zabbix Server. Templates can be found under [templates](templates).
 
+## Version Numbering Scheme
+
+Each script has version information at the beginning of the script.
+[Semantic versioning](https://semver.org/) scheme is used with major.minor syntax
+
+* Major version changes when you make incompatible changes with existing items / configuration syntax
+* Minor version changes when you add functionality or bug-fixes in backwards-compatible manner
+
 ## Usage
 
 See the below documentation for each monitoring script.
