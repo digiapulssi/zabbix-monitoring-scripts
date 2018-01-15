@@ -16,7 +16,7 @@ On Error Resume Next
 
 Set objFSO = CreateObject("Scripting.FileSystemObject")
 startFolder = WScript.Arguments(0)
-'startFolder = "f:\kamerat" 'for testing
+'startFolder = "f:\startFolder" 'for testing
 
 Set objFolder = objFSO.GetFolder(startFolder)
 If Err.Number <> 0 Then
