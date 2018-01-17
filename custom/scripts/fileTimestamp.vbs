@@ -1,12 +1,14 @@
-' SUMMARY
+' SCRIPT NAME
 ' fileTimestamp.vbs
-
+' SUMMARY
 ' This script loops given folder's subfolders recursively
 ' and returns the latest timestamp it can find
 ' PARAMS
 ' starting folder
 ' RETURNS
 ' timestamp in seconds (unix time) in UTC time
+' If starting folder doesn't exist, returns 0.
+' If some other error occurs, returns compiler's error message and code.
 
 Public latestTime 'the latest timestamp from all subfolders' files
 Dim objFSO, objFolder, startFolder
@@ -20,8 +22,9 @@ startFolder = Replace(WScript.Arguments(0),"/","\")
 Set objFolder = objFSO.GetFolder(startFolder)
 'checking that the given path exists
 If Err.Number <> 0 Then
-    WScript.StdOut.Write "Error: " & Err.Description & " (" & Err.Number & ")"
-    WScript.Quit Err.Number
+	'if path doesn't exist, returns 0
+    WScript.StdOut.Write 0
+    WScript.Quit
 End If
 
 Set colFiles = objFolder.Files
@@ -30,8 +33,8 @@ Set colFiles = objFolder.Files
 ShowSubFolders objFSO.GetFolder(startFolder)
 
 'sets the latest local timestamp to UTC time
-Set dateTime = CreateObject("WbemScripting.SWbemDateTime")    
-dateTime.SetVarDate (latestTime)
+Set dateTime = CreateObject("WbemScripting.SWbemDateTime")
+dateTime.SetVarDate(latestTime)
 
 'writes the latest timestamp in unix time (seconds from 1.1.1970)
 WScript.StdOut.Write DateDiff("s", "1/1/1970", dateTime.GetVarDate (false))
@@ -40,11 +43,11 @@ WScript.StdOut.Write DateDiff("s", "1/1/1970", dateTime.GetVarDate (false))
 Sub ShowSubFolders(Folder)
 
     Set objFSO = CreateObject("Scripting.FileSystemObject")
-	
+
     For Each Subfolder In Folder.SubFolders
-	
+
         Set objFolder = objFSO.GetFolder(Subfolder.Path)
-		
+
         'going to loop files only if there are any
         If objFolder.Files.Count > 0 Then
 
@@ -52,7 +55,7 @@ Sub ShowSubFolders(Folder)
 			
             For Each objFile In colFiles
 
-                'check if file is the latest so far
+                'check if the file is the latest so far
                 If DateDiff("s", objFile.DateLastModified, latestTime) < 0 Then
                     latestTime = objFile.DateLastModified
                 End If
@@ -68,8 +71,8 @@ Sub ShowSubFolders(Folder)
 
 End Sub
 
-'checking if other errors have occured
+'checking if other errors have occurred
 If Err.Number <> 0 Then
     WScript.StdOut.Write "Error: " & Err.Description & " (" & Err.Number & ")"
-    WScript.Quit Err.Number
+    WScript.Quit
 End If
