@@ -40,8 +40,8 @@ WScript.StdOut.Write DateDiff("s", "1/1/1970", dateTime.GetVarDate(false))
 'Method that loops given folder's subfolders recursively and finds the latest timestamp of all files
 Sub FindLatestTimestamp(Folder)
 
-	'first check the files for given folder
-	Set objFolder = objFSO.GetFolder(Folder)
+    'first check the files for given folder
+    Set objFolder = objFSO.GetFolder(Folder)
     If objFolder.Files.Count > 0 Then
 
         Set colFiles = objFolder.Files
