@@ -123,7 +123,7 @@ discovery() {
       IMAGENAME=$(echo "$RESPONSE"|jq ".[$I].Image"|sed -e 's/:.*//')
       IMAGETAG=$(echo "$RESPONSE"|jq ".[$I].Image"|sed -e 's/.*://')
 
-      DATA="$DATA,"'{"{#CONTAINERNAME}":'$NAME',"{#CONTAINERID}":'$ID',"{#IMAGENAME}":'$IMAGENAME'","{#IMAGETAG}":"'$IMAGETAG
+      DATA="$DATA,"'{"{#CONTAINERNAME}":'$NAME',"{#CONTAINERID}":'$ID',"{#IMAGENAME}":'$IMAGENAME',"{#IMAGETAG}":'$IMAGETAG
 
       # Compatibility with www.monitoringartist.com Docker template
       DATA="$DATA,"'"{#HCONTAINERID}":'$ID'}'
