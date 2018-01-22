@@ -118,15 +118,15 @@ discovery() {
   LEN=$(echo $RESPONSE | jq "length")
   for I in $(seq 0 $((LEN-1)))
   do
-      NAME=$(echo "$RESPONSE"|jq ".[$I].Names[0]"|sed -e 's/"\//"/')
-      ID=$(echo "$RESPONSE"|jq ".[$I].Id")
-      IMAGENAME=$(echo "$RESPONSE"|jq ".[$I].Image"|sed -e 's/:.*//')
-      IMAGETAG=$(echo "$RESPONSE"|jq ".[$I].Image"|sed -e 's/.*://')
+      NAME=$(echo "$RESPONSE"|jq --raw-output ".[$I].Names[0]"|sed -e 's/^\///')
+      ID=$(echo "$RESPONSE"|jq --raw-output ".[$I].Id")
+      IMAGENAME=$(echo "$RESPONSE"|jq --raw-output ".[$I].Image"|sed -e 's/:.*//')
+      IMAGETAG=$(echo "$RESPONSE"|jq --raw-output ".[$I].Image"|sed -e 's/.*://')
 
-      DATA="$DATA,"'{"{#CONTAINERNAME}":'$NAME',"{#CONTAINERID}":'$ID',"{#IMAGENAME}":'$IMAGENAME',"{#IMAGETAG}":'$IMAGETAG
+      DATA="$DATA,"'{"{#CONTAINERNAME}":"'$NAME'","{#CONTAINERID}":"'$ID'","{#IMAGENAME}":"'$IMAGENAME'","{#IMAGETAG}":"'$IMAGETAG'"'
 
       # Compatibility with www.monitoringartist.com Docker template
-      DATA="$DATA,"'"{#HCONTAINERID}":'$ID'}'
+      DATA="$DATA,"'"{#HCONTAINERID}":"'$ID'"}'
 
   done
   echo '{"data":['${DATA#,}']}'
