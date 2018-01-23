@@ -48,6 +48,15 @@ def format_x509_name(x509_name):
     return name
 
 
+def get_name_component(x509_name, component):
+    """Gets single name component from X509 name."""
+    value = ""
+    for c in x509_name.get_components():
+        if c[0] == component:
+            value = c[1]
+    return value
+
+
 def json_output(entries):
     """Outputs list of certificate entries as Zabbix compatible discovery JSON.
     """
@@ -59,7 +68,8 @@ def json_output(entries):
         data.append({
             '{#CRT_FILE}': entry.file_name,
             '{#CRT_INDEX}': entry.index,
-            '{#CRT_SUBJECT}': format_x509_name(entry.cert.get_subject())
+            '{#CRT_SUBJECT}': format_x509_name(entry.cert.get_subject()),
+            '{#CRT_CN}': get_name_component(entry.cert.get_subject(), 'CN')
         })
     print(json.dumps(output))
 

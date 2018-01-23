@@ -15,7 +15,7 @@ Monitoring script requires the following Python modules to be installed on the s
 
 Item Syntax | Description | Units |
 ----------- | ----------- | ----- |
-certificates.discovery[{$CERT_FILE_PATH}] | Discover certificates from path | Provides the following template variables: {#CRT_SUBJECT} {#CRT_FILE} {#CRT_INDEX} |
+certificates.discovery[{$CERT_FILE_PATH}] | Discover certificates from path | Provides the following template variables: {#CRT_SUBJECT} {#CRT_FILE} {#CRT_INDEX}, {#CRT_CN} |
 certificate.status[{#CRT_FILE},{#CRT_INDEX}] | Certificate status | 0 = Valid, 1 = Not yet valid, 2 = Expired |
 certificate.startdate[{#CRT_FILE},{#CRT_INDEX}] | Certificate not before | ISO Date |
 certificate.enddate[{#CRT_FILE},{#CRT_INDEX}] | Certificate not after | ISO Date |
