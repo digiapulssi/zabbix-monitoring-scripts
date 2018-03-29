@@ -55,10 +55,16 @@ if ($timeout =~ /^(\d+)$/) {
 
 # Generate stat file name
 my $statfile = "$SNAPSHOT_DIR/$dbname.txt";
+my $tmpstatfile = "$SNAPSHOT_DIR/$dbname.txt.tmp";
 
 # Regenerate stats if file too old
 if (! -f $statfile or (time - (stat($statfile))[10]) > $timeout) {
+  # first touch file to prevent another perform in next moment
+  system("/usr/bin/touch $statfile");
+  #then generate tmp data
   system("db2 get snapshot for database on $dbname >$statfile");
+  #finally swap files
+  system("/usr/bin/cp -p $tmpstatfile $statfile");
 }
 
 # Generate regular expressions to match from args
