@@ -62,7 +62,7 @@ if (! -f $statfile or (time - (stat($statfile))[10]) > $timeout) {
   # first touch file to prevent another perform in next moment
   system("/usr/bin/touch $statfile");
   #then generate tmp data
-  system("db2 get snapshot for database on $dbname >$statfile");
+  system("db2 get snapshot for database on $dbname >$tmpstatfile");
   #finally swap files
   system("/usr/bin/cp -p $tmpstatfile $statfile");
 }
