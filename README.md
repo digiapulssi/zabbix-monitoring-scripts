@@ -30,3 +30,4 @@ See the below documentation for each monitoring script.
 - [Process discovery and monitoring](documentation/process.md)
 - [Pacemaker monitoring](documentation/pacemaker.md)
 - [PEM file certificate monitoring](documentation/certificates.md)
+- [Kontena grid monitoring](documentation/kontena_grid.md)
