@@ -219,7 +219,7 @@ netin() {
   else
     OLD_VALUE=$(update_stat $1 "rx_bytes" "$NEW_VALUE")
     TIMEDIFF=$(update_stat_time $1 "rx_bytes")
-    perl -e "print int(($NEW_VALUE-$OLD_VALUE)/$TIMEDIFF*1000000000)" # nanos to seconds
+    perl -e "print int(($NEW_VALUE-$OLD_VALUE)<0?0:($NEW_VALUE-$OLD_VALUE)/$TIMEDIFF*1000000000)" # nanos to seconds
   fi
 }
 
@@ -231,7 +231,7 @@ netout() {
   else
     OLD_VALUE=$(update_stat $1 "tx_bytes" "$NEW_VALUE")
     TIMEDIFF=$(update_stat_time $1 "tx_bytes")
-    perl -e "print int(($NEW_VALUE-$OLD_VALUE)/$TIMEDIFF*1000000000)" # nanos to seconds
+    perl -e "print int(($NEW_VALUE-$OLD_VALUE)<0?0:($NEW_VALUE-$OLD_VALUE)/$TIMEDIFF*1000000000)" # nanos to seconds
   fi
 }
 
