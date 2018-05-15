@@ -207,7 +207,7 @@ cpu() {
   else
     OLD_VALUE=$(update_stat $1 "cpuacct.usage" "$NEW_VALUE")
     TIMEDIFF=$(update_stat_time $1 "cpuacct.usage")
-    perl -e "print sprintf(\"%.4f\", (($NEW_VALUE-$OLD_VALUE)/$TIMEDIFF*100))" # nanos to seconds
+    perl -e "print sprintf(\"%.4f\", (($NEW_VALUE-$OLD_VALUE)<0?0:($NEW_VALUE-$OLD_VALUE)/$TIMEDIFF*100))" # cpu percent
   fi
 }
 
