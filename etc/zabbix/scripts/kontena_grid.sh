@@ -2,7 +2,7 @@
 set -e
 
 kontena_api_v1() {
-  RESPONSE=$(curl -k \
+  RESPONSE=$(curl -k -s \
     -H "Authorization: Bearer $AUTH_TOKEN" \
   	-H "Accept: application/json" \
   	"$1")
