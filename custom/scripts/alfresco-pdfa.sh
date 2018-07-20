@@ -3,5 +3,5 @@
 # Script gets content from given url. Returns lines only with "SUMMARY".
 set -e
 url='http://'${1}':'${2}'/alfresco/s/enterprise/admin/admin-testtransform-test?operation=getTransformationStatistics&arg1=&arg2=&arg3=pdfa'
-
-curl -v -s -H "OAM_REMOTE_USER:admin" $url --stderr - | grep SUMMARY
+header=${3}
+curl -v -s -H $header $url --stderr - | grep SUMMARY
