@@ -40,7 +40,8 @@ docker_exec() {
 
   # Start execution
   if [ "$RUN_ID" != "" ]; then
-    RESPONSE=$(printf "POST /exec/$RUN_ID/start HTTP/1.0\r\nContent-Type: application/json\r\nContent-Length: 2\r\n\r\n{}" | $NC -U $DOCKER_SOCKET)
+    # tr at end is used to suppress warning on bash >=4.4
+    RESPONSE=$(printf "POST /exec/$RUN_ID/start HTTP/1.0\r\nContent-Type: application/json\r\nContent-Length: 2\r\n\r\n{}" | $NC -U $DOCKER_SOCKET | tr -d '\0')
   else
     RESPONSE=""
   fi
