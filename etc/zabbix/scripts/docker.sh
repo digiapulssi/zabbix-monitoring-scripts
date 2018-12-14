@@ -143,17 +143,20 @@ status() {
   docker_get "/containers/$1/json"
   STATUS=$(echo $RESPONSE | jq ".State.Status" 2>/dev/null | sed -e 's/\"//g')
 
-  # Running
   if [ "$STATUS" = "running" ]; then
+    # Running
     echo "1"
-  # Not running
   elif [ "$STATUS" = "created" ] || [ "$STATUS" = "paused" ] || [ "$STATUS" = "restarting" ]; then
+    # Not started (purposefully)
     echo "2"
-  # Stopped and exit status 0 -> not running
   elif [ "$STATUS" = "exited" ] && [ "$(echo $RESPONSE | jq '.State.ExitCode')" = "0" ]; then
+    # Stopped purposefully with ok exit code => status is "not started"
     echo "2"
-  # Error (eg. no such container exists)
+  elif [ "$STATUS" = "exited" ] && [ "$(echo $RESPONSE | jq '.State.ExitCode')" = "137" ]; then
+    # Stopped purposefully with sigkill (exit code 137) => status is "not started"
+    echo "2"
   else
+    # Exited with error (accidentally) or no such container exists
     echo "0"
   fi
 }
@@ -181,6 +184,9 @@ uptime() {
     local NOW_S=$(date +%s)
     UPTIME=$((NOW_S-STARTED_S))
     echo $UPTIME
+  else
+    # not running, uptime always zero (must output some number so that zabbix item won't get into error state)
+    echo "0"
   fi
 }
 
