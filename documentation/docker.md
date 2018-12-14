@@ -27,7 +27,7 @@ docker.containers[{#CONTAINERID}, disk] | Container disk usage | bytes |
 docker.containers[{#CONTAINERID}, memory] | Container memory usage | bytes |
 docker.containers[{#CONTAINERID}, uptime] | Container uptime | uptime (seconds) |
 docker.containers[{#CONTAINERID}, up] | Is container up and running? | 1 (yes), 0 (no) |
-docker.containers[{#CONTAINERID}, status] | Container status | 0 (exited with error or no such container), 1 (running), 2 (not started) |
+docker.containers[{#CONTAINERID}, status] | Container status | 0 (exited with error or no such container), 1 (running), 2 (not started or shut down) |
 docker.containers[{#IMAGENAME}, image_netin] | Incoming network traffic (eth0) of only container running given image | bytes per second (B/s) |
 docker.containers[{#IMAGENAME}, image_netout] | Outgoing network traffic (eth0) of only container running given image | bytes per second (B/s) |
 docker.containers[{#IMAGENAME}, image_cpu] | CPU usage of only container running given image | % |
