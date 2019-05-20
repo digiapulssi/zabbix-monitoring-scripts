@@ -10,6 +10,7 @@ set -e
 # @output elapsed CPU time of the given process, summing up all CPU times of processes with identical name
 # example output:
 # 30
+# If process is not found from running processes, returned value is 0
 
 # 1. 'ps -A -o comm= -o time= ' prints all process columns
 # 2. 'grep "^$1 "' grep rows where wanted process name
@@ -19,4 +20,10 @@ set -e
 # 6. 'xargs' for converting standard input into arguments
 # 7. 'sed 's/ /+/g'' replaces whitespaces with '+'. So the results is like mathematic formula.
 
-ps -A -o comm= -o time= | grep "^$1 " | sed 's/^.*\([0-9:]\{8\}\)$/\1/g' | sed 's/:/ /g' | awk '{print $3 + $2 * 60 + $1 * 3600}' | xargs | sed 's/ /+/g' | bc
+val=$(ps -A -o comm= -o time= | grep "^$1 " | sed 's/^.*\([0-9:]\{8\}\)$/\1/g' | sed 's/:/ /g' | awk '{print $3 + $2 * 60 + $1 * 3600}' | xargs | sed 's/ /+/g' | bc)
+
+if [ -z ${val} ] ; then
+        echo "0"
+else
+        echo $val
+fi
