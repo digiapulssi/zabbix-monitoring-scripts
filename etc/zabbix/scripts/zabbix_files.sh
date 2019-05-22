@@ -1,3 +1,3 @@
-#!/bin/bash
-# Version: 1.0
+#!/opt/freeware/bin/bash
+# Version: 1.1
 ls -la $1

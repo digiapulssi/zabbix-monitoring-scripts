@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/opt/freeware/bin/bash
 # Version: 1.0
 set -e
 

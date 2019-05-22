@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/opt/freeware/bin/bash
 set -e
 
 kontena_api_v1() {
