@@ -1,5 +1,5 @@
-#!/bin/sh
-# Version: 1.0
+#!/opt/freeware/bin/bash
+# Version: 1.1
 set -e
 
 echo -n '{"data":['
