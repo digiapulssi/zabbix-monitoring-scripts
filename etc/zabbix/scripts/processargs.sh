@@ -18,5 +18,5 @@ echo -n '{"data":['
 #     {#ARGS}: "<last_arg>"
 #   ]}
 
-ps -A -o comm= -o time= -o vsz= -o args= | grep "$1" | grep -v ' 00:00:00' | awk '$3 != 0' | sed 's/ \(.*\) / /g' | sed 's/\(.*\) \(.*\)/{"{#COMMAND}":"\1"}, {"{#ARGS}":"\2"}/g' | sed '$!s/$/,/' | tr '\n' ' '
+ps -A -o comm= -o time= -o vsz= -o args= | grep "$1" | grep -v ' 00:00:00' | awk '$3 != 0' | sed 's/ \(.*\) / /g' | sed 's/\(.*\) \(.*\)/{"{#COMMAND}":"\1", "{#ARGS}":"\2"}/g' | sed '$!s/$/,/' | tr '\n' ' '
 echo -n ']}'
