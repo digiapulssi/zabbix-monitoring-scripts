@@ -2,6 +2,11 @@
 # Version: 0.5
 set -e
 
+if [ "$#" -ne 3 ]
+then
+  echo "Missing or too many command line arguments. (usage: ./processargs.sh <process_name> <nth_startup_parameter> <nth_startup_parameter>)"
+  exit 1
+fi
 # Discover all running process with same process name (first cmdline parameter)
 # Prints process's firt startup argument (second cmdline parameter)
 # Prints process's second startup argument (third cmdline parameter)
@@ -23,5 +28,6 @@ echo -n '{"data":['
 #	<<  ]
 # << }
 
-ps -A -o comm= -o time= -o vsz= -o args= | grep "$1" | grep -v ' 00:00:00' | awk '$3 != 0' | awk -v a="$2" -v b="$3" '{print $1 " " $a " " $b}' | sed 's/\(.*\) \(.*\) \(.*\)/{"{#COMMAND}":"\1", "{#IIBNODE}":"\2"}, "{#EXCECUTIONGROUP}":"\
-3"}/g' | sed '$!s/$/,/' | tr '\n' ' '
+ps -A -o comm= -o time= -o vsz= -o args= | grep "$1" | grep -v ' 00:00:00' | awk '$3 != 0' | awk -v a="$2" -v b="$3" '{print $1 " " $a " " $b}' | sed 's/\(.*\) \(.*\) \(.*\)/{"{#COMMAND}":"\1", "{#IIBNODE}":"\2", "{#EXCECUTIONGROUP}":"\3"}/g' | sed '$!s/$/,/' | tr '\n' ' '
+
+echo -n ']}'
