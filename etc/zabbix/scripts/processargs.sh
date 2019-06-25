@@ -18,15 +18,15 @@ echo -n '{"data":['
 # Usage:
 # >> ./processargs.sh DataFlowEngine 5 7
 # Output:
-# << {
-#	<<  "data": [
-#	<<	  {
-#	<<		  "{#COMMAND}": "DataFlowEngine",
-#	<<		  "{#IIBNODE}": "IBEAISANDBOX",
-#	<<	  	"{#EXCECUTIONGROUP}": "SERVICEGRP1"
-#	<<    }
-#	<<  ]
-# << }
+# <<  {
+#	<<    "data": [
+#	<<      {
+#	<<        "{#COMMAND}": "DataFlowEngine",
+#	<<        "{#IIBNODE}": "IBEAISANDBOX",
+#	<<        "{#EXCECUTIONGROUP}": "SERVICEGRP1"
+#	<<      }
+#	<<    ]
+# <<  }
 
 ps -A -o comm= -o time= -o vsz= -o args= | grep "$1" | grep -v ' 00:00:00' | awk '$3 != 0' | awk -v a="$2" -v b="$3" '{print $1 " " $a " " $b}' | sed 's/\(.*\) \(.*\) \(.*\)/{"{#COMMAND}":"\1", "{#IIBNODE}":"\2", "{#EXCECUTIONGROUP}":"\3"}/g' | sed '$!s/$/,/' | tr '\n' ' '
 

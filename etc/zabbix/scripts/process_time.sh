@@ -26,6 +26,9 @@ then
 elif [ "$#" -eq 2 ]
 then
   val=$(ps -A -o comm= -o time= -o args= | grep "^$1 "| grep "$2" | sed 's/^.*\([0-9:]\{8\}\).*$/\1/g' | sed 's/:/ /g' | awk '{print $3 + $2 * 60 + $1 * 3600}' | xargs | sed 's/ /+/g' | bc)
+elif [ "$#" -eq 3 ]
+then
+  val=$(ps -A -o comm= -o time= -o args= | grep "^$1 "| grep "$2" | grep "$3" | sed 's/^.*\([0-9:]\{8\}\).*$/\1/g' | sed 's/:/ /g' | awk '{print $3 + $2 * 60 + $1 * 3600}' | xargs | sed 's/ /+/g' | bc)
 else
   echo "Illegal number of arguments. 1st argument = process_name 2nd argument (optional) = process's startup argument"
 fi
