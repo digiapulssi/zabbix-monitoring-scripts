@@ -4,7 +4,7 @@ set -e
 
 if [ "$#" -ne 3 ]
 then
-  echo "Missing or too many command line arguments. (usage: discover.multiprocess[<process_name>, <first_nth_column>, <second_nth_column>])"
+  echo "Missing or too many command line arguments. (usage: discover.subprocess[<process_name>, <first_nth_column>, <second_nth_column>])"
   exit 1
 fi
 # Discover all running process with same process name (first cmdline parameter)
@@ -16,9 +16,9 @@ echo -n '{"data":['
 # Filter away kernel processes (and also zombie processes) by filtering out processes that don't use any user memory (vsz == 0)
 # Captures first, $2:th and $3:th string
 # Usage:
-# >> ./discover_multiprocess.sh DataFlowEngine 5 7
+# >> ./discover_subprocess.sh DataFlowEngine 5 7
 # or
-# >> ./zabbix_agentd -t "discover.multiprocess[DataFlowEngine,5,7]"
+# >> ./zabbix_agentd -t "discover.subprocess[DataFlowEngine,5,7]"
 # Output:
 # <<  {
 #	<<    "data": [
