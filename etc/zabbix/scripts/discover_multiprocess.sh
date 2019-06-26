@@ -4,7 +4,7 @@ set -e
 
 if [ "$#" -ne 3 ]
 then
-  echo "Missing or too many command line arguments. (usage: ./processargs.sh <process_name> <nth_startup_parameter> <nth_startup_parameter>)"
+  echo "Missing or too many command line arguments. (usage: discover.multiprocess[<process_name>, <first_nth_column>, <second_nth_column>])"
   exit 1
 fi
 # Discover all running process with same process name (first cmdline parameter)
@@ -16,7 +16,9 @@ echo -n '{"data":['
 # Filter away kernel processes (and also zombie processes) by filtering out processes that don't use any user memory (vsz == 0)
 # Captures first, $2:th and $3:th string
 # Usage:
-# >> ./processargs.sh DataFlowEngine 5 7
+# >> ./discover_multiprocess.sh DataFlowEngine 5 7
+# or
+# >> ./zabbix_agentd -t "discover.multiprocess[DataFlowEngine,5,7]"
 # Output:
 # <<  {
 #	<<    "data": [
@@ -28,6 +30,6 @@ echo -n '{"data":['
 #	<<    ]
 # <<  }
 
-ps -A -o comm= -o time= -o vsz= -o args= | grep "$1" | grep -v ' 00:00:00' | awk '$3 != 0' | awk -v a="$2" -v b="$3" '{print $1 " " $a " " $b}' | sed 's/\(.*\) \(.*\) \(.*\)/{"{#COMMAND}":"\1", "{#IIBNODE}":"\2", "{#EXCECUTIONGROUP}":"\3"}/g' | sed '$!s/$/,/' | tr '\n' ' '
+ps -A -o comm= -o time= -o vsz= -o args= | grep "$1" | grep -v ' 00:00:00' | awk '$3 != 0' | awk -v a="$2" -v b="$3" '{print $1 " " $a " " $b}' | sed 's/\(.*\) \(.*\) \(.*\)/{"{#COMMAND}":"\1", "{#PARAM1}":"\2", "{#PARAM2}":"\3"}/g' | sed '$!s/$/,/' | tr '\n' ' '
 
 echo -n ']}'

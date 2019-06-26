@@ -1,7 +1,7 @@
 #/opt/freeware/bin/bash
 # Version 1.3
 set -e
-# @args process_name, first_startup_parameter_filter (optional) and second_startup_parameter_filter (optional)
+# @args process_name, first_startup_parameter_filter (optional), second_startup_parameter_filter (optional)
 #
 # exmaple data:
 # zabbix_agentd 00:00:17
