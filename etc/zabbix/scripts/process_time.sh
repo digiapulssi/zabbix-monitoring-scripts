@@ -35,7 +35,7 @@ fi
 
 # If process is not found from running processes, returned value is 0
 if [ -z "${val}" ] ; then
-        echo "0"
+        echo 0
 else
         echo $val
 fi
