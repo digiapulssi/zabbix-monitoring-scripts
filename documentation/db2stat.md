@@ -31,7 +31,8 @@ To enable snapshots:
 
 To test taking the snapshot with zabbix user in Linux as root:
 `su -s /bin/bash -c "<path-to-db2dir>/bin/db2 get snapshot for database on <db>" zabbix`
-
+To test taking the snapshot with zabbix user in AIX as root:
+`su - zabbix -c "<path-to-db2dir>/bin/db2 get snapshot for database on <db>"`
 ## Installing Items from Template
 
 Zabbix template for all items supported in configuration is
