@@ -23,7 +23,8 @@ To enable snapshots:
 
 1. Create sysmon group in operating system and add zabbix agent user to it (Zabbix agent must be installed so that zabbix user is present).
    - Linux systems: `groupadd sysmon && usermod -a -G sysmon zabbix`
-   - AIX systems: `mkgroup sysmon && chgrpmem -m + zabbix sysmon`
+   - AIX systems: `mkgroup sysmon` 
+                  `chgrpmem -m + zabbix sysmon`
 2. Configure sysmon group have SYSMON permission in database execute following *as db2 user*:
    - Configure sysmon group: `db2 update dbm cfg using sysmon_group sysmon`
    - Restart databse: `db2stop && db2start`
