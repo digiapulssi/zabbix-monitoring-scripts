@@ -30,14 +30,12 @@
 
 use File::Spec;
 
-# Set this to path of db2 executable
-$ENV{'PATH'} = "/usr/bin";
-
 # Directory where snapshots are cached.
 my $SNAPSHOT_DIR = File::Spec->tmpdir();
 
-# Get database name and timeout args
+# Get database path, name and timeout args
 my $timeout = shift @ARGV;
+my $dbpath = shift @ARGV;
 my $dbname = shift @ARGV;
 
 # Untaint
@@ -47,11 +45,20 @@ if ($dbname =~ /^([-\w.]+)$/) {
   die "Bad dbname argument";
 }
 
+if ($dbpath =~ /^([-\/\w.]+)$/) {
+  $dbpath = $1;
+} else {
+  die "Bad dbpath argument";
+}
+
 if ($timeout =~ /^(\d+)$/) {
   $timeout = $1;
 } else {
   die "Bad timeout value";
 }
+
+# Set path of db2 executable
+$ENV{'PATH'} = "$dbpath";
 
 # Generate stat file name
 my $statfile = "$SNAPSHOT_DIR/$dbname.txt";
