@@ -1,9 +1,10 @@
 #!/usr/bin/perl -wT
-# Version: 1.0
-# Usage: db2stat <timeout> <dbname> [<key> <value> ...] <stat>
+# Version: 1.1
+# Usage: db2stat <timeout> <dbpath> <dbname> [<key> <value> ...] <stat>
 #
 # timeout   - Timeout of snapshot in seconds (new snapshot will be taken if
 #             previous is older than timeout)
+# dbpath    - Path of db2 database
 # dbname    - Name of db2 database
 # key/value - Key value pairs to match (e.g. "Node number" "0")
 # stat      - Actual stat to search for (e.g. "Database status")
@@ -22,22 +23,20 @@
 # Examples:
 #
 # Retrieve simple stat "Database status" that is at most 10 seconds old:
-# db2stat mydb 10 "Database status"
+# db2stat 10 "/usr/bin" mydb "Database status"
 #
 # Retrieve current size of package cache heap on node 0 at most 60 seconds old:
-# db2stat mydb 60 "Node number" "0" "Memory Pool Type" "Package Cache Heap"
+# db2stat 60 "/usr/bin" mydb "Node number" "0" "Memory Pool Type" "Package Cache Heap"
 # "Current size (bytes)"
 
 use File::Spec;
 
-# Set this to path of db2 executable
-$ENV{'PATH'} = "/usr/bin";
-
 # Directory where snapshots are cached.
 my $SNAPSHOT_DIR = File::Spec->tmpdir();
 
-# Get database name and timeout args
+# Get database path, name and timeout args
 my $timeout = shift @ARGV;
+my $dbpath = shift @ARGV;
 my $dbname = shift @ARGV;
 
 # Untaint
@@ -47,11 +46,20 @@ if ($dbname =~ /^([-\w.]+)$/) {
   die "Bad dbname argument";
 }
 
+if ($dbpath =~ /^([-\/\w.]+)$/) {
+  $dbpath = $1;
+} else {
+  die "Bad dbpath argument";
+}
+
 if ($timeout =~ /^(\d+)$/) {
   $timeout = $1;
 } else {
   die "Bad timeout value";
 }
+
+# Set path of db2 executable
+$ENV{'PATH'} = "$dbpath";
 
 # Generate stat file name
 my $statfile = "$SNAPSHOT_DIR/$dbname.txt";
