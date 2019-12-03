@@ -2,12 +2,13 @@
 # Version: 1.2
 # Usage: db2stat <timeout> <db2instance> <dbpath> <dbname> [<key> <value> ...] <stat>
 #
-# timeout   - Timeout of snapshot in seconds (new snapshot will be taken if
-#             previous is older than timeout)
-# dbpath    - Path of db2 database
-# dbname    - Name of db2 database
-# key/value - Key value pairs to match (e.g. "Node number" "0")
-# stat      - Actual stat to search for (e.g. "Database status")
+# timeout     - Timeout of snapshot in seconds (new snapshot will be taken if
+#               previous is older than timeout)
+# db2instance - Db2 instance
+# dbpath      - Path of db2 database
+# dbname      - Name of db2 database
+# key/value   - Key value pairs to match (e.g. "Node number" "0")
+# stat        - Actual stat to search for (e.g. "Database status")
 #
 # Generates snapshot from db2 into file in tmpdir directory if one does not
 # already exist. The file is updated if it is older than specified timeout by
@@ -26,7 +27,7 @@
 # db2stat 10 "/usr/bin" mydb "Database status"
 #
 # Retrieve current size of package cache heap on node 0 at most 60 seconds old:
-# db2stat 60 "/path/to/db2instance" "/usr/bin" mydb "Node number" "0" "Memory Pool Type" "Package Cache Heap"
+# db2stat 60 db2instance "/usr/bin" mydb "Node number" "0" "Memory Pool Type" "Package Cache Heap"
 # "Current size (bytes)"
 
 use File::Spec;

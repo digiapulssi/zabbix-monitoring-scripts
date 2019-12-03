@@ -29,7 +29,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.database_name[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.database_name[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -72,7 +72,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.database_path[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.database_path[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -115,7 +115,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.input_database_alias[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.input_database_alias[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -158,7 +158,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.database_status[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.database_status[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -201,7 +201,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.catalog_database_partition_number[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.catalog_database_partition_number[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -244,7 +244,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.catalog_network_node_name[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.catalog_network_node_name[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -287,7 +287,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.operating_system_running_at_database_server[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.operating_system_running_at_database_server[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -330,7 +330,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.location_of_the_database[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.location_of_the_database[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -373,7 +373,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.first_database_connect_timestamp[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.first_database_connect_timestamp[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -416,7 +416,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.last_reset_timestamp[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.last_reset_timestamp[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -459,7 +459,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.last_backup_timestamp[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.last_backup_timestamp[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -502,7 +502,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.snapshot_timestamp[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.snapshot_timestamp[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -545,7 +545,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.number_of_automatic_storage_paths[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.number_of_automatic_storage_paths[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -588,7 +588,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.high_water_mark_for_connections[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.high_water_mark_for_connections[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -631,7 +631,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.application_connects[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.application_connects[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -674,7 +674,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.secondary_connects_total[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.secondary_connects_total[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -717,7 +717,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.applications_connected_currently[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.applications_connected_currently[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -760,7 +760,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.appls_executing_in_db_manager_currently[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.appls_executing_in_db_manager_currently[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -803,7 +803,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.agents_associated_with_applications[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.agents_associated_with_applications[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -846,7 +846,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.maximum_agents_associated_with_applications[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.maximum_agents_associated_with_applications[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -889,7 +889,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.maximum_coordinating_agents[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.maximum_coordinating_agents[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -932,7 +932,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.number_of_threshold_violations[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.number_of_threshold_violations[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -975,7 +975,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.locks_held_currently[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.locks_held_currently[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -1018,7 +1018,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.lock_waits[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.lock_waits[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -1061,7 +1061,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.time_database_waited_on_locks_ms[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.time_database_waited_on_locks_ms[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -1104,7 +1104,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.lock_list_memory_in_use_bytes[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.lock_list_memory_in_use_bytes[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -1147,7 +1147,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.deadlocks_detected[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.deadlocks_detected[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -1190,7 +1190,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.lock_escalations[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.lock_escalations[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -1233,7 +1233,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.exclusive_lock_escalations[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.exclusive_lock_escalations[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -1276,7 +1276,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.agents_currently_waiting_on_locks[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.agents_currently_waiting_on_locks[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -1319,7 +1319,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.lock_timeouts[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.lock_timeouts[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -1362,7 +1362,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.number_of_indoubt_transactions[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.number_of_indoubt_transactions[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -1405,7 +1405,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.total_private_sort_heap_allocated[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.total_private_sort_heap_allocated[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -1448,7 +1448,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.total_shared_sort_heap_allocated[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.total_shared_sort_heap_allocated[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -1491,7 +1491,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.shared_sort_heap_high_water_mark[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.shared_sort_heap_high_water_mark[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -1534,7 +1534,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.post_threshold_sorts_shared_memory[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.post_threshold_sorts_shared_memory[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -1577,7 +1577,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.total_sorts[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.total_sorts[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -1620,7 +1620,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.total_sort_time_ms[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.total_sort_time_ms[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -1663,7 +1663,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.sort_overflows[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.sort_overflows[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -1706,7 +1706,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.active_sorts[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.active_sorts[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -1749,7 +1749,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.buffer_pool_data_logical_reads[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.buffer_pool_data_logical_reads[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -1792,7 +1792,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.buffer_pool_data_physical_reads[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.buffer_pool_data_physical_reads[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -1835,7 +1835,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.buffer_pool_temporary_data_logical_reads[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.buffer_pool_temporary_data_logical_reads[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -1878,7 +1878,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.buffer_pool_temporary_data_physical_reads[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.buffer_pool_temporary_data_physical_reads[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -1921,7 +1921,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.asynchronous_pool_data_page_reads[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.asynchronous_pool_data_page_reads[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -1964,7 +1964,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.buffer_pool_data_writes[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.buffer_pool_data_writes[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -2007,7 +2007,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.asynchronous_pool_data_page_writes[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.asynchronous_pool_data_page_writes[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -2050,7 +2050,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.buffer_pool_index_logical_reads[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.buffer_pool_index_logical_reads[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -2093,7 +2093,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.buffer_pool_index_physical_reads[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.buffer_pool_index_physical_reads[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -2136,7 +2136,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.buffer_pool_temporary_index_logical_reads[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.buffer_pool_temporary_index_logical_reads[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -2179,7 +2179,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.buffer_pool_temporary_index_physical_reads[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.buffer_pool_temporary_index_physical_reads[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -2222,7 +2222,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.asynchronous_pool_index_page_reads[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.asynchronous_pool_index_page_reads[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -2265,7 +2265,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.buffer_pool_index_writes[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.buffer_pool_index_writes[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -2308,7 +2308,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.asynchronous_pool_index_page_writes[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.asynchronous_pool_index_page_writes[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -2351,7 +2351,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.buffer_pool_xda_logical_reads[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.buffer_pool_xda_logical_reads[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -2394,7 +2394,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.buffer_pool_xda_physical_reads[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.buffer_pool_xda_physical_reads[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -2437,7 +2437,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.buffer_pool_temporary_xda_logical_reads[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.buffer_pool_temporary_xda_logical_reads[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -2480,7 +2480,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.buffer_pool_temporary_xda_physical_reads[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.buffer_pool_temporary_xda_physical_reads[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -2523,7 +2523,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.buffer_pool_xda_writes[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.buffer_pool_xda_writes[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -2566,7 +2566,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.asynchronous_pool_xda_page_reads[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.asynchronous_pool_xda_page_reads[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -2609,7 +2609,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.asynchronous_pool_xda_page_writes[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.asynchronous_pool_xda_page_writes[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -2652,7 +2652,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.total_buffer_pool_read_time_milliseconds[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.total_buffer_pool_read_time_milliseconds[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -2695,7 +2695,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.total_buffer_pool_write_time_milliseconds[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.total_buffer_pool_write_time_milliseconds[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -2738,7 +2738,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.total_elapsed_asynchronous_read_time[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.total_elapsed_asynchronous_read_time[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -2781,7 +2781,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.total_elapsed_asynchronous_write_time[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.total_elapsed_asynchronous_write_time[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -2824,7 +2824,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.asynchronous_data_read_requests[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.asynchronous_data_read_requests[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -2867,7 +2867,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.asynchronous_index_read_requests[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.asynchronous_index_read_requests[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -2910,7 +2910,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.asynchronous_xda_read_requests[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.asynchronous_xda_read_requests[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -2953,7 +2953,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.no_victim_buffers_available[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.no_victim_buffers_available[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -2996,7 +2996,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.lsn_gap_cleaner_triggers[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.lsn_gap_cleaner_triggers[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -3039,7 +3039,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.dirty_page_steal_cleaner_triggers[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.dirty_page_steal_cleaner_triggers[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -3082,7 +3082,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.dirty_page_threshold_cleaner_triggers[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.dirty_page_threshold_cleaner_triggers[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -3125,7 +3125,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.time_waited_for_prefetch_ms[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.time_waited_for_prefetch_ms[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -3168,7 +3168,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.unread_prefetch_pages[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.unread_prefetch_pages[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -3211,7 +3211,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.direct_reads[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.direct_reads[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -3254,7 +3254,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.direct_writes[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.direct_writes[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -3297,7 +3297,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.direct_read_requests[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.direct_read_requests[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -3340,7 +3340,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.direct_write_requests[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.direct_write_requests[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -3383,7 +3383,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.direct_reads_elapsed_time_ms[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.direct_reads_elapsed_time_ms[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -3426,7 +3426,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.direct_write_elapsed_time_ms[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.direct_write_elapsed_time_ms[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -3469,7 +3469,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.database_files_closed[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.database_files_closed[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -3512,7 +3512,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.host_execution_elapsed_time[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.host_execution_elapsed_time[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -3555,7 +3555,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.commit_statements_attempted[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.commit_statements_attempted[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -3598,7 +3598,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.rollback_statements_attempted[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.rollback_statements_attempted[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -3641,7 +3641,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.dynamic_statements_attempted[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.dynamic_statements_attempted[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -3684,7 +3684,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.static_statements_attempted[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.static_statements_attempted[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -3727,7 +3727,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.failed_statement_operations[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.failed_statement_operations[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -3770,7 +3770,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.select_sql_statements_executed[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.select_sql_statements_executed[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -3813,7 +3813,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.xquery_statements_executed[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.xquery_statements_executed[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -3856,7 +3856,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.update_insert_delete_statements_executed[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.update_insert_delete_statements_executed[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -3899,7 +3899,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.ddl_statements_executed[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.ddl_statements_executed[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -3942,7 +3942,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.inactive_stmt_history_memory_usage_bytes[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.inactive_stmt_history_memory_usage_bytes[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -3985,7 +3985,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.internal_automatic_rebinds[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.internal_automatic_rebinds[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -4028,7 +4028,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.internal_rows_deleted[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.internal_rows_deleted[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -4071,7 +4071,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.internal_rows_inserted[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.internal_rows_inserted[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -4114,7 +4114,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.internal_rows_updated[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.internal_rows_updated[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -4157,7 +4157,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.internal_commits[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.internal_commits[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -4200,7 +4200,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.internal_rollbacks[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.internal_rollbacks[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -4243,7 +4243,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.internal_rollbacks_due_to_deadlock[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.internal_rollbacks_due_to_deadlock[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -4286,7 +4286,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.number_of_mdc_table_blocks_pending_cleanup[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.number_of_mdc_table_blocks_pending_cleanup[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -4329,7 +4329,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.rows_deleted[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.rows_deleted[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -4372,7 +4372,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.rows_inserted[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.rows_inserted[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -4415,7 +4415,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.rows_updated[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.rows_updated[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -4458,7 +4458,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.rows_selected[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.rows_selected[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -4501,7 +4501,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.rows_read[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.rows_read[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -4544,7 +4544,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.binds_precompiles_attempted[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.binds_precompiles_attempted[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -4587,7 +4587,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.log_space_available_to_the_database_bytes[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.log_space_available_to_the_database_bytes[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -4630,7 +4630,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.log_space_used_by_the_database_bytes[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.log_space_used_by_the_database_bytes[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -4673,7 +4673,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.maximum_secondary_log_space_used_bytes[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.maximum_secondary_log_space_used_bytes[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -4716,7 +4716,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.maximum_total_log_space_used_bytes[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.maximum_total_log_space_used_bytes[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -4759,7 +4759,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.secondary_logs_allocated_currently[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.secondary_logs_allocated_currently[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -4802,7 +4802,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.log_pages_read[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.log_pages_read[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -4845,7 +4845,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.log_read_time_sec_ns[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.log_read_time_sec_ns[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -4888,7 +4888,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.log_pages_written[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.log_pages_written[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -4931,7 +4931,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.log_write_time_sec_ns[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.log_write_time_sec_ns[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -4974,7 +4974,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.number_write_log_ios[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.number_write_log_ios[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -5017,7 +5017,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.number_read_log_ios[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.number_read_log_ios[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -5060,7 +5060,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.number_partial_page_log_ios[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.number_partial_page_log_ios[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -5103,7 +5103,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.number_log_buffer_full[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.number_log_buffer_full[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -5146,7 +5146,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.log_data_found_in_buffer[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.log_data_found_in_buffer[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -5189,7 +5189,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.log_to_be_redone_for_recovery_bytes[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.log_to_be_redone_for_recovery_bytes[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -5232,7 +5232,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.log_accounted_for_by_dirty_pages_bytes[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.log_accounted_for_by_dirty_pages_bytes[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -5275,7 +5275,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.node_number[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.node_number[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -5318,7 +5318,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.file_number_of_first_active_log[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.file_number_of_first_active_log[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -5361,7 +5361,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.file_number_of_last_active_log[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.file_number_of_last_active_log[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -5404,7 +5404,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.file_number_of_current_active_log[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.file_number_of_current_active_log[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -5447,7 +5447,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.file_number_of_log_being_archived[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.file_number_of_log_being_archived[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -5490,7 +5490,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.package_cache_lookups[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.package_cache_lookups[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -5533,7 +5533,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.package_cache_inserts[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.package_cache_inserts[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -5576,7 +5576,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.package_cache_overflows[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.package_cache_overflows[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -5619,7 +5619,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.package_cache_high_water_mark_bytes[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.package_cache_high_water_mark_bytes[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -5662,7 +5662,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.application_section_lookups[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.application_section_lookups[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -5705,7 +5705,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.application_section_inserts[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.application_section_inserts[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -5748,7 +5748,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.catalog_cache_lookups[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.catalog_cache_lookups[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -5791,7 +5791,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.catalog_cache_inserts[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.catalog_cache_inserts[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -5834,7 +5834,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.catalog_cache_overflows[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.catalog_cache_overflows[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -5877,7 +5877,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.catalog_cache_high_water_mark[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.catalog_cache_high_water_mark[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -5920,7 +5920,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.catalog_cache_statistics_size[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.catalog_cache_statistics_size[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -5963,7 +5963,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.number_of_hash_joins[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.number_of_hash_joins[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -6006,7 +6006,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.number_of_hash_loops[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.number_of_hash_loops[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -6049,7 +6049,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.number_of_hash_join_overflows[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.number_of_hash_join_overflows[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -6092,7 +6092,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.number_of_small_hash_join_overflows[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.number_of_small_hash_join_overflows[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -6135,7 +6135,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.post_threshold_hash_joins_shared_memory[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.post_threshold_hash_joins_shared_memory[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -6178,7 +6178,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.active_hash_joins[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.active_hash_joins[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -6221,7 +6221,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.number_of_olap_functions[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.number_of_olap_functions[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -6264,7 +6264,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.number_of_olap_function_overflows[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.number_of_olap_function_overflows[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -6307,7 +6307,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.active_olap_functions[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.active_olap_functions[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -6350,7 +6350,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.statistic_fabrications[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.statistic_fabrications[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -6393,7 +6393,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.synchronous_runstats[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.synchronous_runstats[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -6436,7 +6436,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.asynchronous_runstats[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.asynchronous_runstats[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -6479,7 +6479,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.total_statistic_fabrication_time_milliseconds[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.total_statistic_fabrication_time_milliseconds[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -6522,7 +6522,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.total_synchronous_runstats_time_milliseconds[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
+                    <key>db2stat.total_synchronous_runstats_time_milliseconds[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -6565,7 +6565,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.backup_restore_util_heap_current[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME},{$NODE}]</key>
+                    <key>db2stat.backup_restore_util_heap_current[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME},{$NODE}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -6608,7 +6608,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.backup_restore_util_heap_configured[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME},{$NODE}]</key>
+                    <key>db2stat.backup_restore_util_heap_configured[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME},{$NODE}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -6651,7 +6651,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.package_cache_heap_size_current[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME},{$NODE}]</key>
+                    <key>db2stat.package_cache_heap_size_current[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME},{$NODE}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -6694,7 +6694,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.package_cache_heap_size_configured[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME},{$NODE}]</key>
+                    <key>db2stat.package_cache_heap_size_configured[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME},{$NODE}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -6737,7 +6737,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.other_memory_current[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME},{$NODE}]</key>
+                    <key>db2stat.other_memory_current[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME},{$NODE}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -6780,7 +6780,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.other_memory_configured[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME},{$NODE}]</key>
+                    <key>db2stat.other_memory_configured[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME},{$NODE}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -6823,7 +6823,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.catalog_cache_heap_size_current[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME},{$NODE}]</key>
+                    <key>db2stat.catalog_cache_heap_size_current[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME},{$NODE}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -6866,7 +6866,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.catalog_cache_heap_size_configured[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME},{$NODE}]</key>
+                    <key>db2stat.catalog_cache_heap_size_configured[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME},{$NODE}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -6909,7 +6909,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.shared_sort_heap_current[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME},{$NODE}]</key>
+                    <key>db2stat.shared_sort_heap_current[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME},{$NODE}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -6952,7 +6952,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.shared_sort_heap_configured[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME},{$NODE}]</key>
+                    <key>db2stat.shared_sort_heap_configured[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME},{$NODE}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -6995,7 +6995,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.lock_manager_heap_current[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME},{$NODE}]</key>
+                    <key>db2stat.lock_manager_heap_current[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME},{$NODE}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -7038,7 +7038,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.lock_manager_heap_configured[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME},{$NODE}]</key>
+                    <key>db2stat.lock_manager_heap_configured[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME},{$NODE}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -7081,7 +7081,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.database_heap_current[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME},{$NODE}]</key>
+                    <key>db2stat.database_heap_current[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME},{$NODE}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -7124,7 +7124,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.database_heap_configured[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME},{$NODE}]</key>
+                    <key>db2stat.database_heap_configured[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME},{$NODE}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -7167,7 +7167,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.applications_shared_heap_current[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME},{$NODE}]</key>
+                    <key>db2stat.applications_shared_heap_current[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME},{$NODE}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
@@ -7210,7 +7210,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>db2stat.applications_shared_heap_configured[{$REFRESH_INTERVAL},{$DATABASE_PATH},{$DATABASE_NAME},{$NODE}]</key>
+                    <key>db2stat.applications_shared_heap_configured[{$REFRESH_INTERVAL},{$DATABASE_INSTANCE},{$DATABASE_PATH},{$DATABASE_NAME},{$NODE}]</key>
                     <delay>30</delay>
                     <history>30</history>
                     <trends>90</trends>
