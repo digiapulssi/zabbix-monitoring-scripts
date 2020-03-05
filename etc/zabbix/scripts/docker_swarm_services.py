@@ -10,7 +10,7 @@ import sys
 # Declare variables
 modes = ["discovery", "node_hostname", "service_name", "task_status",
          "service_uptime"] # List for available modes
-nodes = {} # Dictionary for docker node data
+services = {} # Dictionary for Docker service data
 
 # Parse command-line arguments
 parser = ArgumentParser(
@@ -18,8 +18,8 @@ parser = ArgumentParser(
 )
 parser.add_argument("mode", choices=modes, help="Discovery or metric: " + \
                     ", ".join(modes))
-parser.add_argument("-n", "--node_id", type=str,
-                    help="ID for Docker node to retrieve information.")
+parser.add_argument("-s", "--service", type=str,
+                    help="Service name to retrieve information of.")
 args = parser.parse_args()
 
 # Retrieve docker client instance using environment settings
@@ -49,7 +49,7 @@ for service in client.services.list():
         )
 
     # Loop tasks to collect data
-    for task in service.tasks():
+    for task in service.tasks({"desired-state": "running"}):
 
         # Parse task date for comparisons
         if (sys.version_info > (3, 0)):
@@ -94,7 +94,7 @@ for service in client.services.list():
     minutes, seconds = divmod(remainder, 60)
 
     # Append data to dictionary
-    nodes[node_id] = {
+    services[service.name] = {
         "service_name": service.name,
         "service_uptime": "{} days, {} hours, {} minutes, {} seconds.".format(
             uptime.days, int(hours), int(minutes), int(seconds)
@@ -103,21 +103,22 @@ for service in client.services.list():
     }
 
 # Loop nodes for additional information
+"""
 for node in client.nodes.list():
     if node.attrs.get("ID") in nodes:
         nodes[node.attrs.get("ID")]["node_hostname"] = node.attrs.get(
             "Description").get("Hostname")
+"""
 
 # Loop node data and create discovery
 if args.mode == "discovery":
     output = []
-    for node_id, node in nodes.items():
+    for service_name, service in services.items():
         output.append({
-            "{#NODE_HOSTNAME}": node.get("node_hostname"),
-            "{#NODE_ID}": node_id,
-            "{#SERVICE_NAME}": node.get("service_name"),
-            "{#SERVICE_UPTIME}": node.get("service_uptime"),
-            "{#TASK_STATUS}": node.get("task_status")
+            #"{#NODE_HOSTNAME}": service.get("node_hostname"),
+            "{#SERVICE_NAME}": service.get("service_name"),
+            "{#SERVICE_UPTIME}": service.get("service_uptime"),
+            "{#TASK_STATUS}": service.get("task_status")
         })
 
     # Dump discovery
@@ -126,11 +127,11 @@ if args.mode == "discovery":
 
 # Retrieve task status from service's tasks
 else:
-    if not nodes.get(args.node_id):
+    if not services.get(args.service):
         print("Invalid node ID.")
         sys.exit()
-    elif not nodes[args.node_id].get(args.mode):
+    elif not services[args.service].get(args.mode):
         print("Invalid mode argument.")
         sys.exit()
     else:
-        print(nodes[args.node_id].get(args.mode))
+        print(services[args.service].get(args.mode))
