@@ -25,28 +25,25 @@ args = parser.parse_args()
 # Retrieve docker client instance using environment settings
 client = docker.from_env()
 
+# Parse system time from Docker, use timezones on Python 3
+if (sys.version_info > (3, 0)):
+    system_time = datetime.datetime.strptime(
+        client.info().get("SystemTime"),
+        "%Y-%m-%dT%H:%M:%S.%f%z"
+    )
+else:
+    system_time = datetime.datetime.strptime(
+        client.info().get("SystemTime")[:-4],
+        "%Y-%m-%dT%H:%M:%S.%f"
+    )
+
 # Loop services and tasks. Retrieve IDs for nodes where task is running.
 for service in client.services.list():
 
     # Reset task variables for each service
     created_date = None
-    node_id = None
     node_status = None
-    prev_date = None
-    updated_date = None
-    updated_last = None
-
-    # Parse service's creation date, use timezones on Python 3
-    if (sys.version_info > (3, 0)):
-        service_created = datetime.datetime.strptime(
-            service.attrs.get("CreatedAt"),
-            "%Y-%m-%dT%H:%M:%S.%f%z"
-        )
-    else:
-        service_created = datetime.datetime.strptime(
-            service.attrs.get("CreatedAt")[:-4],
-            "%Y-%m-%dT%H:%M:%S.%f"
-        )
+    task_created = None
 
     # Loop tasks to collect data
     for task in service.tasks({"desired-state": "running"}):
@@ -57,48 +54,28 @@ for service in client.services.list():
                 task.get("CreatedAt"),
                 "%Y-%m-%dT%H:%M:%S.%f%z"
             )
-            updated_date = datetime.datetime.strptime(
-                task.get("UpdatedAt"),
-                "%Y-%m-%dT%H:%M:%S.%f%z"
-            )
         else:
             created_date = datetime.datetime.strptime(
                 task.get("CreatedAt")[:-4],
                 "%Y-%m-%dT%H:%M:%S.%f"
             )
-            updated_date = datetime.datetime.strptime(
-                task.get("UpdatedAt")[:-4],
-                "%Y-%m-%dT%H:%M:%S.%f"
-            )
-
-        # Retrieve the lastest update time
-        if not updated_last:
-            updated_last = updated_date
-        elif updated_last < updated_date:
-            updated_last = updated_date
 
         # First time around, grab the first task
-        if not node_id:
-            prev_date = created_date
-            node_id = task.get("NodeID")
+        if not task_created:
+            task_created = created_date
             node_status = task.get("Status").get("State")
         # Compare previous task's date to current one
-        elif prev_date < created_date:
-            prev_date = created_date
-            node_id = task.get("NodeID")
+        elif task_created < created_date:
+            task_created = created_date
             node_status = task.get("Status").get("State")
 
-    # Count uptime days, hours, minutes and seconds
-    uptime = updated_last - service_created
-    hours, remainder = divmod(uptime.seconds, 3600)
-    minutes, seconds = divmod(remainder, 60)
+    # Count uptime
+    uptime = system_time - task_created
 
     # Append data to dictionary
     services[service.name] = {
         "service_name": service.name,
-        "service_uptime": "{} days, {} hours, {} minutes, {} seconds.".format(
-            uptime.days, int(hours), int(minutes), int(seconds)
-        ),
+        "service_uptime": uptime.total_seconds(),
         "task_status": node_status
     }
 
@@ -128,7 +105,7 @@ if args.mode == "discovery":
 # Retrieve task status from service's tasks
 else:
     if not services.get(args.service):
-        print("Invalid node ID.")
+        print("Invalid service name.")
         sys.exit()
     elif not services[args.service].get(args.mode):
         print("Invalid mode argument.")
