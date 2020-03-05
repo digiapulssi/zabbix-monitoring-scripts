@@ -42,13 +42,14 @@ for service in client.services.list():
 
     # Reset task variables for each service
     created_date = None
-    node_status = None
     task_created = None
+    task_status = "not running"
+    uptime = datetime.timedelta()
 
     # Loop tasks to collect data
     for task in service.tasks({"desired-state": "running"}):
 
-        # Parse task date for comparisons
+        # Parse task creation date for comparison, use timezones on Python 3
         if (sys.version_info > (3, 0)):
             created_date = datetime.datetime.strptime(
                 task.get("CreatedAt"),
@@ -63,20 +64,21 @@ for service in client.services.list():
         # First time around, grab the first task
         if not task_created:
             task_created = created_date
-            node_status = task.get("Status").get("State")
+            task_status = task.get("Status").get("State")
         # Compare previous task's date to current one
         elif task_created < created_date:
             task_created = created_date
-            node_status = task.get("Status").get("State")
+            task_status = task.get("Status").get("State")
 
     # Count uptime
-    uptime = system_time - task_created
+    if task_created:
+        uptime = system_time - task_created
 
     # Append data to dictionary
     services[service.name] = {
         "service_name": service.name,
         "service_uptime": uptime.total_seconds(),
-        "task_status": node_status
+        "task_status": task_status
     }
 
 # Loop nodes for additional information
