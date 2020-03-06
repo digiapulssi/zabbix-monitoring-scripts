@@ -8,9 +8,8 @@ import json
 import sys
 
 # Declare variables
-modes = ["discovery", "node_hostname", "service_name", "task_status",
-         "service_uptime"] # List for available modes
-services = {} # Dictionary for Docker service data
+modes = ["discovery", "hostname", "status", "uptime"] # Available modes
+services = {} # Dictionary for Docker service(s) data
 
 # Parse command-line arguments
 parser = ArgumentParser(
@@ -19,7 +18,7 @@ parser = ArgumentParser(
 parser.add_argument("mode", choices=modes, help="Discovery or metric: " + \
                     ", ".join(modes))
 parser.add_argument("-s", "--service", type=str,
-                    help="Service name to retrieve information of.")
+                    help="Service name to retrieve information from.")
 args = parser.parse_args()
 
 # Retrieve docker client instance using environment settings
@@ -37,16 +36,17 @@ else:
         "%Y-%m-%dT%H:%M:%S.%f"
     )
 
-# Loop services and tasks. Retrieve IDs for nodes where task is running.
+# Loop services and tasks and retrieve information
 for service in client.services.list():
 
     # Reset task variables for each service
-    created_date = None
-    task_created = None
-    task_status = "not running"
-    uptime = datetime.timedelta()
+    created_date = None # Task's creation date
+    nodes = [] # A list of nodes where task is currently running
+    task_created = None # A datetime object for latest task's creation date
+    task_status = "not running" # Task status, default is "not running"
+    uptime = datetime.timedelta() # A datetime object for latest task's uptime
 
-    # Loop tasks to collect data
+    # Loop tasks to collect data, but only from running tasks
     for task in service.tasks({"desired-state": "running"}):
 
         # Parse task creation date for comparison, use timezones on Python 3
@@ -70,41 +70,50 @@ for service in client.services.list():
             task_created = created_date
             task_status = task.get("Status").get("State")
 
+        # Grab node ID for later matching from nodes list
+        nodes.append(task.get("NodeID"))
+
     # Count uptime
     if task_created:
         uptime = system_time - task_created
 
-    # Append data to dictionary
+    # Append service data to dictionary
     services[service.name] = {
-        "service_name": service.name,
-        "service_uptime": uptime.total_seconds(),
-        "task_status": task_status
+        "nodes": nodes,
+        "status": task_status,
+        "uptime": uptime.total_seconds()
     }
 
-# Loop nodes for additional information
-"""
-for node in client.nodes.list():
-    if node.attrs.get("ID") in nodes:
-        nodes[node.attrs.get("ID")]["node_hostname"] = node.attrs.get(
-            "Description").get("Hostname")
-"""
+# Loop services and nodes to retrieve additional information
+for name, service in services.items():
 
-# Loop node data and create discovery
+    # List of hostnames for nodes
+    hostnames = []
+
+    # Loop nodes and match node IDs, try to retrieve hostname(s) for nodes
+    for node in client.nodes.list():
+        if node.attrs.get("ID") in service.get("nodes"):
+            hostnames.append(node.attrs.get("Description").get("Hostname"))
+
+    # Append hostnames to services-dictionary
+    services[name]["hostname"] = ", ".join(hostnames)
+
+# Loop service data and create discovery
 if args.mode == "discovery":
     output = []
-    for service_name, service in services.items():
+    for name, service in services.items():
         output.append({
-            #"{#NODE_HOSTNAME}": service.get("node_hostname"),
-            "{#SERVICE_NAME}": service.get("service_name"),
-            "{#SERVICE_UPTIME}": service.get("service_uptime"),
-            "{#TASK_STATUS}": service.get("task_status")
+            "{#HOSTNAME}": service.get("hostname"),
+            "{#SERVICE}": name,
+            "{#UPTIME}": service.get("uptime"),
+            "{#STATUS}": service.get("status")
         })
 
     # Dump discovery
     discovery = {"data": output}
     print(json.dumps(discovery))
 
-# Retrieve task status from service's tasks
+# Retrieve service information using command-line arguments
 else:
     if not services.get(args.service):
         print("Invalid service name.")
