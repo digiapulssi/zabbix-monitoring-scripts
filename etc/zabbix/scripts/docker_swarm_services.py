@@ -103,10 +103,10 @@ if args.mode == "discovery":
     output = []
     for name, service in services.items():
         output.append({
-            "{#HOSTNAME}": service.get("hostname"),
             "{#SERVICE}": name,
-            "{#UPTIME}": service.get("uptime"),
-            "{#STATUS}": service.get("status")
+            "hostname": service.get("hostname"),
+            "uptime": service.get("uptime"),
+            "status": service.get("status")
         })
 
     # Dump discovery
