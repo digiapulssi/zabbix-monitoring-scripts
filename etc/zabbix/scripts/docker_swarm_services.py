@@ -29,8 +29,13 @@ system_time = datetime.datetime.strptime(
     "%Y-%m-%dT%H:%M:%S.%f"
 )
 
+# Limit results to specific service if service parameter is used
+service_filters = {}
+if args.service:
+    service_filters["name"] = args.service
+
 # Loop services and tasks and retrieve information
-for service in client.services.list():
+for service in client.services.list(filters=service_filters):
 
     # Reset task variables for each service
     created_date = None # Task's creation date
