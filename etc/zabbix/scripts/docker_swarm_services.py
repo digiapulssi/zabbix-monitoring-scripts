@@ -93,6 +93,7 @@ if args.mode == "discovery":
             "{#SERVICE}": name,
             "hostname": service.get("hostname"),
             "uptime": service.get("uptime"),
+            "service": name,
             "status": service.get("status")
         })
 
