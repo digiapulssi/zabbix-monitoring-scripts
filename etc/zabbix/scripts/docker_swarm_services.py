@@ -5,7 +5,6 @@ from argparse import ArgumentParser
 import datetime
 import docker
 import json
-import sys
 
 # Declare variables
 modes = ["discovery", "hostname", "status", "uptime"] # Available modes
@@ -24,17 +23,11 @@ args = parser.parse_args()
 # Retrieve docker client instance using environment settings
 client = docker.from_env()
 
-# Parse system time from Docker, use timezones on Python 3
-if (sys.version_info > (3, 0)):
-    system_time = datetime.datetime.strptime(
-        client.info().get("SystemTime"),
-        "%Y-%m-%dT%H:%M:%S.%f%z"
-    )
-else:
-    system_time = datetime.datetime.strptime(
-        client.info().get("SystemTime")[:-4],
-        "%Y-%m-%dT%H:%M:%S.%f"
-    )
+# Parse system time from Docker, skip timezone information
+system_time = datetime.datetime.strptime(
+    client.info().get("SystemTime")[:-4],
+    "%Y-%m-%dT%H:%M:%S.%f"
+)
 
 # Loop services and tasks and retrieve information
 for service in client.services.list():
@@ -49,17 +42,11 @@ for service in client.services.list():
     # Loop tasks to collect data, but only from running tasks
     for task in service.tasks({"desired-state": "running"}):
 
-        # Parse task creation date for comparison, use timezones on Python 3
-        if (sys.version_info > (3, 0)):
-            created_date = datetime.datetime.strptime(
-                task.get("CreatedAt"),
-                "%Y-%m-%dT%H:%M:%S.%f%z"
-            )
-        else:
-            created_date = datetime.datetime.strptime(
-                task.get("CreatedAt")[:-4],
-                "%Y-%m-%dT%H:%M:%S.%f"
-            )
+        # Parse task creation date for comparison, skip timezone information
+        created_date = datetime.datetime.strptime(
+            task.get("CreatedAt")[:-4],
+            "%Y-%m-%dT%H:%M:%S.%f"
+        )
 
         # First time around, grab the first task
         if not task_created:
@@ -117,9 +104,7 @@ if args.mode == "discovery":
 else:
     if not services.get(args.service):
         print("Invalid service name.")
-        sys.exit()
     elif not services[args.service].get(args.mode):
         print("Invalid mode argument.")
-        sys.exit()
     else:
         print(services[args.service].get(args.mode))
