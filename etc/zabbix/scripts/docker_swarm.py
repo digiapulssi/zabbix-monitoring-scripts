@@ -1,5 +1,22 @@
 #!/usr/bin/python
 
+"""
+Docker Swarm service monitoring
+Version: 1.0
+
+Usage:
+python3 docker_swarm.py discovery
+python3 docker_swarm.py <mode> --service <service>
+
+Discover Docker Swarm services (with service data as an array):
+python3 docker_swarm.py discovery
+
+Retrieve service hostname, status or uptime:
+python3 docker_swarm.py hostname --service <service_name>
+python3 docker_swarm.py status --service <service_name>
+python3 docker_swarm.py uptime --service <service_name>
+"""
+
 # Python imports
 from argparse import ArgumentParser
 import datetime
