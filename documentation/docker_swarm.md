@@ -34,7 +34,9 @@ docker.swarm.uptime | Retrieve uptime for specified service. | Seconds. |
 
 ## Retrieving data from discovery using JSONPath
 
-In this example, service hostname can be retrieved using JSONPath:
+In this example, service data can be retrieved using JSONPath:
 ```
 $.data[?(@.service == "<service_name>")].hostname
+$.data[?(@.service == "<service_name>")].status
+$.data[?(@.service == "<service_name>")].uptime
 ```
