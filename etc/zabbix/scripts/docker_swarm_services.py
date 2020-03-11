@@ -71,24 +71,27 @@ for service in client.services.list(filters=service_filters):
 
     # Append service data to dictionary
     services[service.name] = {
+        "hostname": "",
         "nodes": nodes,
         "status": task_status,
         "uptime": uptime.total_seconds()
     }
 
 # Loop services and nodes to retrieve additional information
-for name, service in services.items():
+for node in client.nodes.list():
+    for name, service in services.items():
 
-    # List of hostnames for nodes
-    hostnames = []
-
-    # Loop nodes and match node IDs, try to retrieve hostname(s) for nodes
-    for node in client.nodes.list():
+        # Match node ID to service's node IDs
         if node.attrs.get("ID") in service.get("nodes"):
-            hostnames.append(node.attrs.get("Description").get("Hostname"))
 
-    # Append hostnames to services-dictionary
-    services[name]["hostname"] = ", ".join(hostnames)
+            # Add comma if hostnames already have items
+            if services[name].get("hostname"):
+                services[name]["hostname"] += ", "
+
+            # Add node hostname to services dictionary
+            services[name]["hostname"] += "{}".format(
+                node.attrs.get("Description").get("Hostname")
+            )
 
 # Loop service data and create discovery
 if args.mode == "discovery":
