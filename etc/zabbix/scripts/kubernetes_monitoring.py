@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 """
-Kubernetes service monitoring
+Kubernetes monitoring
 Version: 1.0
 
 Usage:
@@ -12,12 +12,14 @@ python3 kubernetes_monitoring.py nodes
 # Python imports
 from argparse import ArgumentParser
 import json
+import sys
 
 # 3rd party imports
 from kubernetes import client, config
 
 # Declare variables
 modes = ["pods", "nodes"] # Available modes
+output = [] # List for output data
 
 # Parse command-line arguments
 parser = ArgumentParser(
@@ -39,7 +41,11 @@ args = parser.parse_args()
 filters = [] # Filters for pods/nodes listings
 
 # Load kubernetes configuration
-config.load_kube_config()
+try:
+    config.load_kube_config()
+except Exception as e:
+    print("Unable to load Kubernetes configurations. Error: {}".format(e))
+    sys.exit()
 
 # Initialize client using environment settings
 v1 = client.CoreV1Api()
@@ -53,7 +59,6 @@ if args.mode == "pods":
     if args.status:
         filters.append(args.status)
 
-    output = []
     pods = v1.list_pod_for_all_namespaces(
         watch=False,
         field_selector="{},{}".format(
@@ -62,12 +67,14 @@ if args.mode == "pods":
         )
     )
 
-    for item in pods.items:
-        output.append({
-            "{#POD}": item.metadata.name,
-            "namespace": item.metadata.namespace,
-            "ip": item.status.pod_ip
-        })
+    # Check pods before listing
+    if pods:
+        for item in pods.items:
+            output.append({
+                "{#POD}": item.metadata.name,
+                "namespace": item.metadata.namespace,
+                "ip": item.status.pod_ip
+            })
 
     # Dump discovery
     discovery = {"data": output}
@@ -75,7 +82,6 @@ if args.mode == "pods":
 
 # Loop nodes and create discovery
 elif args.mode == "nodes":
-    output = []
     nodes = v1.list_node()
     for item in nodes.items:
         output.append({
