@@ -12,6 +12,7 @@ python3 kubernetes_monitoring.py nodes
 # Python imports
 from argparse import ArgumentParser
 import json
+import os
 import sys
 
 # 3rd party imports
@@ -28,6 +29,9 @@ parser = ArgumentParser(
 parser.add_argument("mode", choices=modes, help="Discovery or metric: " + \
                     ", ".join(modes))
 
+parser.add_argument("-c", "--config", default="", type=str,
+                    help="Filter results by namespace.")
+
 parser.add_argument("-n", "--namespace",
                     default="metadata.namespace!=kube-system", type=str,
                     help="Filter results by namespace.")
@@ -40,9 +44,18 @@ args = parser.parse_args()
 # Declare variables
 filters = [] # Filters for pods/nodes listings
 
+# Check configuration file
+if args.config != "":
+    if not os.path.isfile(args.config):
+        print("Configuration file is not valid.")
+        sys.exit()
+
 # Load kubernetes configuration
 try:
-    config.load_kube_config()
+    if args.config != "":
+        config.load_kube_config(config_file=args.config)
+    else:
+        config.load_kube_config()
 except Exception as e:
     print("Unable to load Kubernetes configurations. Error: {}".format(e))
     sys.exit()
