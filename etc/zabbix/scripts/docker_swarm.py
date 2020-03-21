@@ -2,7 +2,7 @@
 
 """
 Docker Swarm service monitoring
-Version: 1.0
+Version: 1.0.1
 
 Usage:
 python3 docker_swarm.py discovery
@@ -20,8 +20,11 @@ python3 docker_swarm.py uptime --service <service_name>
 # Python imports
 from argparse import ArgumentParser
 import datetime
-import docker
 import json
+
+# 3rd party imports
+import dateutil.parser
+import docker
 
 # Declare variables
 modes = ["discovery", "hostname", "status", "uptime"] # Available modes
@@ -40,11 +43,8 @@ args = parser.parse_args()
 # Retrieve docker client instance using environment settings
 client = docker.from_env()
 
-# Parse system time from Docker, skip timezone information
-system_time = datetime.datetime.strptime(
-    client.info().get("SystemTime")[:-4],
-    "%Y-%m-%dT%H:%M:%S.%f"
-)
+# Parse system time from Docker
+system_time = dateutil.parser.parse(client.info().get("SystemTime"))
 
 # Limit results to specific service if service parameter is used
 service_filters = {}
@@ -64,11 +64,8 @@ for service in client.services.list(filters=service_filters):
     # Loop tasks to collect data, but only from running tasks
     for task in service.tasks({"desired-state": "running"}):
 
-        # Parse task creation date for comparison, skip timezone information
-        created_date = datetime.datetime.strptime(
-            task.get("CreatedAt")[:-4],
-            "%Y-%m-%dT%H:%M:%S.%f"
-        )
+        # Parse task creation date for comparison
+        created_date = dateutil.parser.parse(task.get("CreatedAt"))
 
         # First time around, grab the first task
         if not task_created:
