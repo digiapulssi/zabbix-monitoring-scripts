@@ -7,13 +7,13 @@ Requirements:
 
 ## For Python version 3, install dependencies using pip:
 ```
-pip3 install docker requests urllib3
+pip3 install docker requests urllib3 python-dateutil
 ```
 
 
 ## For Python version 2, install specific versions of libraries:
 ```
-pip install docker==2.7.0 requests==2.23.0 urllib3==1.24.3
+pip install docker==2.7.0 requests==2.23.0 urllib3==1.24.3 python-dateutil==2.8.1
 ```
 
 
