@@ -7,6 +7,7 @@ Version: 1.0
 Usage:
 python3 kubernetes_monitoring.py pods
 python3 kubernetes_monitoring.py nodes
+python3 kubernetes_monitoring.py services
 """
 
 # Python imports
@@ -19,7 +20,8 @@ import sys
 from kubernetes import client, config
 
 # Declare variables
-modes = ["pods", "nodes"] # Available modes
+field_selectors = [] # Field selectors to filter results.
+modes = ["pods", "nodes", "services"] # Available modes
 output = [] # List for output data
 
 # Parse command-line arguments
@@ -30,19 +32,12 @@ parser.add_argument("mode", choices=modes, help="Discovery or metric: " + \
                     ", ".join(modes))
 
 parser.add_argument("-c", "--config", default="", type=str,
-                    help="Filter results by namespace.")
+                    help="Configuration file for Kubernetes client connection.")
 
-parser.add_argument("-n", "--namespace",
-                    default="metadata.namespace!=kube-system", type=str,
-                    help="Filter results by namespace.")
-
-parser.add_argument("-s", "--status", default="status.phase=Running", type=str,
-                    help="Filter results by status phase.")
+parser.add_argument("-f", "--field-selector", dest="field_selector", type=str,
+                    help="Filter results using field selectors.")
 
 args = parser.parse_args()
-
-# Declare variables
-filters = [] # Filters for pods/nodes listings
 
 # Check configuration file
 if args.config != "":
@@ -66,18 +61,18 @@ v1 = client.CoreV1Api()
 # Loop pods and create discovery
 if args.mode == "pods":
 
-    # Append command-line arguments to filters
-    if args.namespace:
-        filters.append(args.namespace),
-    if args.status:
-        filters.append(args.status)
+    # Default field selectors for pods when no field selectors are given.
+    # Possible status phase values are: Pending, Running, Succeeded,
+    # Failed or Unknown.
+    if args.field_selector is None:
+        field_selectors.append("metadata.namespace!=kube-system")
+        field_selectors.append("status.phase=Running")
+    else:
+        field_selectors.append(args.field_selector)
 
     pods = v1.list_pod_for_all_namespaces(
         watch=False,
-        field_selector="{},{}".format(
-            args.status,
-            args.namespace
-        )
+        field_selector=",".join(field_selectors)
     )
 
     # Check pods before listing
@@ -85,8 +80,9 @@ if args.mode == "pods":
         for item in pods.items:
             output.append({
                 "{#POD}": item.metadata.name,
+                "ip": item.status.pod_ip,
                 "namespace": item.metadata.namespace,
-                "ip": item.status.pod_ip
+                "pod": item.metadata.name
             })
 
     # Dump discovery
@@ -96,10 +92,31 @@ if args.mode == "pods":
 # Loop nodes and create discovery
 elif args.mode == "nodes":
     nodes = v1.list_node()
-    for item in nodes.items:
-        output.append({
-            "{#NODE}": item.status.node_info.system_uuid
-        })
+    if nodes:
+        for item in nodes.items:
+            output.append({
+                "{#NODE}": item.status.node_info.machine_id,
+                "node": item.status.node_info.machine_id,
+                "architecture": item.status.node_info.architecture,
+                "kernel_version": item.status.node_info.kernel_version,
+                "machine_id": item.status.node_info.machine_id,
+                "operating_system": item.status.node_info.operating_system,
+                "os_image": item.status.node_info.os_image,
+                "system_uuid": item.status.node_info.system_uuid
+            })
+
+    # Dump discovery
+    discovery = {"data": output}
+    print(json.dumps(discovery))
+
+# Loop services and create discovery
+elif args.mode == "services":
+    services = v1.list_service_for_all_namespaces()
+    if services:
+        for item in services.items:
+            output.append({
+                "{#SERVICE}": item.metadata.name
+            })
 
     # Dump discovery
     discovery = {"data": output}
