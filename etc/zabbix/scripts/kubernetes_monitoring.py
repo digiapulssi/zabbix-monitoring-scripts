@@ -20,8 +20,8 @@ import sys
 from kubernetes import client, config
 
 # Declare variables
-field_selectors = [] # Field selectors to filter results.
-modes = ["pods", "nodes", "services"] # Available modes
+field_selector = "" # Field selector filter for results.
+modes = ["pod", "node", "service"] # Available modes
 output = [] # List for output data
 
 # Parse command-line arguments
@@ -36,6 +36,9 @@ parser.add_argument("-c", "--config", default="", type=str,
 
 parser.add_argument("-f", "--field-selector", dest="field_selector", type=str,
                     help="Filter results using field selectors.")
+
+parser.add_argument("-m", "--metric", type=str,
+                    help="Metric to retrieve when using metric mode.")
 
 args = parser.parse_args()
 
@@ -58,31 +61,41 @@ except Exception as e:
 # Initialize client using environment settings
 v1 = client.CoreV1Api()
 
+# Default field selectors for pods when keyword is given. Possible status
+# phase values are: Pending, Running, Succeeded, Failed or Unknown.
+if args.mode == "pod" and args.field_selector == "default":
+    field_selector = "metadata.namespace!=kube-system,status.phase=Running"
+elif args.field_selector is None:
+    pass
+elif len(args.field_selector) > 3:
+    field_selector = args.field_selector
+
 # Loop pods and create discovery
-if args.mode == "pods":
-
-    # Default field selectors for pods when no field selectors are given.
-    # Possible status phase values are: Pending, Running, Succeeded,
-    # Failed or Unknown.
-    if args.field_selector is None:
-        field_selectors.append("metadata.namespace!=kube-system")
-        field_selectors.append("status.phase=Running")
-    else:
-        field_selectors.append(args.field_selector)
-
+if args.mode == "pod":
     pods = v1.list_pod_for_all_namespaces(
         watch=False,
-        field_selector=",".join(field_selectors)
+        field_selector=field_selector
     )
 
     # Check pods before listing
     if pods:
-        for item in pods.items:
+        for pod in pods.items:
+
+            # Retrieve container's restart counts
+            restart_count = []
+            for container in pod.status.container_statuses:
+                restart_count.append("{}: {}".format(
+                    container.name,
+                    container.restart_count
+                ))
+
+            # Append information to output list
             output.append({
-                "{#POD}": item.metadata.name,
-                "ip": item.status.pod_ip,
-                "namespace": item.metadata.namespace,
-                "pod": item.metadata.name
+                "{#POD}": pod.metadata.name,
+                "restart_count": ", ".join(restart_count),
+                "ip": pod.status.pod_ip,
+                "namespace": pod.metadata.namespace,
+                "pod": pod.metadata.name
             })
 
     # Dump discovery
@@ -90,19 +103,28 @@ if args.mode == "pods":
     print(json.dumps(discovery))
 
 # Loop nodes and create discovery
-elif args.mode == "nodes":
+elif args.mode == "node":
     nodes = v1.list_node()
     if nodes:
-        for item in nodes.items:
+        for node in nodes.items:
+
+            # Node status is retrieved from node's conditions. Possible
+            # conditions are: Ready, MemoryPressure, PIDPressure, DiskPressure
+            # and NetworkUnavailable. We are interested only in the main one,
+            # "Ready", which describes if the node is healthy and ready to
+            # accept pods.
+            status = False
+            for condition in node.status.conditions:
+                if condition.type == "Ready":
+                    status = bool(condition.status)
+
+            # Append information to output list
             output.append({
-                "{#NODE}": item.status.node_info.machine_id,
-                "node": item.status.node_info.machine_id,
-                "architecture": item.status.node_info.architecture,
-                "kernel_version": item.status.node_info.kernel_version,
-                "machine_id": item.status.node_info.machine_id,
-                "operating_system": item.status.node_info.operating_system,
-                "os_image": item.status.node_info.os_image,
-                "system_uuid": item.status.node_info.system_uuid
+                "{#NODE}": node.status.node_info.machine_id,
+                "node": node.status.node_info.machine_id,
+                "machine_id": node.status.node_info.machine_id,
+                "status": status,
+                "system_uuid": node.status.node_info.system_uuid
             })
 
     # Dump discovery
@@ -110,12 +132,14 @@ elif args.mode == "nodes":
     print(json.dumps(discovery))
 
 # Loop services and create discovery
-elif args.mode == "services":
+elif args.mode == "service":
     services = v1.list_service_for_all_namespaces()
     if services:
-        for item in services.items:
+        for service in services.items:
+
+            # Append information to output list
             output.append({
-                "{#SERVICE}": item.metadata.name
+                "{#SERVICE}": service.metadata.name
             })
 
     # Dump discovery
