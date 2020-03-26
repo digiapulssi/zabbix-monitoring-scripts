@@ -105,10 +105,10 @@ elif args.mode == "nodes":
             # and NetworkUnavailable. We are interested only in the main one,
             # "Ready", which describes if the node is healthy and ready to
             # accept pods.
-            status = False
+            status = ""
             for condition in node.status.conditions:
                 if condition.type == "Ready":
-                    status = bool(condition.status)
+                    status = condition.status
 
             # Append information to output list
             output.append({
