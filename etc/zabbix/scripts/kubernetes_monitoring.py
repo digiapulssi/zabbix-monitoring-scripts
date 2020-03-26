@@ -5,10 +5,10 @@ Kubernetes monitoring
 Version: 1.0
 
 Usage:
-python3 kubernetes_monitoring.py pods
-python3 kubernetes_monitoring.py pods -c <config_file> -f <field_selector>
-python3 kubernetes_monitoring.py nodes
-python3 kubernetes_monitoring.py services
+python kubernetes_monitoring.py pods
+python kubernetes_monitoring.py pods -c <config_file> -f <field_selector>
+python kubernetes_monitoring.py nodes
+python kubernetes_monitoring.py services
 """
 
 # Python imports

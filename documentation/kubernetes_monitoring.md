@@ -5,10 +5,9 @@ Requirements:
 - 3rd party libraries for Python: kubernetes.
 
 
-## For Python version 2/3, install dependencies using pip/pip3:
+## For Python, install dependencies using pip:
 ```
 pip install kubernetes
-pip3 install kubernetes
 ```
 
 
