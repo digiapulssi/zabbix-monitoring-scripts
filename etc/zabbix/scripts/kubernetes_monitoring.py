@@ -69,17 +69,14 @@ if args.mode == "pods":
         for pod in pods.items:
 
             # Retrieve container's restart counts
-            restart_count = []
+            restart_count = 0
             for container in pod.status.container_statuses:
-                restart_count.append("{}: {}".format(
-                    container.name,
-                    container.restart_count
-                ))
+                restart_count += int(container.restart_count)
 
             # Append information to output list
             output.append({
                 "{#POD}": pod.metadata.name,
-                "restart_count": ", ".join(restart_count),
+                "restart_count": restart_count,
                 "ip": pod.status.pod_ip,
                 "namespace": pod.metadata.namespace,
                 "pod": pod.metadata.name
