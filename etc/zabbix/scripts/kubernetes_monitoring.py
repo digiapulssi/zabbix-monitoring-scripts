@@ -20,46 +20,10 @@ import sys
 # 3rd party imports
 from kubernetes import client, config
 
-# Declare variables
-field_selector = "" # Field selector filter for results.
-modes = ["pods", "nodes", "services"] # Available modes
-output = [] # List for output data
-
-# Parse command-line arguments
-parser = ArgumentParser(
-    description="Discover and retrieve metrics from Kubernetes."
-)
-parser.add_argument("mode", choices=modes, help="Discovery or mode: " + \
-                    ", ".join(modes))
-parser.add_argument("-c", "--config", default="", dest="config", type=str,
-                    help="Configuration file for Kubernetes client.")
-parser.add_argument("-f", "--field-selector", default="",
-                    dest="field_selector", type=str,
-                    help="Filter results using field selectors.")
-args = parser.parse_args()
-
-# Check configuration file
-if args.config != "":
-    if not os.path.isfile(args.config):
-        print("Configuration file is not valid.")
-        sys.exit()
-
-# Load kubernetes configuration
-try:
-    if args.config != "":
-        config.load_kube_config(config_file=args.config)
-    else:
-        config.load_kube_config()
-except Exception as e:
-    print("Unable to load Kubernetes configuration file. Error: {}".format(e))
-    sys.exit()
-
-# Initialize Kubernetes client
-v1 = client.CoreV1Api()
-
 # Loop pods and create discovery
-if args.mode == "pods":
-    pods = v1.list_pod_for_all_namespaces(
+def pods(args, client):
+
+    pods = client.list_pod_for_all_namespaces(
         watch=False,
         field_selector=args.field_selector
     )
@@ -85,10 +49,11 @@ if args.mode == "pods":
     # Dump discovery
     discovery = {"data": output}
     print(json.dumps(discovery))
+    sys.exit()
 
 # Loop nodes and create discovery
-elif args.mode == "nodes":
-    nodes = v1.list_node(
+def nodes(args, client):
+    nodes = client.list_node(
         watch=False,
         field_selector=args.field_selector
     )
@@ -121,8 +86,8 @@ elif args.mode == "nodes":
     print(json.dumps(discovery))
 
 # Loop services and create discovery
-elif args.mode == "services":
-    services = v1.list_service_for_all_namespaces(
+def services(args, client):
+    services = client.list_service_for_all_namespaces(
         watch=False,
         field_selector=args.field_selector
     )
@@ -142,3 +107,52 @@ elif args.mode == "services":
     # Dump discovery
     discovery = {"data": output}
     print(json.dumps(discovery))
+
+
+if __name__ == "__main__":
+
+    # Declare variables
+    field_selector = "" # Field selector filter for results.
+    modes = ["pods", "nodes", "services"] # Available modes
+    output = [] # List for output data
+
+    # Parse command-line arguments
+    parser = ArgumentParser(
+        description="Discover and retrieve metrics from Kubernetes.",
+        add_help=False
+    )
+    subparsers = parser.add_subparsers()
+    parser.add_argument("-c", "--config", default="", dest="config", type=str,
+                        help="Configuration file for Kubernetes client.")
+    parser.add_argument("-f", "--field-selector", default="",
+                        dest="field_selector", type=str,
+                        help="Filter results using field selectors.")
+    parser_pods = subparsers.add_parser("pods", parents=[parser])
+    parser_pods.set_defaults(func=pods)
+    parser_nodes = subparsers.add_parser("nodes", parents=[parser])
+    parser_nodes.set_defaults(func=nodes)
+    parser_services = subparsers.add_parser("services", parents=[parser])
+    parser_services.set_defaults(func=services)
+    args = parser.parse_args()
+
+    # Check configuration file
+    if args.config != "":
+        if not os.path.isfile(args.config):
+            print("Configuration file is not valid.")
+            sys.exit()
+
+    # Load kubernetes configuration
+    try:
+        if args.config != "":
+            config.load_kube_config(config_file=args.config)
+        else:
+            config.load_kube_config()
+    except Exception as e:
+        print("Unable to load Kubernetes configuration file. Error: {}".format(e))
+        sys.exit()
+
+    # Initialize Kubernetes client
+    client = client.CoreV1Api()
+
+    # Run specified mode
+    args.func(args, client)
