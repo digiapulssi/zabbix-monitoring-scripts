@@ -112,8 +112,6 @@ def services(args, client):
 if __name__ == "__main__":
 
     # Declare variables
-    field_selector = "" # Field selector filter for results.
-    modes = ["pods", "nodes", "services"] # Available modes
     output = [] # List for output data
 
     # Parse command-line arguments
