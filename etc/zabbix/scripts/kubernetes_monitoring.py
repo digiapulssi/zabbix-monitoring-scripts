@@ -21,9 +21,9 @@ import sys
 from kubernetes import client, config
 
 # Loop pods and create discovery
-def pods(args, client):
+def pods(args, v1):
 
-    pods = client.list_pod_for_all_namespaces(
+    pods = v1.list_pod_for_all_namespaces(
         watch=False,
         field_selector=args.field_selector
     )
@@ -33,9 +33,19 @@ def pods(args, client):
         for pod in pods.items:
 
             # Retrieve container's restart counts
-            restart_count = 0
+            restart_count = 0 # Container's restart count
+            started_at = None # Container's start time
+
             for container in pod.status.container_statuses:
-                restart_count += int(container.restart_count)
+
+                # First time around, grab the first container's start time
+                if not started_at:
+                    started_at = container.state.running.started_at
+                    restart_count = int(container.restart_count)
+                # Compare previous container's start time to current one
+                elif started_at < container.state.running.started_at:
+                    started_at = container.state.running.started_at
+                    restart_count = int(container.restart_count)
 
             # Append information to output list
             output.append({
@@ -52,8 +62,8 @@ def pods(args, client):
     sys.exit()
 
 # Loop nodes and create discovery
-def nodes(args, client):
-    nodes = client.list_node(
+def nodes(args, v1):
+    nodes = v1.list_node(
         watch=False,
         field_selector=args.field_selector
     )
@@ -86,8 +96,8 @@ def nodes(args, client):
     print(json.dumps(discovery))
 
 # Loop services and create discovery
-def services(args, client):
-    services = client.list_service_for_all_namespaces(
+def services(args, v1):
+    services = v1.list_service_for_all_namespaces(
         watch=False,
         field_selector=args.field_selector
     )
@@ -146,11 +156,13 @@ if __name__ == "__main__":
         else:
             config.load_kube_config()
     except Exception as e:
-        print("Unable to load Kubernetes configuration file. Error: {}".format(e))
+        print("Unable to load Kubernetes configuration file. Error: {}".format(
+            e
+        ))
         sys.exit()
 
     # Initialize Kubernetes client
-    client = client.CoreV1Api()
+    v1 = client.CoreV1Api()
 
     # Run specified mode
-    args.func(args, client)
+    args.func(args, v1)
