@@ -125,24 +125,24 @@ if __name__ == "__main__":
     output = [] # List for output data
 
     # Parse command-line arguments
-    top_parser = ArgumentParser(add_help=False)
-    top_parser.add_argument("-c", "--config", default="", dest="config",
+    common_parser = ArgumentParser(add_help=False)
+    common_parser.add_argument("-c", "--config", default="", dest="config",
                         type=str,
                         help="Configuration file for Kubernetes client.")
-    top_parser.add_argument("-f", "--field-selector", default="",
+    common_parser.add_argument("-f", "--field-selector", default="",
                         dest="field_selector", type=str,
                         help="Filter results using field selectors.")
     parser = ArgumentParser(
         description="Discover and retrieve metrics from Kubernetes.",
         add_help=False,
-        parents=[top_parser]
+        parents=[common_parser]
     )
     subparsers = parser.add_subparsers()
-    parser_pods = subparsers.add_parser("pods", parents=[top_parser])
+    parser_pods = subparsers.add_parser("pods", parents=[common_parser])
     parser_pods.set_defaults(func=pods)
-    parser_nodes = subparsers.add_parser("nodes", parents=[top_parser])
+    parser_nodes = subparsers.add_parser("nodes", parents=[common_parser])
     parser_nodes.set_defaults(func=nodes)
-    parser_services = subparsers.add_parser("services", parents=[top_parser])
+    parser_services = subparsers.add_parser("services", parents=[common_parser])
     parser_services.set_defaults(func=services)
     args = parser.parse_args()
 
@@ -155,7 +155,6 @@ if __name__ == "__main__":
     # Load kubernetes configuration
     try:
         if args.config != "":
-            print("DING DING DING:", args.config)
             config.load_kube_config(config_file=args.config)
         else:
             config.load_kube_config()
