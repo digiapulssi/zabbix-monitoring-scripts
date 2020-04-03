@@ -11,9 +11,64 @@ pip install kubernetes
 ```
 
 
-The zabbix user must have enough privileges to read Kubernetes configuration.
+## Configuring access for user zabbix
 
-* Add read permission for user "zabbix" to directory "${HOME}/.kube/config" and to the certificates it contains.
+The zabbix user must have enough privileges to read Kubernetes configurations
+and access the Kubernetes objects. It is recommended that you create a context
+that specifies the cluster, the user and the namespace that the monitoring
+script will use when making calls to the API server. To achieve this, you need
+to create a kubeconfig file. A kubekonfig file requires the URL of the API
+server, a cluster CA certificate and credentials in the form of a key and a
+certificate signed by the cluster CA. This documentation does not provive steps
+to create certificates or how to have them accepted by an exiting Kubernetes
+cluster. It is assumed the certificates are generated beforehand and approved
+by the cluster.
+
+Retrieve cluster name:
+```
+kubectl config view -o jsonpath='{.clusters[0].name}'
+```
+
+Retrieve cluster server address:
+```
+kubectl config view -o jsonpath='{.clusters[0].cluster.server}'
+```
+
+Pull details from existing Kubernetes-configurations:
+```
+kubectl config set-cluster <cluster_name> --server=<server_address> --certificate-authority=<certificate.crt> --kubeconfig=<config_file> --embed-certs
+```
+
+Set up the user:
+```
+kubectl config set-credentials zabbix --client-certificate=<certificate.crt> --client-key=<private.key> --embed-certs --kubeconfig=<config_file>
+```
+
+Create a context:
+```
+kubectl config set-context zabbix --cluster=<cluster_name> --namespace=<namespace> --user=zabbix --kubeconfig=<config_file>
+```
+The namespace-parameter defines what name is to be used for the context.
+
+Create a namespace:
+```
+kubectl create ns <namespace>
+```
+
+Set label for namespace:
+```
+kubectl label ns <namepace> user=zabbix env=<environment_name>
+```
+
+Specify the context for user zabbix:
+```
+kubectl config use-context zabbix --kubeconfig=<config_file>
+```
+
+Test configurations:
+```
+kubectl version --kubeconfig=<config_file>
+```
 
 
 ## Usage
