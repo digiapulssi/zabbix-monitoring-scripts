@@ -125,25 +125,28 @@ if __name__ == "__main__":
     output = [] # List for output data
 
     # Parse command-line arguments
-    common_parser = ArgumentParser(add_help=False)
-    common_parser.add_argument("-c", "--config", default="", dest="config",
-                        type=str,
-                        help="Configuration file for Kubernetes client.")
-    common_parser.add_argument("-f", "--field-selector", default="",
-                        dest="field_selector", type=str,
-                        help="Filter results using field selectors.")
     parser = ArgumentParser(
         description="Discover and retrieve metrics from Kubernetes.",
-        add_help=False,
-        parents=[common_parser]
     )
+
+    # Use sub-parsers run functions using mandatory positional argument
     subparsers = parser.add_subparsers()
-    parser_pods = subparsers.add_parser("pods", parents=[common_parser])
+    parser_pods = subparsers.add_parser("pods")
     parser_pods.set_defaults(func=pods)
-    parser_nodes = subparsers.add_parser("nodes", parents=[common_parser])
-    parser_nodes.set_defaults(func=nodes)
-    parser_services = subparsers.add_parser("services", parents=[common_parser])
+    parser_services = subparsers.add_parser("services")
     parser_services.set_defaults(func=services)
+    parser_nodes = subparsers.add_parser("nodes")
+    parser_nodes.set_defaults(func=nodes)
+
+    # Each subparser has the same optional arguments. For now.
+    for item in [parser_pods, parser_nodes, parser_services]:
+        item.add_argument("-c", "--config", default="", dest="config",
+                            type=str,
+                            help="Configuration file for Kubernetes client.")
+        item.add_argument("-f", "--field-selector", default="",
+                            dest="field_selector", type=str,
+                            help="Filter results using field selectors.")
+
     args = parser.parse_args()
 
     # Check configuration file
