@@ -36,12 +36,12 @@ kubectl config view -o jsonpath='{.clusters[0].cluster.server}'
 
 Pull details from existing Kubernetes-configurations:
 ```
-kubectl config set-cluster <cluster_name> --server=<server_address> --certificate-authority=<certificate.crt> --kubeconfig=<config_file> --embed-certs
+kubectl config set-cluster <cluster_name> --server=<server_address> --certificate-authority=<ca.crt> --kubeconfig=<config_file> --embed-certs
 ```
 
 Set up the user:
 ```
-kubectl config set-credentials zabbix --client-certificate=<certificate.crt> --client-key=<private.key> --embed-certs --kubeconfig=<config_file>
+kubectl config set-credentials zabbix --client-certificate=<certificate.crt> --client-key=<private.key> --kubeconfig=<config_file> --embed-certs
 ```
 
 Create a context:
@@ -62,13 +62,15 @@ kubectl label ns <namepace> user=zabbix env=<environment_name>
 
 Specify the context for user zabbix:
 ```
-kubectl config use-context zabbix --kubeconfig=<config_file>
+kubectl config use-context <namespace> --kubeconfig=<config_file>
 ```
 
 Test configurations:
 ```
 kubectl version --kubeconfig=<config_file>
 ```
+
+You should now see a version listing from client and server. Next step is to give access for user to list pods, nodes and services from Kubernetes cluster.
 
 
 ## Usage
