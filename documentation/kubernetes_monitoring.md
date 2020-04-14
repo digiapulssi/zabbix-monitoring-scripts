@@ -19,10 +19,74 @@ that specifies the cluster, the user and the namespace that the monitoring
 script will use when making calls to the API server. To achieve this, you need
 to create a kubeconfig file. A kubekonfig file requires the URL of the API
 server, a cluster CA certificate and credentials in the form of a key and a
-certificate signed by the cluster CA. This documentation does not provive steps
-to create certificates or how to have them accepted by an exiting Kubernetes
-cluster. It is assumed the certificates are generated beforehand and approved
-by the cluster.
+certificate signed by the cluster CA.
+
+This documentation provides steps to create certificates and how to have them
+accepted by an existing Kubernetes cluster. If you already have existing
+certificates and configurations, you may skip the first part where certificates
+are created and approved.
+
+### Create certificate signing request (CSR)
+
+First we run the OpenSSL command to generate new private key and CSR. You may
+change the subject fields to suit your needs. Atlest the "/CN=zabbix"-field
+should be checked since the role based access control (RBAC) sub-system will
+determine the username from that field:
+```
+openssl req -new -newkey rsa:4096 -nodes -keyout zabbix.key -out zabbix.csr -subj "/C=FI/ST=Pirkanmaa/L=Tampere/O=Digia Oyj/OU=Digia Iiris/CN=zabbix"
+```
+
+Then we can retrieve the CSR-file and encode it using base 64:
+```
+cat zabbix.csr | base64 | tr -d '\n'
+```
+
+Then we paste the base 64 encoded CSR into the certificate signing request YAML-file.
+[There is an example file here](documentation/kubernetes_monitoring/csr.yml).
+
+Then we send the request to the API server:
+```
+kubectl create -f csr.yaml
+```
+
+Then we check the condition of the request using the following command:
+```
+kubectl get csr
+```
+
+We should receive an output that is somewhat like this:
+```
+NAME     AGE   SIGNERNAME                     REQUESTOR       CONDITION
+zabbix   10s   kubernetes.io/legacy-unknown   minikube-user   Pending
+```
+
+The next thing we need to do is approve the request:
+```
+kubectl certificate approve zabbix
+```
+
+When we check the status for the request again, the request should be approved:
+```
+kubectl get csr
+
+NAME     AGE     SIGNERNAME                     REQUESTOR       CONDITION
+zabbix   1m10s   kubernetes.io/legacy-unknown   minikube-user   Approved,Issued
+```
+
+Now that our request is approved, we can retrieve the certificate. We pipe the
+output to base64 command for decoding and finally save it to a file:
+```
+kubectl get csr zabbix -o jsonpath='{.status.certificate}' | base64 --decode > zabbix.crt
+```
+
+Next thing we need is the cluster CA certificate. We pipe it to the base64
+command for decoding and save it into a file as with the previous command:
+```
+kubectl get secret -o jsonpath="{.items[?(@.type==\"kubernetes.io/service-account-token\")].data['ca\.crt']}" | base64 --decode >ca.crt
+```
+
+
+### Setting up the configuration using existing certificates
 
 Retrieve cluster name:
 ```
