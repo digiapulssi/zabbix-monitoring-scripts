@@ -26,27 +26,27 @@ accepted by an existing Kubernetes cluster. If you already have existing
 certificates and configurations, you may skip the first part where certificates
 are created and approved.
 
-### Create certificate signing request (CSR)
+### Creating a certificate signing request (CSR) and retrieving certificates
 
 First we run the OpenSSL command to generate new private key and CSR. You may
-change the subject fields to suit your needs. Atlest the "/CN=zabbix"-field
+change the subject fields to suit your needs. Atleast the "/CN=zabbix"-field
 should be checked since the role based access control (RBAC) sub-system will
 determine the username from that field:
 ```
 openssl req -new -newkey rsa:4096 -nodes -keyout zabbix.key -out zabbix.csr -subj "/C=FI/ST=Pirkanmaa/L=Tampere/O=Digia Oyj/OU=Digia Iiris/CN=zabbix"
 ```
 
-Then we can retrieve the CSR-file and encode it using base 64:
+Then we can retrieve the CSR-file and encode it using the base64 command:
 ```
 cat zabbix.csr | base64 | tr -d '\n'
 ```
 
 Then we paste the base 64 encoded CSR into the certificate signing request YAML-file.
-[There is an example file here](documentation/kubernetes_monitoring/csr.yml).
+[There is an example file here](kubernetes_monitoring/csr.yml).
 
 Then we send the request to the API server:
 ```
-kubectl create -f csr.yaml
+kubectl create -f csr.yml
 ```
 
 Then we check the condition of the request using the following command:
@@ -56,8 +56,8 @@ kubectl get csr
 
 We should receive an output that is somewhat like this:
 ```
-NAME     AGE   SIGNERNAME                     REQUESTOR       CONDITION
-zabbix   10s   kubernetes.io/legacy-unknown   minikube-user   Pending
+NAME     AGE   SIGNERNAME                            REQUESTOR       CONDITION
+zabbix   10s   kubernetes.io/kube-apiserver-client   minikube-user   Pending
 ```
 
 The next thing we need to do is approve the request:
@@ -69,8 +69,8 @@ When we check the status for the request again, the request should be approved:
 ```
 kubectl get csr
 
-NAME     AGE     SIGNERNAME                     REQUESTOR       CONDITION
-zabbix   1m10s   kubernetes.io/legacy-unknown   minikube-user   Approved,Issued
+NAME     AGE   SIGNERNAME                            REQUESTOR       CONDITION
+zabbix   30s   kubernetes.io/kube-apiserver-client   minikube-user   Approved,Issued
 ```
 
 Now that our request is approved, we can retrieve the certificate. We pipe the
@@ -126,7 +126,7 @@ kubectl label ns <namepace> user=zabbix env=<environment_name>
 
 Specify the context for user zabbix:
 ```
-kubectl config use-context <namespace> --kubeconfig=<config_file>
+kubectl config use-context zabbix --kubeconfig=<config_file>
 ```
 
 Test configurations:
@@ -134,7 +134,13 @@ Test configurations:
 kubectl version --kubeconfig=<config_file>
 ```
 
-You should now see a version listing from client and server. Next step is to give access for user to list pods, nodes and services from Kubernetes cluster.
+You should now see a version listing from client and server, similar to the following:
+```
+Client Version: version.Info{Major:"1", Minor:"17", GitVersion:"v1.17.4", GitCommit:"<commit_hash>", GitTreeState:"clean", BuildDate:"2020-03-12T21:03:42Z", GoVersion:"go1.13.8", Compiler:"gc", Platform:"linux/amd64"}
+Server Version: version.Info{Major:"1", Minor:"18", GitVersion:"v1.18.0", GitCommit:"<commit_hash>", GitTreeState:"clean", BuildDate:"2020-03-25T14:50:46Z", GoVersion:"go1.13.8", Compiler:"gc", Platform:"linux/amd64"}
+```
+
+### Authorize user to list pods, nodes and services from Kubernetes cluster.
 
 
 ## Usage
