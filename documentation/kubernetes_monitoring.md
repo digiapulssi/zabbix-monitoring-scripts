@@ -110,18 +110,7 @@ kubectl config set-credentials zabbix --client-certificate=<certificate.crt> --c
 
 Create a context:
 ```
-kubectl config set-context zabbix --cluster=<cluster_name> --namespace=<namespace> --user=zabbix --kubeconfig=<config_file>
-```
-The namespace-parameter defines what name is to be used for the context.
-
-Create a namespace:
-```
-kubectl create ns <namespace>
-```
-
-Set label for namespace:
-```
-kubectl label ns <namepace> user=zabbix env=<environment_name>
+kubectl config set-context zabbix --cluster=<cluster_name> --namespace=default --user=zabbix --kubeconfig=<config_file>
 ```
 
 Specify the context for user zabbix:
@@ -140,7 +129,14 @@ Client Version: version.Info{Major:"1", Minor:"17", GitVersion:"v1.17.4", GitCom
 Server Version: version.Info{Major:"1", Minor:"18", GitVersion:"v1.18.0", GitCommit:"<commit_hash>", GitTreeState:"clean", BuildDate:"2020-03-25T14:50:46Z", GoVersion:"go1.13.8", Compiler:"gc", Platform:"linux/amd64"}
 ```
 
+
 ### Authorize user to list pods, nodes and services from Kubernetes cluster.
+
+[There is an example file here](kubernetes_monitoring/access.yml).
+
+```
+kubectl create -f kubernetes_monitoring/access.yml
+```
 
 
 ## Usage

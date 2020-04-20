@@ -6,5 +6,6 @@ spec:
   groups:
   - system:authenticated
   request: <base_64_encoded_csr>
+  signerName: kubernetes.io/kube-apiserver-client
   usages:
   - client auth
