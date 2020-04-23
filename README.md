@@ -27,7 +27,9 @@ See the below documentation for each monitoring script.
 
 - [DB2 database snapshot statistics](documentation/db2stat.md)
 - [Docker discovery and monitoring](documentation/docker.md)
+- [Docker Swarm service discovery and monitoring](documentation/docker_swarm.md)
 - [Process discovery and monitoring](documentation/process.md)
 - [Pacemaker monitoring](documentation/pacemaker.md)
 - [PEM file certificate monitoring](documentation/certificates.md)
 - [Kontena grid monitoring](documentation/kontena_grid.md)
+- [Kubernetes monitoring](documentation/kubernetes_monitoring.md)

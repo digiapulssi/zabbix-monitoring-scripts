@@ -1,0 +1,20 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: zabbix-role
+rules:
+  - apiGroups: [""]
+    resources: ["pods", "nodes", "services"]
+    verbs: ["get", "list"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: zabbix-role
+subjects:
+  - kind: User
+    name: zabbix
+roleRef:
+  kind: ClusterRole
+  name: zabbix-role
+  apiGroup: rbac.authorization.k8s.io
