@@ -31,8 +31,6 @@ from kubernetes import client, config
 # Loop pods and create discovery
 def pods(args, v1):
 
-    # Retrieve system time for uptime calculation
-
     pods = v1.list_pod_for_all_namespaces(
         watch=False,
         field_selector=args.field_selector
