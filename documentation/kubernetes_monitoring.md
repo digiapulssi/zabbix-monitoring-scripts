@@ -145,8 +145,8 @@ kubectl create -f kubernetes_monitoring/access.yml
 
 Item Syntax | Description | Units |
 ----------- | ----------- | ----- |
-kubernetes.discover.pods | Discover all Kubernetes pods | Provides the following template variables: {#POD}. Also provides service information in an array: ip, namespace, pod, restart_count. |
-kubernetes.discover.pods.default | Discover all Kubernetes pods using default field selectors | Provides the following template variables: {#POD}. Also provides service information in an array: ip, namespace, pod, restart_count. |
+kubernetes.discover.pods | Discover all Kubernetes pods | Provides the following template variables: {#POD}. Also provides service information in an array: ip, namespace, pod, restart_count, uptime. |
+kubernetes.discover.pods.default | Discover all Kubernetes pods using default field selectors | Provides the following template variables: {#POD}. Also provides service information in an array: ip, namespace, pod, restart_count, uptime. |
 kubernetes.discover.nodes | Discover all Kubernetes nodes | Provides the following template variables: {#NODE}. Also provides service information in an array: node, machine_id, status, system_uuid. |
 kubernetes.discover.services | Discover all Kubernetes services | Provides the following template variables: {#SERVICE}. Also provides service information in an array: namespace, service, uid. |
 
