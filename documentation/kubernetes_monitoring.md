@@ -24,7 +24,9 @@ certificate signed by the cluster CA.
 This documentation provides steps to create certificates and how to have them
 accepted by an existing Kubernetes cluster. If you already have existing
 certificates and configurations, you may skip the first part where certificates
-are created and approved.
+are created and approved. There is a template for the configuration file in case
+you already have the certificates and you do not have a configuration file:
+[There is an example file here](kubernetes_monitoring/config).
 
 ### Creating a certificate signing request (CSR) and retrieving certificates
 
