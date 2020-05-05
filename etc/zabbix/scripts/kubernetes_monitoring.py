@@ -13,9 +13,17 @@ python kubernetes_monitoring.py services
 
 # Python imports
 from argparse import ArgumentParser
+import datetime
 import json
 import os
 import sys
+
+# Retrieve timezone aware system time
+if sys.version_info[0] < 3:
+    import pytz
+    system_time = datetime.datetime.now(pytz.utc)
+else:
+    system_time = datetime.datetime.now(datetime.timezone.utc)
 
 # 3rd party imports
 from kubernetes import client, config
@@ -33,19 +41,46 @@ def pods(args, v1):
         for pod in pods.items:
 
             # Retrieve container's restart counts
+            container_started = None # Container's start time
+            kind = None # Pod's kind found under metadata.owner_references
             restart_count = 0 # Container's restart count
-            started_at = None # Container's start time
+            started_at = None # Latest start time
+            uptime = datetime.timedelta() # A datetime object for latest uptime
 
-            for container in pod.status.container_statuses:
+            # Loop possible owner_references and retrieve "kind"-field
+            if pod.metadata.owner_references:
+                for ref in pod.metadata.owner_references:
+                    kind = ref.kind
 
-                # First time around, grab the first container's start time
-                if not started_at:
-                    started_at = container.state.running.started_at
+                # Pods that are identified as "Job" are skipped
+                if kind == "Job":
+                    continue
+
+            # Check if container_statuses is available
+            if pod.status.container_statuses:
+
+                # Loop containers and retrieve information
+                for container in pod.status.container_statuses:
                     restart_count = int(container.restart_count)
-                # Compare previous container's start time to current one
-                elif started_at < container.state.running.started_at:
-                    started_at = container.state.running.started_at
-                    restart_count = int(container.restart_count)
+
+                    # Check "running"-state first, then "terminated"-state
+                    if container.state.running is not None:
+                        container_started = container.state.running.started_at
+                    elif container.state.terminated is not None:
+                        container_started = container.state.terminated.started_at
+                    else:
+                        continue
+
+                    # First time around, grab the first start time
+                    if not started_at:
+                        started_at = container_started
+                    # Compare previous container's start time to current one
+                    elif started_at < container_started:
+                        started_at = container_started
+
+                # Count uptime
+                if started_at:
+                    uptime = system_time - started_at
 
             # Append information to output list
             output.append({
@@ -53,13 +88,14 @@ def pods(args, v1):
                 "restart_count": restart_count,
                 "ip": pod.status.pod_ip,
                 "namespace": pod.metadata.namespace,
-                "pod": pod.metadata.name
+                "pod": pod.metadata.name,
+                "uptime": uptime.total_seconds()
             })
 
     # Dump discovery
     discovery = {"data": output}
     print(json.dumps(discovery))
-    sys.exit()
+
 
 # Loop nodes and create discovery
 def nodes(args, v1):
@@ -94,6 +130,7 @@ def nodes(args, v1):
     # Dump discovery
     discovery = {"data": output}
     print(json.dumps(discovery))
+
 
 # Loop services and create discovery
 def services(args, v1):
