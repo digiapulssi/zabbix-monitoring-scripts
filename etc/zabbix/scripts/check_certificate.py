@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python2
 # Version: 1.0
 """
 Script for retrieving certificate information items from PEM file.
