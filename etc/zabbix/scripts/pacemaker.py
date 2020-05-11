@@ -41,7 +41,7 @@ def process_xml():
 	process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
 	xml, error = process.communicate()
 	if error:
-		print("Could not read command output:" + error)
+		print("Could not read command output: " + error.decode("utf-8"))
 		exit()
 	try:
 		root = etree.fromstring(xml)
