@@ -42,9 +42,9 @@ def format_x509_name(x509_name):
     name = ""
     for c in x509_name.get_components():
         name += '/'
-        name += c[0]
+        name += c[0].decode("utf-8")
         name += '='
-        name += c[1]
+        name += c[1].decode("utf-8")
     return name
 
 
