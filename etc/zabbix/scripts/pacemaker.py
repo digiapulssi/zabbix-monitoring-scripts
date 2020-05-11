@@ -45,7 +45,7 @@ def process_xml():
 		exit()
 	try:
 		root = etree.fromstring(xml)
-	except Exception, e:
+	except Exception as e:
 		if ("Connection to cluster failed: Transport endpoint is not connected" in xml):
 			# cluster is not running, all queries default to 0
 			print("0")
