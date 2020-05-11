@@ -41,11 +41,11 @@ def process_xml():
 	process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
 	xml, error = process.communicate()
 	if error:
-		print("Could not read command output:" + error)
+		print("Could not read command output: " + error.decode("utf-8"))
 		exit()
 	try:
 		root = etree.fromstring(xml)
-	except Exception, e:
+	except Exception as e:
 		if ("Connection to cluster failed: Transport endpoint is not connected" in xml):
 			# cluster is not running, all queries default to 0
 			print("0")

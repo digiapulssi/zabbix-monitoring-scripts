@@ -18,16 +18,16 @@ def format_x509_name(x509_name):
     name = ""
     for c in x509_name.get_components():
         name += '/'
-        name += c[0]
+        name += c[0].decode("utf-8")
         name += '='
-        name += c[1]
+        name += c[1].decode("utf-8")
     return name
 
 
 def from_asn1_date(asn1date):
     """Converts ASN1 formatted datetime into datetime object.
     """
-    return datetime.strptime(asn1date, '%Y%m%d%H%M%SZ')
+    return datetime.strptime(asn1date.decode("utf-8"), '%Y%m%d%H%M%SZ')
 
 
 def get_certificate(file_name, index):
