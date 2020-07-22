@@ -121,7 +121,8 @@ def nodes(args, v1):
             # Append information to output list
             output.append({
                 "{#NODE}": node.status.node_info.machine_id,
-                "node": node.status.node_info.machine_id,
+                "node": next((i.address for i in node.status.addresses if i.type == "Hostname"), node.status.node_info.machine_id),
+                "external_ip": next((i.address for i in node.status.addresses if i.type == "ExternalIP"), ""),
                 "machine_id": node.status.node_info.machine_id,
                 "status": status,
                 "system_uuid": node.status.node_info.system_uuid
