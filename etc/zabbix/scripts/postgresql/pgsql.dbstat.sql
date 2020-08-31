@@ -14,4 +14,5 @@ SELECT json_object_agg(datname, row_to_json(T)) FROM (
 			temp_files,
 			temp_bytes,
 			deadlocks
-	FROM pg_stat_database) T
+	FROM pg_stat_database
+	WHERE datname IS NOT NULL) T
