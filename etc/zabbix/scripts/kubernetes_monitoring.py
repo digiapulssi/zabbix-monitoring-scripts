@@ -28,6 +28,19 @@ else:
 # 3rd party imports
 from kubernetes import client, config
 
+def cron_jobs(args, v1):
+
+    api_client = client.ApiClient()
+    api_instance = client.BatchV1beta1Api(api_client)
+    api_response = api_instance.list_cron_job_for_all_namespaces(
+        watch=False,
+        field_selector=args.field_selector
+    )
+
+    for item in api_response.items:
+        print(item)
+
+
 # Loop pods and create discovery
 def pods(args, v1):
 
@@ -175,6 +188,8 @@ if __name__ == "__main__":
 
     # Use sub-parsers run functions using mandatory positional argument
     subparsers = parser.add_subparsers()
+    parser_cron_jobs = subparsers.add_parser("cron_jobs")
+    parser_cron_jobs.set_defaults(func=cron_jobs)
     parser_pods = subparsers.add_parser("pods")
     parser_pods.set_defaults(func=pods)
     parser_services = subparsers.add_parser("services")
@@ -183,7 +198,7 @@ if __name__ == "__main__":
     parser_nodes.set_defaults(func=nodes)
 
     # Each subparser has the same optional arguments. For now.
-    for item in [parser_pods, parser_nodes, parser_services]:
+    for item in [parser_cron_jobs, parser_pods, parser_nodes, parser_services]:
         item.add_argument("-c", "--config", default="", dest="config",
                             type=str,
                             help="Configuration file for Kubernetes client.")
