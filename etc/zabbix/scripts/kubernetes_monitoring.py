@@ -18,32 +18,80 @@ import json
 import os
 import sys
 
-# Retrieve timezone aware system time
+# Retrieve timezone aware datetime objects
 if sys.version_info[0] < 3:
     import pytz
+    epoch_start = datetime.datetime(1970, 1, 1, tzinfo=pytz.utc)
     system_time = datetime.datetime.now(pytz.utc)
 else:
+    epoch_start = datetime.datetime(1970, 1, 1, tzinfo=datetime.timezone.utc)
     system_time = datetime.datetime.now(datetime.timezone.utc)
 
 # 3rd party imports
 from kubernetes import client, config
 
+# Loop cron jobs and create discovery
 def cron_jobs(args, v1):
 
+    # Retrieve cron jobs from Kubernetes API v1
     api_client = client.ApiClient()
-    api_instance = client.BatchV1beta1Api(api_client)
-    api_response = api_instance.list_cron_job_for_all_namespaces(
+    api_instance = client.BatchV1Api(api_client)
+    api_response = api_instance.list_job_for_all_namespaces(
         watch=False,
         field_selector=args.field_selector
     )
 
-    for item in api_response.items:
-        print(item)
+    # Check API response before listing
+    if api_response:
+        for item in api_response.items:
+
+            # Reset loop variables
+            completion_time = None
+            job_length = None
+            job_status = None
+            job_type = None
+            start_time = None
+
+            # Convert completion time to epoch
+            if item.status.completion_time:
+                completion_time = int((item.status.completion_time -
+                    epoch_start).total_seconds())
+
+            # Convert start time to epoch
+            if item.status.start_time:
+                start_time = int((item.status.start_time -
+                    epoch_start).total_seconds())
+
+            # Calculate cron job length
+            if completion_time and start_time:
+                job_length = int(completion_time - start_time)
+
+            # 
+            if item.status.conditions:
+                for condition in item.status.conditions:
+                    job_status = condition.status
+                    job_type = condition.type
+
+            # Append information to output list
+            output.append({
+                "{#SERVICE}": item.metadata.name,
+                "completion_time": completion_time,
+                "length": job_length,
+                "start_time": start_time,
+                "status": job_status,
+                "type": job_type,
+                "uid": item.metadata.uid
+            })
+
+    # Dump discovery
+    discovery = {"data": output}
+    print(json.dumps(discovery))
 
 
 # Loop pods and create discovery
 def pods(args, v1):
 
+    # Retrieve pods from Kubernetes API v1
     pods = v1.list_pod_for_all_namespaces(
         watch=False,
         field_selector=args.field_selector
@@ -112,6 +160,8 @@ def pods(args, v1):
 
 # Loop nodes and create discovery
 def nodes(args, v1):
+
+    # Retrieve nodes from Kubernetes API v1
     nodes = v1.list_node(
         watch=False,
         field_selector=args.field_selector
@@ -154,6 +204,8 @@ def nodes(args, v1):
 
 # Loop services and create discovery
 def services(args, v1):
+
+    # Retrieve services from Kubernetes API v1
     services = v1.list_service_for_all_namespaces(
         watch=False,
         field_selector=args.field_selector
