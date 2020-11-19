@@ -41,6 +41,25 @@ docker.containers[{#IMAGENAME}, image_containerids_all] | List of all container 
 * Items returning container metrics or status with image name will error if multiple containers with image are running
 * Items with image name also allow specifying imagename + tag (i.e. {#IMAGENAME}:{#IMAGETAG})
 
+### Trapper Based Execution
+
+Folder /opt/cron includes wrapper script that allows posting status into trapper items instead. 
+
+It has some benefits over standard approach:
+- All container stats are sent in one bulk request to Zabbix
+- It can be set up to run on separate account from zabbix to avoid granting docker permissions to Zabbix agent
+
+Main disadvantange is that it requires setting up separate cron jobs to execute discovery and stats gathering (also container count if necessary).
+
+Zabbix template for trapper version of monitoring is named docker_trapper.xml.
+
+*Example crontab setup:*
+```
+0 * * * * /opt/cron/docker_stats.sh discovery_all >>/var/log/docker_stats.log 2>&1
+* * * * * /opt/cron/docker_stats.sh count >>/var/log/docker_stats.log 2>&1
+* * * * * /opt/cron/docker_stats.sh stats >>/var/log/docker_stats.log 2>&1
+```
+
 ## Example
 
 ![Screenshot](docker.png)
