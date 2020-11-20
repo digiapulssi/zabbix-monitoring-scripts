@@ -2,7 +2,7 @@
 
 """
 Kubernetes monitoring
-Version: 1.0
+Version: 1.1
 
 Usage:
 python kubernetes_monitoring.py pods
@@ -122,6 +122,12 @@ def nodes(args, v1):
             output.append({
                 "{#NODE}": node.status.node_info.machine_id,
                 "node": next((i.address for i in node.status.addresses if i.type == "Hostname"), node.status.node_info.machine_id),
+                "allocatable_cpu": node.status.allocatable.get("cpu"),
+                "allocatable_storage": node.status.allocatable.get("ephemeral-storage"),
+                "allocatable_memory": node.status.allocatable.get("memory"),
+                "capacity_cpu": node.status.capacity.get("cpu"),
+                "capacity_storage": node.status.capacity.get("ephemeral-storage"),
+                "capacity_memory": node.status.capacity.get("memory"),
                 "external_ip": next((i.address for i in node.status.addresses if i.type == "ExternalIP"), ""),
                 "machine_id": node.status.node_info.machine_id,
                 "status": status,
