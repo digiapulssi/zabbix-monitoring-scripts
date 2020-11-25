@@ -51,6 +51,10 @@ It has some benefits over standard approach:
 
 Main disadvantange is that it requires setting up separate cron jobs to execute discovery and stats gathering (also container count if necessary).
 
+Additional requirements:
+- zabbix_sender installed in the system and available in user path
+- Hostname set in the Zabbix agent configuration file (/etc/zabbix/zabbix_agentd.conf)
+
 Zabbix template for trapper version of monitoring is named docker_trapper.xml.
 
 *Example crontab setup:*
