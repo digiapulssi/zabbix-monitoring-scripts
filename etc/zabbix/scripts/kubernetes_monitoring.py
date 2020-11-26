@@ -31,7 +31,7 @@ else:
 from kubernetes import client, config
 
 # Loop cron jobs and create discovery
-def cron_jobs(args, v1):
+def cronjobs(args, v1):
 
     # Retrieve cron jobs from Kubernetes API v1
     api_client = client.ApiClient()
@@ -41,21 +41,44 @@ def cron_jobs(args, v1):
         field_selector=args.field_selector
     )
 
+    # Declare variables
+    cronjobs = {}
+
     # Check API response before listing
     if api_response:
         for item in api_response.items:
 
             # Reset loop variables
             completion_time = None
-            job_length = None
+            job_length = 0
+            job_name = None
             job_status = None
             job_type = None
             start_time = None
 
+            # Only retrieve data from cron jobs
+            for owner_reference in item.metadata.owner_references:
+                if owner_reference.kind != "CronJob":
+                    continue
+
+                # Retrieve job name
+                job_name = owner_reference.name
+
+            # If job name was not retrieved, kind was not CronJob
+            if not job_name:
+                continue
+
+            # Discard active cron jobs
+            if item.status.active is not None:
+                continue
+
+            # Check if completion time hold a value
+            if not item.status.completion_time:
+                continue
+
             # Convert completion time to epoch
-            if item.status.completion_time:
-                completion_time = int((item.status.completion_time -
-                    epoch_start).total_seconds())
+            completion_time = int((item.status.completion_time -
+                epoch_start).total_seconds())
 
             # Convert start time to epoch
             if item.status.start_time:
@@ -66,22 +89,27 @@ def cron_jobs(args, v1):
             if completion_time and start_time:
                 job_length = int(completion_time - start_time)
 
-            # 
+            # Check job conditions
             if item.status.conditions:
                 for condition in item.status.conditions:
                     job_status = condition.status
                     job_type = condition.type
 
-            # Append information to output list
-            output.append({
-                "{#SERVICE}": item.metadata.name,
+            # Set job data to dictionary
+            cronjobs[job_name] = {
+                "{#SERVICE}": job_name,
                 "completion_time": completion_time,
                 "length": job_length,
+                "name": job_name,
                 "start_time": start_time,
                 "status": job_status,
                 "type": job_type,
                 "uid": item.metadata.uid
-            })
+            }
+
+    # Loop and append jobs to output list
+    for cron_job in cronjobs:
+        output.append(cronjobs[cron_job])
 
     # Dump discovery
     discovery = {"data": output}
@@ -240,8 +268,8 @@ if __name__ == "__main__":
 
     # Use sub-parsers run functions using mandatory positional argument
     subparsers = parser.add_subparsers()
-    parser_cron_jobs = subparsers.add_parser("cron_jobs")
-    parser_cron_jobs.set_defaults(func=cron_jobs)
+    parser_cronjobs = subparsers.add_parser("cronjobs")
+    parser_cronjobs.set_defaults(func=cronjobs)
     parser_pods = subparsers.add_parser("pods")
     parser_pods.set_defaults(func=pods)
     parser_services = subparsers.add_parser("services")
@@ -250,7 +278,7 @@ if __name__ == "__main__":
     parser_nodes.set_defaults(func=nodes)
 
     # Each subparser has the same optional arguments. For now.
-    for item in [parser_cron_jobs, parser_pods, parser_nodes, parser_services]:
+    for item in [parser_cronjobs, parser_pods, parser_nodes, parser_services]:
         item.add_argument("-c", "--config", default="", dest="config",
                             type=str,
                             help="Configuration file for Kubernetes client.")
