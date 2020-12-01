@@ -2,7 +2,7 @@
 
 """
 Kubernetes monitoring
-Version: 1.1
+Version: 1.2
 
 Usage:
 python kubernetes_monitoring.py pods
@@ -17,6 +17,10 @@ import datetime
 import json
 import os
 import sys
+
+# Iiris imports
+#from iiris_support.zabbix_api import ZabbixAPI
+from zabbix_api import ZabbixAPI
 
 # Retrieve timezone aware datetime objects
 if sys.version_info[0] < 3:
@@ -68,9 +72,18 @@ def cronjobs(args, v1):
             if not job_name:
                 continue
 
+            # Check job conditions
+            if item.status.conditions:
+                for condition in item.status.conditions:
+                    job_status = condition.status
+                    job_type = condition.type
+
+            """
             # Discard active cron jobs
-            if item.status.active is not None:
+            if job_status is not None:
+                print("job_status:", job_status)
                 continue
+            """
 
             # Check if completion time hold a value
             if not item.status.completion_time:
@@ -89,15 +102,9 @@ def cronjobs(args, v1):
             if completion_time and start_time:
                 job_length = int(completion_time - start_time)
 
-            # Check job conditions
-            if item.status.conditions:
-                for condition in item.status.conditions:
-                    job_status = condition.status
-                    job_type = condition.type
-
             # Set job data to dictionary
             cronjobs[job_name] = {
-                "{#SERVICE}": job_name,
+                "{#CRONJOB}": job_name,
                 "completion_time": completion_time,
                 "length": job_length,
                 "name": job_name,
@@ -107,13 +114,36 @@ def cronjobs(args, v1):
                 "uid": item.metadata.uid
             }
 
-    # Loop and append jobs to output list
-    for cron_job in cronjobs:
-        output.append(cronjobs[cron_job])
+    # If instance name is not set, we output discovery
+    if not args.instance_name:
 
-    # Dump discovery
-    discovery = {"data": output}
-    print(json.dumps(discovery))
+        # Loop and append jobs to output list
+        for cron_job in cronjobs:
+            output.append(cronjobs[cron_job])
+
+        # Dump discovery
+        discovery = {"data": output}
+        print(json.dumps(discovery))
+
+    else:
+        items = []
+
+        # Append item data to list
+        for cron_job in cronjobs:
+            items.append([
+                args.host_name,
+                "kubernetes.cronjob[{}]".format(cronjobs[cron_job].get("name")),
+                json.dumps(cronjobs[cron_job]),
+                cronjobs[cron_job].get("completion_time")
+            ])
+
+        # Create ZabbixAPI class instance
+        zapi = ZabbixAPI()
+
+        # Send packet to Zabbix
+        result = zapi.send_multiple_trapper_data(args.instance_name, items)
+
+        print(result)
 
 
 # Loop pods and create discovery
@@ -285,6 +315,12 @@ if __name__ == "__main__":
         item.add_argument("-f", "--field-selector", default="",
                             dest="field_selector", type=str,
                             help="Filter results using field selectors.")
+        item.add_argument("-hn", "--host-name", default="",
+                            dest="host_name", type=str,
+                            help="Zabbix host name for sending item data.")
+        item.add_argument("-i", "--instance-name", default="",
+                            dest="instance_name", type=str,
+                            help="Zabbix instance name for sending item data.")
 
     args = parser.parse_args()
 
