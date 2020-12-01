@@ -7,8 +7,16 @@ Version: 1.2
 Usage:
 python kubernetes_monitoring.py pods
 python kubernetes_monitoring.py pods -c <config_file> -f <field_selector>
+
 python kubernetes_monitoring.py nodes
+
 python kubernetes_monitoring.py services
+
+python kubernetes_monitoring.py cronjobs
+python kubernetes_monitoring.py cronjobs -c <config_file> -f <field_selector>
+python kubernetes_monitoring.py cronjobs -c <config_file> -f <field_selector>
+                                         --instance-name <instance-name>
+                                         --host-name <host-name>
 """
 
 # Python imports
@@ -56,7 +64,7 @@ def cronjobs(args, v1):
             completion_time = None
             job_length = 0
             job_name = None
-            job_status = None
+            job_status = 0
             job_type = None
             start_time = None
 
@@ -75,7 +83,6 @@ def cronjobs(args, v1):
             # Check job conditions
             if item.status.conditions:
                 for condition in item.status.conditions:
-                    job_status = condition.status
                     job_type = condition.type
 
             """
@@ -101,6 +108,10 @@ def cronjobs(args, v1):
             # Calculate cron job length
             if completion_time and start_time:
                 job_length = int(completion_time - start_time)
+
+            # Check job status comparing 
+            if item.status.succeeded > 0 and item.status.failed == None:
+                job_status = 1
 
             # Set job data to dictionary
             cronjobs[job_name] = {
@@ -315,12 +326,12 @@ if __name__ == "__main__":
         item.add_argument("-f", "--field-selector", default="",
                             dest="field_selector", type=str,
                             help="Filter results using field selectors.")
-        item.add_argument("-hn", "--host-name", default="",
-                            dest="host_name", type=str,
-                            help="Zabbix host name for sending item data.")
         item.add_argument("-i", "--instance-name", default="",
                             dest="instance_name", type=str,
                             help="Zabbix instance name for sending item data.")
+        item.add_argument("-hn", "--host-name", default="",
+                            dest="host_name", type=str,
+                            help="Zabbix host name for sending item data.")
 
     args = parser.parse_args()
 
