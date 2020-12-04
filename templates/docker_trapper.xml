@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<zabbix_export>
+    <version>5.0</version>
+    <date>2020-11-19T08:26:56Z</date>
+    <groups>
+        <group>
+            <name>Templates</name>
+        </group>
+    </groups>
+    <templates>
+        <template>
+            <template>Pulssi Docker Template Trapper</template>
+            <name>Pulssi Docker Template Trapper</name>
+            <groups>
+                <group>
+                    <name>Templates</name>
+                </group>
+            </groups>
+            <applications>
+                <application>
+                    <name>Docker</name>
+                </application>
+                <application>
+                    <name>Docker container count</name>
+                </application>
+                <application>
+                    <name>Docker cpu</name>
+                </application>
+                <application>
+                    <name>Docker disk usage</name>
+                </application>
+                <application>
+                    <name>Docker memory</name>
+                </application>
+                <application>
+                    <name>Docker netin</name>
+                </application>
+                <application>
+                    <name>Docker netout</name>
+                </application>
+                <application>
+                    <name>Docker status</name>
+                </application>
+                <application>
+                    <name>Docker uptime</name>
+                </application>
+            </applications>
+            <items>
+                <item>
+                    <name>Containers count</name>
+                    <key>docker.containers[count]</key>
+                    <history>1w</history>
+                    <trends>90d</trends>
+                    <applications>
+                        <application>
+                            <name>Docker</name>
+                        </application>
+                        <application>
+                            <name>Docker container count</name>
+                        </application>
+                    </applications>
+                    <request_method>POST</request_method>
+                </item>
+            </items>
+            <discovery_rules>
+                <discovery_rule>
+                    <name>docker containers discovery</name>
+                    <type>TRAP</type>
+                    <key>docker.containers.discovery</key>
+                    <delay>0</delay>
+                    <lifetime>1w</lifetime>
+                    <item_prototypes>
+                        <item_prototype>
+                            <name>Container {#CONTAINERNAME} cpu:</name>
+                            <type>TRAP</type>
+                            <key>docker.containers[{#CONTAINERNAME},cpu]</key>
+                            <delay>0</delay>
+                            <history>30d</history>
+                            <value_type>FLOAT</value_type>
+                            <units>%</units>
+                            <applications>
+                                <application>
+                                    <name>Docker</name>
+                                </application>
+                                <application>
+                                    <name>Docker cpu</name>
+                                </application>
+                            </applications>
+                            <valuemap>
+                                <name>Service state</name>
+                            </valuemap>
+                            <request_method>POST</request_method>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>Container {#CONTAINERNAME} disk usage:</name>
+                            <type>TRAP</type>
+                            <key>docker.containers[{#CONTAINERNAME},disk]</key>
+                            <delay>0</delay>
+                            <history>30d</history>
+                            <units>Bytes</units>
+                            <applications>
+                                <application>
+                                    <name>Docker</name>
+                                </application>
+                                <application>
+                                    <name>Docker disk usage</name>
+                                </application>
+                            </applications>
+                            <request_method>POST</request_method>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>Container {#CONTAINERNAME} memory:</name>
+                            <type>TRAP</type>
+                            <key>docker.containers[{#CONTAINERNAME},memory]</key>
+                            <delay>0</delay>
+                            <history>30d</history>
+                            <applications>
+                                <application>
+                                    <name>Docker</name>
+                                </application>
+                                <application>
+                                    <name>Docker memory</name>
+                                </application>
+                            </applications>
+                            <preprocessing>
+                                <step>
+                                    <type>MULTIPLIER</type>
+                                    <params>1</params>
+                                </step>
+                            </preprocessing>
+                            <request_method>POST</request_method>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>Container {#CONTAINERNAME} incoming traffic:</name>
+                            <type>TRAP</type>
+                            <key>docker.containers[{#CONTAINERNAME},netin]</key>
+                            <delay>0</delay>
+                            <history>30d</history>
+                            <units>B/s</units>
+                            <applications>
+                                <application>
+                                    <name>Docker</name>
+                                </application>
+                                <application>
+                                    <name>Docker netin</name>
+                                </application>
+                            </applications>
+                            <request_method>POST</request_method>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>Container {#CONTAINERNAME} outgoing traffic:</name>
+                            <type>TRAP</type>
+                            <key>docker.containers[{#CONTAINERNAME},netout]</key>
+                            <delay>0</delay>
+                            <history>30d</history>
+                            <units>B/s</units>
+                            <applications>
+                                <application>
+                                    <name>Docker</name>
+                                </application>
+                                <application>
+                                    <name>Docker netout</name>
+                                </application>
+                            </applications>
+                            <request_method>POST</request_method>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>Container {#CONTAINERNAME} status:</name>
+                            <type>TRAP</type>
+                            <key>docker.containers[{#CONTAINERNAME},status]</key>
+                            <delay>0</delay>
+                            <history>30d</history>
+                            <applications>
+                                <application>
+                                    <name>Docker</name>
+                                </application>
+                                <application>
+                                    <name>Docker status</name>
+                                </application>
+                            </applications>
+                            <request_method>POST</request_method>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>Container {#CONTAINERNAME} uptime:</name>
+                            <type>TRAP</type>
+                            <key>docker.containers[{#CONTAINERNAME},uptime]</key>
+                            <delay>0</delay>
+                            <history>30d</history>
+                            <units>uptime</units>
+                            <applications>
+                                <application>
+                                    <name>Docker</name>
+                                </application>
+                                <application>
+                                    <name>Docker uptime</name>
+                                </application>
+                            </applications>
+                            <request_method>POST</request_method>
+                        </item_prototype>
+                    </item_prototypes>
+                    <request_method>POST</request_method>
+                </discovery_rule>
+            </discovery_rules>
+        </template>
+    </templates>
+    <value_maps>
+        <value_map>
+            <name>Service state</name>
+            <mappings>
+                <mapping>
+                    <value>0</value>
+                    <newvalue>Down</newvalue>
+                </mapping>
+                <mapping>
+                    <value>1</value>
+                    <newvalue>Up</newvalue>
+                </mapping>
+            </mappings>
+        </value_map>
+    </value_maps>
+</zabbix_export>
