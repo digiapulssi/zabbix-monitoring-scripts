@@ -27,7 +27,7 @@ import os
 import sys
 
 # Iiris imports
-#from iiris_support.zabbix_api import ZabbixAPI
+# from iiris_support.zabbix_api import ZabbixAPI
 from zabbix_api import ZabbixAPI
 
 # Retrieve timezone aware datetime objects
@@ -41,6 +41,7 @@ else:
 
 # 3rd party imports
 from kubernetes import client, config
+
 
 # Loop cron jobs and create discovery
 def cronjobs(args, v1):
@@ -90,12 +91,12 @@ def cronjobs(args, v1):
 
             # Convert completion time to epoch
             completion_time = int((item.status.completion_time -
-                epoch_start).total_seconds())
+                                   epoch_start).total_seconds())
 
             # Convert start time to epoch
             if item.status.start_time:
                 start_time = int((item.status.start_time -
-                    epoch_start).total_seconds())
+                                  epoch_start).total_seconds())
 
             # Calculate cron job length
             if completion_time and start_time:
@@ -106,8 +107,8 @@ def cronjobs(args, v1):
                 for condition in item.status.conditions:
                     job_type = condition.type
 
-            # Check job status comparing 
-            if item.status.succeeded > 0 and item.status.failed == None:
+            # Check job status comparing succeede and status fields
+            if item.status.succeeded > 0 and item.status.failed is None:
                 job_status = 1
 
             # Set job data to dictionary
@@ -148,9 +149,9 @@ def cronjobs(args, v1):
         # Create ZabbixAPI class instance
         zapi = ZabbixAPI()
 
-        # Send packet to Zabbix
+        # Try to login and send trapper data
+        zapi.login(args.instance_name)
         result = zapi.send_multiple_trapper_data(args.instance_name, items)
-
         print(result)
 
 
@@ -168,11 +169,11 @@ def pods(args, v1):
         for pod in pods.items:
 
             # Retrieve container's restart counts
-            container_started = None # Container's start time
-            kind = None # Pod's kind found under metadata.owner_references
-            restart_count = 0 # Container's restart count
-            started_at = None # Latest start time
-            uptime = datetime.timedelta() # A datetime object for latest uptime
+            container_started = None  # Container's start time
+            kind = None  # Pod's kind found under metadata.owner_references
+            restart_count = 0  # Container's restart count
+            started_at = None  # Latest start time
+            uptime = datetime.timedelta()  # Datetime object for latest uptime
 
             # Loop possible owner_references and retrieve "kind"-field
             if pod.metadata.owner_references:
@@ -297,7 +298,7 @@ def services(args, v1):
 if __name__ == "__main__":
 
     # Declare variables
-    output = [] # List for output data
+    output = []  # List for output data
 
     # Parse command-line arguments
     parser = ArgumentParser(
@@ -318,17 +319,17 @@ if __name__ == "__main__":
     # Each subparser has the same optional arguments. For now.
     for item in [parser_cronjobs, parser_pods, parser_nodes, parser_services]:
         item.add_argument("-c", "--config", default="", dest="config",
-                            type=str,
-                            help="Configuration file for Kubernetes client.")
+                          type=str,
+                          help="Configuration file for Kubernetes client.")
         item.add_argument("-f", "--field-selector", default="",
-                            dest="field_selector", type=str,
-                            help="Filter results using field selectors.")
+                          dest="field_selector", type=str,
+                          help="Filter results using field selectors.")
         item.add_argument("-i", "--instance-name", default="",
-                            dest="instance_name", type=str,
-                            help="Zabbix instance name for sending item data.")
+                          dest="instance_name", type=str,
+                          help="Zabbix instance name for sending item data.")
         item.add_argument("-hn", "--host-name", default="",
-                            dest="host_name", type=str,
-                            help="Zabbix host name for sending item data.")
+                          dest="host_name", type=str,
+                          help="Zabbix host name for sending item data.")
 
     args = parser.parse_args()
 
