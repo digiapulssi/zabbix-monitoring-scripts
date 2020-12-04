@@ -80,17 +80,9 @@ def cronjobs(args, v1):
             if not job_name:
                 continue
 
-            # Check job conditions
-            if item.status.conditions:
-                for condition in item.status.conditions:
-                    job_type = condition.type
-
-            """
             # Discard active cron jobs
-            if job_status is not None:
-                print("job_status:", job_status)
+            if item.status.active is not None:
                 continue
-            """
 
             # Check if completion time hold a value
             if not item.status.completion_time:
@@ -108,6 +100,11 @@ def cronjobs(args, v1):
             # Calculate cron job length
             if completion_time and start_time:
                 job_length = int(completion_time - start_time)
+
+            # Check job conditions
+            if item.status.conditions:
+                for condition in item.status.conditions:
+                    job_type = condition.type
 
             # Check job status comparing 
             if item.status.succeeded > 0 and item.status.failed == None:
