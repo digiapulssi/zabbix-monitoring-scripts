@@ -66,7 +66,6 @@ def cronjobs(args, v1):
             job_length = 0
             job_name = None
             job_status = 0
-            job_type = None
             start_time = None
 
             # Only retrieve data from cron jobs
@@ -102,11 +101,6 @@ def cronjobs(args, v1):
             if completion_time and start_time:
                 job_length = int(completion_time - start_time)
 
-            # Check job conditions
-            if item.status.conditions:
-                for condition in item.status.conditions:
-                    job_type = condition.type
-
             # Check job status comparing succeede and status fields
             if item.status.succeeded > 0 and item.status.failed is None:
                 job_status = 1
@@ -119,7 +113,6 @@ def cronjobs(args, v1):
                 "name": job_name,
                 "start_time": start_time,
                 "status": job_status,
-                "type": job_type,
                 "uid": item.metadata.uid
             }
 
