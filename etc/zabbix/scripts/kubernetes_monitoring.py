@@ -56,65 +56,73 @@ def cronjobs(args, v1):
 
     # Declare variables
     cronjobs = {}
+    start_time = system_time - datetime.timedelta(minutes=args.minutes)
 
     # Check API response before listing
-    if api_response:
-        for item in api_response.items:
+    if not api_response:
+        raise Exception("Unable to retrieve API response.")
 
-            # Reset loop variables
-            completion_time = None
-            job_length = 0
-            job_name = None
-            job_status = 0
-            start_time = None
+    # Loop API response items
+    for item in api_response.items:
 
-            # Only retrieve data from cron jobs
-            for owner_reference in item.metadata.owner_references:
-                if owner_reference.kind != "CronJob":
-                    continue
+        # Reset loop variables
+        completion_time = None
+        job_length = 0
+        job_name = None
+        job_status = 0
+        start_time = None
 
-                # Retrieve job name
-                job_name = owner_reference.name
-
-            # If job name was not retrieved, kind was not CronJob
-            if not job_name:
+        # Only retrieve data from cron jobs
+        for owner_reference in item.metadata.owner_references:
+            if owner_reference.kind != "CronJob":
                 continue
 
-            # Discard active cron jobs
-            if item.status.active is not None:
-                continue
+            # Retrieve job name
+            job_name = owner_reference.name
 
-            # Check if completion time hold a value
-            if not item.status.completion_time:
-                continue
+        # If job name was not retrieved, kind was not CronJob
+        if not job_name:
+            continue
 
-            # Convert completion time to epoch
-            completion_time = int((item.status.completion_time -
-                                   epoch_start).total_seconds())
+        # Discard active cron jobs
+        if item.status.active is not None:
+            continue
 
-            # Convert start time to epoch
-            if item.status.start_time:
-                start_time = int((item.status.start_time -
-                                  epoch_start).total_seconds())
+        # Check if completion time hold a value
+        if not item.status.completion_time:
+            continue
 
-            # Calculate cron job length
-            if completion_time and start_time:
-                job_length = int(completion_time - start_time)
+        # Convert completion time to epoch
+        completion_time = int((item.status.completion_time -
+                                epoch_start).total_seconds())
 
-            # Check job status comparing succeede and status fields
-            if item.status.succeeded > 0 and item.status.failed is None:
-                job_status = 1
+        # Skip completed jobs that are outside the interval range
+        if completion_time < start_time:
+            continue
 
-            # Set job data to dictionary
-            cronjobs[job_name] = {
-                "{#CRONJOB}": job_name,
-                "completion_time": completion_time,
-                "length": job_length,
-                "name": job_name,
-                "start_time": start_time,
-                "status": job_status,
-                "uid": item.metadata.uid
-            }
+        # Convert start time to epoch
+        if item.status.start_time:
+            start_time = int((item.status.start_time -
+                                epoch_start).total_seconds())
+
+        # Calculate cron job length
+        if completion_time and start_time:
+            job_length = int(completion_time - start_time)
+
+        # Check job status comparing succeede and status fields
+        if item.status.succeeded > 0 and item.status.failed is None:
+            job_status = 1
+
+        # Set job data to dictionary
+        cronjobs[job_name] = {
+            "{#CRONJOB}": job_name,
+            "completion_time": completion_time,
+            "length": job_length,
+            "name": job_name,
+            "start_time": start_time,
+            "status": job_status,
+            "uid": item.metadata.uid
+        }
 
     # If instance name is not set, we output discovery
     if not args.instance_name:
@@ -323,6 +331,9 @@ if __name__ == "__main__":
         item.add_argument("-hn", "--host-name", default="",
                           dest="host_name", type=str,
                           help="Zabbix host name for sending item data.")
+        item.add_argument("-m", "--minutes", default="",
+                          dest="minutes", type=str,
+                          help="Interval for cron job retrieval.")
 
     args = parser.parse_args()
 
