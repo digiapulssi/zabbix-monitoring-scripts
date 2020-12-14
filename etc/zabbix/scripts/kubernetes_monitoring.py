@@ -15,8 +15,8 @@ python kubernetes_monitoring.py services
 python kubernetes_monitoring.py cronjobs
 python kubernetes_monitoring.py cronjobs -c <config_file> -f <field_selector>
 python kubernetes_monitoring.py cronjobs -c <config_file> -f <field_selector>
-                                         --instance-name <instance-name>
                                          --host-name <host-name>
+                                         --minutes <minutes>
 """
 
 # Python imports
@@ -25,10 +25,6 @@ import datetime
 import json
 import os
 import sys
-
-# Iiris imports
-# from iiris_support.zabbix_api import ZabbixAPI
-from zabbix_api import ZabbixAPI
 
 # Retrieve timezone aware datetime objects
 if sys.version_info[0] < 3:
@@ -41,6 +37,7 @@ else:
 
 # 3rd party imports
 from kubernetes import client, config
+from pyzabbix import ZabbixMetric, ZabbixSender
 
 
 # Loop cron jobs and create discovery
@@ -56,7 +53,9 @@ def cronjobs(args, v1):
 
     # Declare variables
     cronjobs = {}
-    start_interval = system_time - datetime.timedelta(minutes=args.minutes)
+    start_interval = int(((
+        system_time - datetime.timedelta(minutes=args.minutes)) - epoch_start
+    ).total_seconds())
 
     # Check API response before listing
     if not api_response:
@@ -70,6 +69,7 @@ def cronjobs(args, v1):
         job_length = 0
         job_name = None
         job_status = 0
+        packet = []
         start_time = None
 
         # Discard active cron jobs
@@ -124,7 +124,7 @@ def cronjobs(args, v1):
         }
 
     # If instance name is not set, we output discovery
-    if not args.instance_name:
+    if not args.host_name:
 
         # Loop and append jobs to output list
         for cron_job in cronjobs:
@@ -135,23 +135,19 @@ def cronjobs(args, v1):
         print(json.dumps(discovery))
 
     else:
-        items = []
-
         # Append item data to list
         for cron_job in cronjobs:
-            items.append([
+            packet.append(ZabbixMetric(
                 args.host_name,
                 "kubernetes.cronjob[{}]".format(cronjobs[cron_job].get("name")),
                 json.dumps(cronjobs[cron_job]),
                 cronjobs[cron_job].get("completion_time")
-            ])
+            ))
 
-        # Create ZabbixAPI class instance
-        zapi = ZabbixAPI()
+        # Send data using ZabbixSender
+        result = ZabbixSender(use_config=True).send(packet)
 
-        # Try to login and send trapper data
-        zapi.login(args.instance_name)
-        result = zapi.send_multiple_trapper_data(args.instance_name, items)
+        # Print result
         print(result)
 
 
@@ -324,14 +320,11 @@ if __name__ == "__main__":
         item.add_argument("-f", "--field-selector", default="",
                           dest="field_selector", type=str,
                           help="Filter results using field selectors.")
-        item.add_argument("-i", "--instance-name", default="",
-                          dest="instance_name", type=str,
-                          help="Zabbix instance name for sending item data.")
         item.add_argument("-hn", "--host-name", default="",
                           dest="host_name", type=str,
                           help="Zabbix host name for sending item data.")
-        item.add_argument("-m", "--minutes", default="",
-                          dest="minutes", type=str,
+        item.add_argument("-m", "--minutes", default=5,
+                          dest="minutes", type=int,
                           help="Interval for cron job retrieval.")
 
     args = parser.parse_args()
