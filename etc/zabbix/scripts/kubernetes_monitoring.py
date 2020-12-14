@@ -72,6 +72,30 @@ def cronjobs(args, v1):
         job_status = 0
         start_time = None
 
+        # Discard active cron jobs
+        if item.status.active is not None:
+            continue
+
+        # Check and convert completion time to epoch
+        if item.status.completion_time:
+            completion_time = int(
+                (item.status.completion_time - epoch_start).total_seconds()
+            )
+
+        # Skip completed jobs that are outside the interval range
+        if completion_time < start_interval:
+            continue
+
+        # Check and convert start time to epoch
+        if item.status.start_time:
+            start_time = int(
+                (item.status.start_time - epoch_start).total_seconds()
+            )
+
+        # Calculate cron job length
+        if completion_time and start_time:
+            job_length = int(completion_time - start_time)
+
         # Only retrieve data from cron jobs
         for owner_reference in item.metadata.owner_references:
             if owner_reference.kind != "CronJob":
@@ -84,33 +108,7 @@ def cronjobs(args, v1):
         if not job_name:
             continue
 
-        # Discard active cron jobs
-        if item.status.active is not None:
-            continue
-
-        # Check if completion time hold a value
-        if not item.status.completion_time:
-            continue
-
-        # Convert completion time to epoch
-        completion_time = int((item.status.completion_time -
-                                epoch_start).total_seconds())
-
-        # Skip completed jobs that are outside the interval range
-        if completion_time < start_interval:
-            continue
-
-        # Convert start time to epoch
-        if item.status.start_time:
-            start_time = int((
-                item.status.start_time - epoch_start).total_seconds()
-            )
-
-        # Calculate cron job length
-        if completion_time and start_time:
-            job_length = int(completion_time - start_time)
-
-        # Check job status comparing succeede and status fields
+        # Check job status comparing succeeded and status fields
         if item.status.succeeded > 0 and item.status.failed is None:
             job_status = 1
 
