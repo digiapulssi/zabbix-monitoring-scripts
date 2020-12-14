@@ -56,7 +56,7 @@ def cronjobs(args, v1):
 
     # Declare variables
     cronjobs = {}
-    start_time = system_time - datetime.timedelta(minutes=args.minutes)
+    start_interval = system_time - datetime.timedelta(minutes=args.minutes)
 
     # Check API response before listing
     if not api_response:
@@ -97,13 +97,14 @@ def cronjobs(args, v1):
                                 epoch_start).total_seconds())
 
         # Skip completed jobs that are outside the interval range
-        if completion_time < start_time:
+        if completion_time < start_interval:
             continue
 
         # Convert start time to epoch
         if item.status.start_time:
-            start_time = int((item.status.start_time -
-                                epoch_start).total_seconds())
+            start_time = int((
+                item.status.start_time - epoch_start).total_seconds()
+            )
 
         # Calculate cron job length
         if completion_time and start_time:
