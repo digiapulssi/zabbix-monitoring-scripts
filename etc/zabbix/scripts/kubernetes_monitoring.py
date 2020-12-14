@@ -139,7 +139,7 @@ def cronjobs(args, v1):
         for cron_job in cronjobs:
             packet.append(ZabbixMetric(
                 args.host_name,
-                "kubernetes.cronjob[{}]".format(cronjobs[cron_job].get("name")),
+                "kubernetes.cronjob[{}]".format(cron_job),
                 json.dumps(cronjobs[cron_job]),
                 cronjobs[cron_job].get("completion_time")
             ))
