@@ -2,13 +2,21 @@
 
 """
 Kubernetes monitoring
-Version: 1.1
+Version: 1.2
 
 Usage:
 python kubernetes_monitoring.py pods
 python kubernetes_monitoring.py pods -c <config_file> -f <field_selector>
+
 python kubernetes_monitoring.py nodes
+
 python kubernetes_monitoring.py services
+
+python kubernetes_monitoring.py cronjobs
+python kubernetes_monitoring.py cronjobs -c <config_file> -f <field_selector>
+python kubernetes_monitoring.py cronjobs -c <config_file> -f <field_selector>
+                                         --host-name <host-name>
+                                         --minutes <minutes>
 """
 
 # Python imports
@@ -18,19 +26,135 @@ import json
 import os
 import sys
 
-# Retrieve timezone aware system time
+# Retrieve timezone aware datetime objects
 if sys.version_info[0] < 3:
     import pytz
+    epoch_start = datetime.datetime(1970, 1, 1, tzinfo=pytz.utc)
     system_time = datetime.datetime.now(pytz.utc)
 else:
+    epoch_start = datetime.datetime(1970, 1, 1, tzinfo=datetime.timezone.utc)
     system_time = datetime.datetime.now(datetime.timezone.utc)
 
 # 3rd party imports
 from kubernetes import client, config
+from pyzabbix import ZabbixMetric, ZabbixSender
+
+
+# Loop cron jobs and create discovery
+def cronjobs(args, v1):
+
+    # Retrieve cron jobs from Kubernetes API v1
+    api_client = client.ApiClient()
+    api_instance = client.BatchV1Api(api_client)
+    api_response = api_instance.list_job_for_all_namespaces(
+        watch=False,
+        field_selector=args.field_selector
+    )
+
+    # Declare variables
+    cronjobs = {}
+    start_interval = int(((
+        system_time - datetime.timedelta(minutes=args.minutes)) - epoch_start
+    ).total_seconds())
+
+    # Check API response before listing
+    if not api_response:
+        raise Exception("Unable to retrieve API response.")
+
+    # Loop API response items
+    for item in api_response.items:
+
+        # Reset loop variables
+        completion_time = None
+        job_length = 0
+        job_name = None
+        job_status = 0
+        packet = []
+        start_time = None
+
+        # Discard active cron jobs
+        if item.status.active is not None:
+            continue
+
+        # Check and convert completion time to epoch
+        if item.status.completion_time:
+            completion_time = int(
+                (item.status.completion_time - epoch_start).total_seconds()
+            )
+
+        # Skip completed jobs that are outside the interval range
+        if completion_time < start_interval:
+            continue
+
+        # Check and convert start time to epoch
+        if item.status.start_time:
+            start_time = int(
+                (item.status.start_time - epoch_start).total_seconds()
+            )
+
+        # Calculate cron job length
+        if completion_time and start_time:
+            job_length = int(completion_time - start_time)
+
+        # Only retrieve data from cron jobs
+        for owner_reference in item.metadata.owner_references:
+            if owner_reference.kind != "CronJob":
+                continue
+
+            # Retrieve job name
+            job_name = owner_reference.name
+
+        # If job name was not retrieved, kind was not CronJob
+        if not job_name:
+            continue
+
+        # Check job status comparing succeeded and status fields
+        if item.status.succeeded > 0 and item.status.failed is None:
+            job_status = 1
+
+        # Set job data to dictionary
+        cronjobs[job_name] = {
+            "{#CRONJOB}": job_name,
+            "completion_time": completion_time,
+            "length": job_length,
+            "name": job_name,
+            "start_time": start_time,
+            "status": job_status,
+            "uid": item.metadata.uid
+        }
+
+    # If instance name is not set, we output discovery
+    if not args.host_name:
+
+        # Loop and append jobs to output list
+        for cron_job in cronjobs:
+            output.append(cronjobs[cron_job])
+
+        # Dump discovery
+        discovery = {"data": output}
+        print(json.dumps(discovery))
+
+    else:
+        # Append item data to list
+        for cron_job in cronjobs:
+            packet.append(ZabbixMetric(
+                args.host_name,
+                "kubernetes.cronjob[{}]".format(cron_job),
+                json.dumps(cronjobs[cron_job]),
+                cronjobs[cron_job].get("completion_time")
+            ))
+
+        # Send data using ZabbixSender
+        result = ZabbixSender(use_config=True).send(packet)
+
+        # Print result
+        print(result)
+
 
 # Loop pods and create discovery
 def pods(args, v1):
 
+    # Retrieve pods from Kubernetes API v1
     pods = v1.list_pod_for_all_namespaces(
         watch=False,
         field_selector=args.field_selector
@@ -41,11 +165,11 @@ def pods(args, v1):
         for pod in pods.items:
 
             # Retrieve container's restart counts
-            container_started = None # Container's start time
-            kind = None # Pod's kind found under metadata.owner_references
-            restart_count = 0 # Container's restart count
-            started_at = None # Latest start time
-            uptime = datetime.timedelta() # A datetime object for latest uptime
+            container_started = None  # Container's start time
+            kind = None  # Pod's kind found under metadata.owner_references
+            restart_count = 0  # Container's restart count
+            started_at = None  # Latest start time
+            uptime = datetime.timedelta()  # Datetime object for latest uptime
 
             # Loop possible owner_references and retrieve "kind"-field
             if pod.metadata.owner_references:
@@ -99,6 +223,8 @@ def pods(args, v1):
 
 # Loop nodes and create discovery
 def nodes(args, v1):
+
+    # Retrieve nodes from Kubernetes API v1
     nodes = v1.list_node(
         watch=False,
         field_selector=args.field_selector
@@ -141,6 +267,8 @@ def nodes(args, v1):
 
 # Loop services and create discovery
 def services(args, v1):
+
+    # Retrieve services from Kubernetes API v1
     services = v1.list_service_for_all_namespaces(
         watch=False,
         field_selector=args.field_selector
@@ -166,7 +294,7 @@ def services(args, v1):
 if __name__ == "__main__":
 
     # Declare variables
-    output = [] # List for output data
+    output = []  # List for output data
 
     # Parse command-line arguments
     parser = ArgumentParser(
@@ -175,6 +303,8 @@ if __name__ == "__main__":
 
     # Use sub-parsers run functions using mandatory positional argument
     subparsers = parser.add_subparsers()
+    parser_cronjobs = subparsers.add_parser("cronjobs")
+    parser_cronjobs.set_defaults(func=cronjobs)
     parser_pods = subparsers.add_parser("pods")
     parser_pods.set_defaults(func=pods)
     parser_services = subparsers.add_parser("services")
@@ -183,13 +313,19 @@ if __name__ == "__main__":
     parser_nodes.set_defaults(func=nodes)
 
     # Each subparser has the same optional arguments. For now.
-    for item in [parser_pods, parser_nodes, parser_services]:
+    for item in [parser_cronjobs, parser_pods, parser_nodes, parser_services]:
         item.add_argument("-c", "--config", default="", dest="config",
-                            type=str,
-                            help="Configuration file for Kubernetes client.")
+                          type=str,
+                          help="Configuration file for Kubernetes client.")
         item.add_argument("-f", "--field-selector", default="",
-                            dest="field_selector", type=str,
-                            help="Filter results using field selectors.")
+                          dest="field_selector", type=str,
+                          help="Filter results using field selectors.")
+        item.add_argument("-hn", "--host-name", default="",
+                          dest="host_name", type=str,
+                          help="Zabbix host name for sending item data.")
+        item.add_argument("-m", "--minutes", default=5,
+                          dest="minutes", type=int,
+                          help="Interval for cron job retrieval.")
 
     args = parser.parse_args()
 
