@@ -8,8 +8,10 @@ Requirements:
 
 ## Creating and activating VirtualEnv for Python:
 ```
-virtualenv -p python3 <virtualenv-name>
-cd <virtualenv-name>
+mkdir /opt/virtualenv
+cd /opt/virtualenv
+virtualenv -p python3 kubernetes-monitoring
+cd kubernetes-monitoring
 source bin/activate
 ```
 
