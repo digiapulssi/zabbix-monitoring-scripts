@@ -1,13 +1,22 @@
 # Kubernetes pods and nodes discovery and monitoring
 
 Requirements:
-- Python 2.7.13 or Python 3.6.8
+- Python 3.6.8 or later
+- VirtualEnv 15.1.0 or later
 - 3rd party libraries for Python: kubernetes.
 
 
-## For Python, install dependencies using pip:
+## Creating and activating VirtualEnv for Python:
 ```
-pip install kubernetes
+virtualenv -p python3 <virtualenv-name>
+cd <virtualenv-name>
+source bin/activate
+```
+
+
+## Install Python dependencies using pip3:
+```
+pip3 install kubernetes
 ```
 
 
@@ -153,7 +162,7 @@ kubernetes.discover.services | Discover all Kubernetes services | Provides the f
 
 ## Retrieving data from discovery using JSONPath
 
-In this example, service data can be retrieved using JSONPath:
+In this example, data can be retrieved using JSONPath:
 ```
 $.data[?(@.pod == "<pod>")].pod
 $.data[?(@.pod == "<pod>")].restart_count
