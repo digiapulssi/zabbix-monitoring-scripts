@@ -39,6 +39,7 @@ are created and approved. There is a template for the configuration file in case
 you already have the certificates and you do not have a configuration file:
 [There is an example file here](kubernetes_monitoring/config).
 
+
 ### Creating a certificate signing request (CSR) and retrieving certificates
 
 First we run the OpenSSL command to generate new private key and CSR. You may
@@ -143,13 +144,16 @@ Server Version: version.Info{Major:"1", Minor:"18", GitVersion:"v1.18.0", GitCom
 ```
 
 
-### Authorize user to list pods, nodes and services from Kubernetes cluster.
+### Authorize user to list pods, nodes, services and cron jobs from Kubernetes cluster.
 
-[There is an example file here](kubernetes_monitoring/access.yml).
+[Example file for retrieving pods, nodes and services](kubernetes_monitoring/access.yml).
+[Same example file as above but also includes cron jobs](kubernetes_monitoring/access-cron-jobs.yml).
 
 ```
 kubectl create -f kubernetes_monitoring/access.yml
 ```
+
+
 
 
 ## Usage
@@ -160,6 +164,7 @@ kubernetes.discover.pods | Discover all Kubernetes pods | Provides the following
 kubernetes.discover.pods.default | Discover all Kubernetes pods using default field selectors | Provides the following template variables: {#POD}. Also provides service information in an array: ip, namespace, pod, restart_count, uptime. |
 kubernetes.discover.nodes | Discover all Kubernetes nodes | Provides the following template variables: {#NODE}. Also provides service information in an array: node, machine_id, status, system_uuid. |
 kubernetes.discover.services | Discover all Kubernetes services | Provides the following template variables: {#SERVICE}. Also provides service information in an array: namespace, service, uid. |
+kubernetes.discover.cronjobs | Discover all Kubernetes cron jobs | Provides the following template variables: {#CRONJOB}. Also provides cron job information in an array: completion_time, length, name, start_time, status, uid. |
 
 
 ## Retrieving data from discovery using JSONPath
