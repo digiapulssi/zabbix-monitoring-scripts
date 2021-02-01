@@ -18,9 +18,10 @@ source bin/activate
 
 ## Install Python dependencies using pip3:
 ```
-pip3 install kubernetes
+pip3 install kubernetes py-zabbix
 ```
 
+NOTE: If you are still using Python 2 you must also install pytz.
 
 ## Configuring access for user zabbix
 
