@@ -13,7 +13,7 @@ tar czvf zabbix-monitoring-scripts-aix-<new version eg. 1.5>.tar.gz scripts zabb
 
 Next:
 1. Unzip the package into a test directory (eg. /tmp) and check that all scripts have execute flag set.
-2. Create a new version in github. Tag version: <new version eg. 1.5> @ aix-version. Attach the tar.gz file as a binary file to the release.
+2. Create a new release at https://github.com/digiapulssi/zabbix-monitoring-scripts/releases. Tag version: <new version eg. 1.5> @ aix-version. Attach the tar.gz file as a binary file to the release.
 
 ## Installation
 
