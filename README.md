@@ -2,6 +2,15 @@
 
 This project contains various custom Zabbix monitoring scripts used as user parameters by Zabbix agent.
 
+## Release Packaging
+
+```
+git checkout aix_version
+git pull
+cd etc/zabbix
+tar czvf zabbix-monitoring-scripts-aix-<new version>.tar.gz scripts zabbix_agentd
+```
+
 ## Installation
 
 The repository includes ready-to-install files for Zabbix Agent.
