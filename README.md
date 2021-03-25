@@ -8,8 +8,12 @@ This project contains various custom Zabbix monitoring scripts used as user para
 git checkout aix_version
 git pull
 cd etc/zabbix
-tar czvf zabbix-monitoring-scripts-aix-<new version>.tar.gz scripts zabbix_agentd
+tar czvf zabbix-monitoring-scripts-aix-<new version eg. 1.5>.tar.gz scripts zabbix_agentd
 ```
+
+Next:
+1. Unzip the package into a test directory (eg. /tmp) and check that all scripts have execute flag set.
+2. Create a new version in github. Tag version: <new version eg. 1.5> @ aix-version. Attach the tar.gz file as a binary file to the release.
 
 ## Installation
 
