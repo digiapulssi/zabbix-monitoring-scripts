@@ -83,7 +83,7 @@ def cronjobs(args, v1):
             )
 
         # Skip completed jobs that are outside the interval range
-        if completion_time < start_interval:
+        if completion_time and completion_time < start_interval:
             continue
 
         # Check and convert start time to epoch
@@ -109,7 +109,7 @@ def cronjobs(args, v1):
             continue
 
         # Check job status comparing succeeded and status fields
-        if item.status.succeeded > 0 and item.status.failed is None:
+        if item.status.succeeded and item.status.succeeded > 0 and item.status.failed is None:
             job_status = 1
 
         # Set job data to dictionary
