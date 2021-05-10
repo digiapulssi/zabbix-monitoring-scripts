@@ -42,6 +42,7 @@ else
     if [ ! -z "$OLDLOGFILEPATH" ]; then
       rsync -za --append -e "ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" "$OLDLOGFILEPATH" rsync@$DESTINATIONSERVER:"$DESTINATIONPATH"
     fi
+    LOGFILESIZE=$(wc -c "$OLDLOGFILEPATH" | awk '{print $1}')
   fi
 fi
 
