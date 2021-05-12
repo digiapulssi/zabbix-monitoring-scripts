@@ -13,8 +13,7 @@ RSYNCVARS="$4"
 if [ ! -f "$RSYNCVARS" ]; then
   touch "$RSYNCVARS"
   cat > "$RSYNCVARS" << EOL
-  INODE=0
-  ROTATED=0
+  INODE=0  
   DELETE=0
   PREVSIZE=0
 EOL
@@ -60,7 +59,6 @@ fi
 # Set variables in helper file
 cat > "$RSYNCVARS" << EOL
 INODE=${NEWINODE}
-ROTATED=${ROTATED}
 DELETE=${DELETE}
 PREVSIZE=${LOGFILESIZE}
 EOL
