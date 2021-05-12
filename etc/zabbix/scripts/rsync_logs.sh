@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Transfer AIX application logs to proxy server via rsync
+# Transfer files to destination server via rsync
 
 set -e
 
@@ -13,8 +13,9 @@ RSYNCVARS="$4"
 if [ ! -f "$RSYNCVARS" ]; then
   touch "$RSYNCVARS"
   cat > "$RSYNCVARS" << EOL
+  INODE=0  
+  DELETE=0
   PREVSIZE=0
-  INODE=0
 EOL
 fi
 
@@ -26,27 +27,38 @@ NEWINODE=$(ls -i "$SOURCEFILE" | awk '{print $1}')
 # Check the size of logfile
 LOGFILESIZE=$(wc -c "$SOURCEFILE" | awk '{print $1}')
 
-# If the logfile is same as before
-if [ $NEWINODE -eq $INODE ]; then
+# If log has rotated, delete destination file
+if [ $DELETE -eq "1" ]; then
+  ssh rsync@$DESTINATIONSERVER "rm $DESTINATIONPATH"
+  DELETE=0
+fi
 
-  if [ $LOGFILESIZE -gt $PREVSIZE ]; then
-    rsync -za --append -e "ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" "$SOURCEFILE" rsync@$DESTINATIONSERVER:"$DESTINATIONPATH"
+# Check has the log rotated. Option 1: Original log has moved and new file has been created. Option 2: The file has same inode although it has been rotated.
+if [ $NEWINODE -eq $INODE ] || [ $INODE -eq "0" ]; then
+  if [ $LOGFILESIZE -lt $PREVSIZE ]; then
+    ROTATED=1
   else
-    rsync -za -e "ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" "$SOURCEFILE" rsync@$DESTINATIONSERVER:"$DESTINATIONPATH"
+    ROTATED=0
   fi
 else
-  # If the logfile has just rotated, find the rotated version and transfer remaining logs
-  if [ ! $INODE -eq "0" ]; then
-    OLDLOGFILEPATH=$(dirname "$SOURCEFILE")
+  ROTATED="1"
+fi
+
+# If rotated, find the old file and transfer remaining rows
+if [ $ROTATED -eq "1" ]; then
+  OLDLOGFILEPATH=$(dirname "$SOURCEFILE")
     OLDLOGFILEPATH=$(find "$OLDLOGFILEPATH" -inum "$INODE" 2>/dev/null || true)
     if [ ! -z "$OLDLOGFILEPATH" ]; then
-      rsync -za --append -e "ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" "$OLDLOGFILEPATH" rsync@$DESTINATIONSERVER:"$DESTINATIONPATH"
+      rsync -za --append --chmod=o+r -e "ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" "$OLDLOGFILEPATH" rsync@$DESTINATIONSERVER:"$DESTINATIONPATH"
     fi
-  fi
+  DELETE=1
+else
+  rsync -za --append --chmod=o+r -e "ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" "$SOURCEFILE" rsync@$DESTINATIONSERVER:"$DESTINATIONPATH"
 fi
 
 # Set variables in helper file
 cat > "$RSYNCVARS" << EOL
-PREVSIZE=${LOGFILESIZE}
 INODE=${NEWINODE}
+DELETE=${DELETE}
+PREVSIZE=${LOGFILESIZE}
 EOL
