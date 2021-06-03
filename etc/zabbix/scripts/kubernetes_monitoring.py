@@ -139,7 +139,7 @@ def cronjobs(args, v1):
         for cron_job in cronjobs:
             packet.append(ZabbixMetric(
                 args.host_name,
-                "kubernetes.cronjob[{}]".format(cron_job),
+                f'kubernetes.cronjob["{cron_job}"]',
                 json.dumps(cronjobs[cron_job]),
                 cronjobs[cron_job].get("completion_time")
             ))
@@ -342,9 +342,7 @@ if __name__ == "__main__":
         else:
             config.load_kube_config()
     except Exception as e:
-        print("Unable to load Kubernetes configuration file. Error: {}".format(
-            e
-        ))
+        print(f"Unable to load Kubernetes configuration file. Error: {e}")
         sys.exit()
 
     # Initialize Kubernetes client
