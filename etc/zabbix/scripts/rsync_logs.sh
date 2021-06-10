@@ -28,8 +28,8 @@ NEWINODE=$(ls -i "$SOURCEFILE" | awk '{print $1}')
 LOGFILESIZE=$(wc -c "$SOURCEFILE" | awk '{print $1}')
 
 # If log has rotated, delete destination file
-if [ $DELETE -eq "1" ]; then
-  ssh rsync@$DESTINATIONSERVER "rm $DESTINATIONPATH"
+if [ $DELETE -eq "1" ]; then  
+  ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null rsync@$DESTINATIONSERVER "rm $DESTINATIONPATH"
   DELETE=0
 fi
 
