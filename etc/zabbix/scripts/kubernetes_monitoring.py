@@ -24,6 +24,7 @@ from argparse import ArgumentParser
 import datetime
 import json
 import os
+from socket import socket
 import sys
 
 # Retrieve timezone aware datetime objects
@@ -69,7 +70,6 @@ def cronjobs(args, v1):
         job_length = 0
         job_name = None
         job_status = 0
-        packet = []
         start_time = None
 
         # Discard active cron jobs
@@ -136,6 +136,7 @@ def cronjobs(args, v1):
 
     else:
         # Append item data to list
+        packet = []
         for cron_job in cronjobs:
             packet.append(ZabbixMetric(
                 args.host_name,
@@ -145,11 +146,34 @@ def cronjobs(args, v1):
             ))
 
         # Send data using ZabbixSender
-        result = ZabbixSender(use_config=True).send(packet)
+        result = zabbix_send(packet)
 
         # Print result
         print(result)
 
+def zabbix_send(packet):
+    """
+    Attempts send to each Zabbix server in ServerActive agent configuration and returns
+    result for each available server.
+    """
+    results = {}
+    sender = ZabbixSender(use_config=True)
+    zabbix_uris = sender.zabbix_uri
+    for uri in zabbix_uris:
+        sender.zabbix_uri = [uri]
+        try:
+            result = sender.send(packet)
+            result = {
+                'processed': result.processed,
+                'failed': result.failed,
+                'total': result.total,
+                'time': str(result.time),
+                'chunk': result.chunk
+            }
+            results[uri] = result
+        except socket.error as err:
+            pass
+    return json.dumps(results, indent=2)
 
 # Loop pods and create discovery
 def pods(args, v1):
