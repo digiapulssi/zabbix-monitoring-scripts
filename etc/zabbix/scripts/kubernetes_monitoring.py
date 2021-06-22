@@ -24,7 +24,6 @@ from argparse import ArgumentParser
 import datetime
 import json
 import os
-from socket import socket
 import sys
 
 # Retrieve timezone aware datetime objects
@@ -170,8 +169,8 @@ def zabbix_send(packet):
                 'time': str(result.time),
                 'chunk': result.chunk
             }
-            results[uri] = result
-        except socket.error as err:
+            results[uri[0]] = result
+        except OSError:
             pass
     return json.dumps(results, indent=2)
 
