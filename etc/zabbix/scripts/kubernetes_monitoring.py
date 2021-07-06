@@ -1,4 +1,4 @@
-#!/usr/bin/python2
+#!/usr/bin/env python3
 
 """
 Kubernetes monitoring
@@ -26,19 +26,14 @@ import json
 import os
 import sys
 
-# Retrieve timezone aware datetime objects
-if sys.version_info[0] < 3:
-    import pytz
-    epoch_start = datetime.datetime(1970, 1, 1, tzinfo=pytz.utc)
-    system_time = datetime.datetime.now(pytz.utc)
-else:
-    epoch_start = datetime.datetime(1970, 1, 1, tzinfo=datetime.timezone.utc)
-    system_time = datetime.datetime.now(datetime.timezone.utc)
-
 # 3rd party imports
 from kubernetes import client, config
-from pyzabbix import ZabbixMetric, ZabbixSender
+from pyzabbix import ZabbixMetric
 
+from .zabbix_sender_psk import ZabbixSenderPSK as ZabbixSender
+
+epoch_start = datetime.datetime(1970, 1, 1, tzinfo=datetime.timezone.utc)
+system_time = datetime.datetime.now(datetime.timezone.utc)
 
 # Loop cron jobs and create discovery
 def cronjobs(args, v1):

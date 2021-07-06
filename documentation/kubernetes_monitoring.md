@@ -21,7 +21,17 @@ source bin/activate
 pip3 install kubernetes py-zabbix
 ```
 
-NOTE: If you are still using Python 2 you must also install pytz.
+PSK key support requires additionally sslpsk, installation requires development 
+packages for Python3 and OpenSSL. Development packages can be removed after 
+installation.
+
+(RedHat/CentOS):
+```bash
+sudo yum install python3-devel openssl-devel
+pip3 install sslpsk
+sudo yum remove python3-devel openssl-devel
+```
+
 
 ## Configuring access for user zabbix
 
