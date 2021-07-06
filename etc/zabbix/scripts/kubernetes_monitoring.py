@@ -30,7 +30,7 @@ import sys
 from kubernetes import client, config
 from pyzabbix import ZabbixMetric
 
-from .zabbix_sender_psk import ZabbixSenderPSK as ZabbixSender
+from zabbix_sender_psk import ZabbixSenderPSK as ZabbixSender
 
 epoch_start = datetime.datetime(1970, 1, 1, tzinfo=datetime.timezone.utc)
 system_time = datetime.datetime.now(datetime.timezone.utc)
@@ -140,7 +140,7 @@ def cronjobs(args, v1):
             ))
 
         # Send data using ZabbixSender
-        result = ZabbixSender(use_config=True).send(packet)
+        result = ZabbixSender().send(packet)
 
         # Print result
         print(result)
