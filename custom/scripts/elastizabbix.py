@@ -1,10 +1,15 @@
-#!/usr/bin/python
+#!/usr/bin/python3
+
 import os
 import sys
 import json
-import urllib2
+import urllib
 import time
 import errno
+
+# Check parameter count
+if len(sys.argv) < 4:
+    sys.exit('This script needs at least 3 parameters: ip, api, stat.')
 
 ttl = 60
 ip = sys.argv[1]
@@ -26,7 +31,7 @@ def created_file(name):
         fd = os.open(name, os.O_WRONLY | os.O_CREAT | os.O_EXCL)
         os.close(fd)
         return True
-    except OSError, e:
+    except OSError as e:
         if e.errno == errno.EEXIST:
             return False
         raise
@@ -41,8 +46,9 @@ def get_cache(api):
     should_update = (not os.path.exists(cache)) or is_older_then(cache, ttl)
     if should_update and created_file(lock):
         try:
-            d = urllib2.urlopen(stats[api]).read()
-            with open(cache, 'w') as f: f.write(d)
+            d = urllib.request.urlopen(stats[api]).read()
+            with open(cache, 'w') as f:
+                f.write(d)
         except Exception as e:
             pass
         if os.path.exists(lock):
@@ -54,7 +60,7 @@ def get_cache(api):
         with open(cache)  as data_file:
             ret_data = json.load(data_file)
     except Exception as e:
-        ret_data = json.loads(urllib2.urlopen(stats[api]).read())
+        ret_data = json.loads(urllib.request.urlopen(stats[api]).read())
     return ret_data
 
 def get_stat(api, stat):
@@ -86,13 +92,13 @@ if __name__ == '__main__':
     stat = sys.argv[3]
     if api == 'discover':
         if stat == 'nodes':
-            print discover_nodes()
+            print(discover_nodes())
         if stat == 'indices':
-            print discover_indices()
+            print(discover_indices())
 
     else:
         stat = get_stat(api, stat)
         if isinstance(stat, dict):
-            print ''
+            print('')
         else:
-            print stat
+            print(stat)
