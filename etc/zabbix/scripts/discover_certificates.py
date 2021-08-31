@@ -52,8 +52,8 @@ def get_name_component(x509_name, component):
     """Gets single name component from X509 name."""
     value = ""
     for c in x509_name.get_components():
-        if c[0] == component:
-            value = c[1]
+        if c[0].decode("utf-8") == component:
+            value = c[1].decode("utf-8")
     return value
 
 
