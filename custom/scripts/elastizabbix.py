@@ -3,7 +3,7 @@
 import os
 import sys
 import json
-import urllib
+import urllib.request
 import time
 import errno
 
@@ -76,13 +76,13 @@ def get_stat(api, stat):
 
 def discover_nodes():
     d = {'data': []}
-    for k,v in get_stat('nodes', 'nodes').iteritems():
+    for k,v in get_stat('nodes', 'nodes').items():
         d['data'].append({'{#NAME}': v['name'], '{#NODE}': k})
     return json.dumps(d)
 
 def discover_indices():
     d = {'data': []}
-    for k,v in get_stat('indices', 'indices').iteritems():
+    for k,v in get_stat('indices', 'indices').items():
         d['data'].append({'{#NAME}': k})
     return json.dumps(d)
 
