@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 """
 Provides functionally extended version of py-zabbix ZabbixSender and pure python utility for
 sending trapper data.
