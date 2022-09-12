@@ -33,3 +33,5 @@ See the below documentation for each monitoring script.
 - [PEM file certificate monitoring](documentation/certificates.md)
 - [Kontena grid monitoring](documentation/kontena_grid.md)
 - [Kubernetes monitoring](documentation/kubernetes_monitoring.md)
+- [MySQL & Galera monitoring](documentation/mysql-galera.md)
+
