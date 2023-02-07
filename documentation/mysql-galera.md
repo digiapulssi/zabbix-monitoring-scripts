@@ -51,7 +51,7 @@ EOF
 4. To test mysql connection, run
   ```
   zabbix_agentd -t mysql.version
-  zabbix_agentd -t get_status_variables
+  zabbix_agentd -t mysql.get_status_variables
   ``` 
 5. To test galera connection, run
   ```
