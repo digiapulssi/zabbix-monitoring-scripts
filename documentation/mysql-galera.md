@@ -1,5 +1,7 @@
 This documentation is for configurating mysql and galera monitoring permissions.
 
+**Use sudo/root to configure following steps**
+
 1. Install Zabbix agent and MySQL client. If necessary, add the path to the mysql and mysqladmin utilities to the global environment variable PATH.
 2. Create a MySQL user for monitoring (<password> at your discretion):
 ```
@@ -15,7 +17,6 @@ user='zbx_monitor'
 password='<password>'
 ```
 
-NOTE: Use systemd to start Zabbix agent on Linux OS. For example, in Centos use "systemctl edit zabbix-agent.service" to set the required user to start the Zabbix agent.
 
 Add the rule to the SELinux policy (example for Centos):
 ```
